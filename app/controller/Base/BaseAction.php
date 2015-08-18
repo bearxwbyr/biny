@@ -65,10 +65,10 @@ abstract class BaseAction extends TXAction
      */
     public function display($view, $array = array(), $ignores=array())
     {
-        $array = array_merge($array, array(
+        $array = array_merge(array(
             'isAjax' => $this->isAjax,
             'rootPath' => $this->getRootPath()
-        ));
+        ), $array);
         return parent::display($view, $array, $ignores);
     }
 }
