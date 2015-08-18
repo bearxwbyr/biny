@@ -12,7 +12,8 @@
 12. TXResponse 添加ignore过滤字段(不实体化转译 慎用)
 13. TXConfig 设置别名以及自动获取转义
 
-//2015-08-17
+2015-08-17
+
 1. DAO添加groupBy 请求
 2. DAO添加分表->choose($id)
 3. DAO __ex__(filter)弃用，直接用>,>=变量符替代
