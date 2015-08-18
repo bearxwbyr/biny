@@ -16,4 +16,4 @@
 
 1. DAO添加groupBy 请求
 2. DAO添加分表->choose($id)
-3. DAO __ex__(filter)弃用，直接用>,>=变量符替代
+3. DAO ex(filter)弃用，直接用>,>=变量符替代
