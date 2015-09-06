@@ -13,11 +13,13 @@
 13. TXConfig 设置别名以及自动获取转义
 
 2015-08-17
+
 1. DAO添加groupBy 请求
 2. DAO添加分表->choose($id)
 3. DAO /_/_ex/_/_(filter)弃用，直接用>,>=变量符替代
 
 2015-09-06
+
 1. TXAction、TXAjax分离 分别返回TXResponse、TXJSONResponse
 2. 添加action子方法 /biny[/ajax]/Index/test => IndexAction::action_test()
 3. TXResponse添加SEO自定义 title、keywords、description
