@@ -77,7 +77,7 @@ class TXAutoload
             } else {
                 throw new TXException(1002, array($class));
             }
-        } else if (substr($class, -6) == 'Action') {
+        } else if (substr($class, -6) == 'Action' || substr($class, -4) == 'Ajax') {
             throw new TXException(1002, array($class));
         }
     }

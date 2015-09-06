@@ -23,14 +23,14 @@ class Person extends TXModel
 
     private function __construct($id)
     {
-        $this->DAO = TXDAO::getDAO('UserDAO');
+        $this->DAO = TXDAO::getDAO('userDAO');
         $this->_data = $this->DAO->getByPk($id);
         $this->_pk = $id;
     }
 
     public function getProject()
     {
-        $projectDAO = TXDAO::getDAO('ProjectDAO');
+        $projectDAO = TXDAO::getDAO('projectDAO');
         return $projectDAO->getByPk($this->projectId);
 
     }

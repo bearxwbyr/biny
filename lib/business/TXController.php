@@ -48,15 +48,15 @@ class TXController {
     }
 
     /**
-     * @param $action
+     * @param $module
      * @param $params
-     * @return TXAction
+     * @return mixed
      */
-    private function getAction($action, $params)
+    private function getAction($module, $params)
     {
-        $actionObject = new $action($params);
+        $object = new $module($params);
 
-        return $actionObject;
+        return $object;
     }
 
     /**
@@ -67,31 +67,37 @@ class TXController {
      */
     private function call(TXRequest $request)
     {
-        $action = $request->getModule() . 'Action';
+        $module = $request->getModule() . ($request->isAjax ? 'Ajax' :'Action');
         $params = $request->getParams();
+        $method = $request->getMethod();
 
-        $actionObject = $this->getAction($action, $params);
+        $object = $this->getAction($module, $params);
 
-        if ($actionObject instanceof TXAction) {
-            $args = $this->getArgs($actionObject, $params);
-            $result = call_user_func_array([$actionObject, 'execute'], $args);
+        if ($object instanceof TXAction || $object instanceof TXAjax) {
+            $args = $this->getArgs($object, $method, $params);
+            $result = call_user_func_array([$object, $method], $args);
             return $result;
         } else {
-            throw new TXException(2000, array($request->getModule()));
+            throw new TXException(2000, array($request->isAjax ? 'Ajax' :'Action', $request->getModule()));
         }
     }
 
     /**
      * 获取默认参数
      * @param $obj
+     * @param $method
      * @param $params
      * @return array
+     * @throws TXException
      */
-    private function getArgs($obj, $params)
+    private function getArgs($obj, $method, $params)
     {
         $args = [];
-        $method = new ReflectionMethod($obj, 'execute');
-        foreach ($method->getParameters() as $param) {
+        if (!method_exists($obj, $method)){
+            throw new TXException(2003, array($method, get_class($obj)));
+        }
+        $action = new ReflectionMethod($obj, $method);
+        foreach ($action->getParameters() as $param) {
             $name = $param->getName();
             $args[] = isset($params[$name]) ? $params[$name] : ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : null);
         }
@@ -110,7 +116,8 @@ class TXController {
             echo $result;
         } elseif ($result instanceof TXJSONResponse) {  //json数据
             echo $result;
-        } else {    //flash remote
+        } else {
+            echo $result;
         }
     }
 }

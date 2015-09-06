@@ -1,7 +1,7 @@
 <?php
 return array(
     'router' => array(
-        'base_action' => 'Index'
+        'base_action' => 'main'
     ),
 
     'unable_modules' => array(

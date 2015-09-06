@@ -1,11 +1,9 @@
 <?php
 class TXRequest {
     private $module;
-
     private $params;
-
-    private $isAjax=false;
-
+    private $method=null;
+    public $isAjax=false;
     private $id;
 
     /**
@@ -18,12 +16,13 @@ class TXRequest {
      * @param $module
      * @param $params
      * @param bool $isAjax
-     * @return TXRequest
+     * @param null $method
+     * @return null|TXRequest
      */
-    public static function create($module, $params, $isAjax=false)
+    public static function create($module, $params, $isAjax=false, $method=null)
     {
         if (NULL === self::$_instance){
-            self::$_instance = new self($module, $params, $isAjax);
+            self::$_instance = new self($module, $params, $isAjax, $method);
         }
         return self::$_instance;
     }
@@ -36,12 +35,13 @@ class TXRequest {
         return self::$_instance;
     }
 
-    public function __construct($module, $params, $isAjax=false)
+    public function __construct($module, $params, $isAjax=false, $method=null)
     {
         $this->id = crc32(microtime(true));
         $this->module = $module;
         $this->params = $params;
         $this->isAjax = $isAjax;
+        $this->method = $method;
     }
 
     public function getModule()
@@ -49,9 +49,9 @@ class TXRequest {
         return $this->module;
     }
 
-    public function getAjax()
+    public function getMethod()
     {
-        return $this->isAjax;
+        return ($this->method && $this->method != "execute") ? 'action_'.$this->method : "execute";
     }
 
     public function getParams()

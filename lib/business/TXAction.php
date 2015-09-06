@@ -10,8 +10,6 @@ class TXAction {
      */
     protected $params;
 
-    protected $isAjax;
-
     /**
      * 字符串验证
      * @var bool
@@ -24,14 +22,9 @@ class TXAction {
      */
     public function __construct($params)
     {
-        $this->isAjax = TXRequest::getInstance()->getAjax();
 
         if (isMaintenance){
-            if (!$this->isAjax){
-                echo $this->display('Main/maintenance');
-            } else {
-                echo $this->error("网站维护中，请稍候再试");
-            }
+            echo $this->display('Main/maintenance');
             exit;
         }
         $this->params = $params;
@@ -137,33 +130,12 @@ class TXAction {
     }
 
     /**
-     * display to json
-     * @param $data
-     * @return TXJSONResponse
-     */
-    public function json($data)
-    {
-        return new TXJSONResponse($data);
-    }
-
-    /**
-     * @param $ret
-     * @return TXJSONResponse
-     */
-    public function correct($ret=array())
-    {
-        $data = array("flag" => true, "ret" => $ret);
-        return $this->json($data);
-    }
-
-    /**
      * @param $msg
-     * @return TXJSONResponse
+     * @return TXResponse
      */
     public function error($msg)
     {
-        $data = array("flag" => false, "error" => $msg);
-        return $this->json($data);
+        return $this->display('error/msg', ['message'=> $msg]);
     }
 
     public function redirect($url)

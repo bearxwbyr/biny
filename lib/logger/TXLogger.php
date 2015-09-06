@@ -131,7 +131,7 @@ class TXLogger
      * 析构函数
      */
     public function __destruct(){
-        if (!TXRequest::getInstance()->getAjax()){
+        if (TXRequest::getInstance() && !TXRequest::getInstance()->isAjax){
             self::showLogs();
         }
     }

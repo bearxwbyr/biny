@@ -58,15 +58,14 @@ class TXRouter {
         $pathInfo = trim($pathRoot, '/') ? explode("/", trim($pathRoot, '/')) : false;
         if (!$pathInfo){
             return false;
-        } else {
-            $module = array_pop($pathInfo);
         }
         $isAjax = false;
-        if ($pathInfo){
-            $isAjax = (array_pop($pathInfo) == "ajax") ?: false;
+        if ($pathInfo[0] == "action" || $pathInfo[0] == "ajax"){
+            $isAjax = array_shift($pathInfo) == "ajax";
         }
+        List($module, $method) = $pathInfo;
 
-        return array($module, $isAjax);
+        return array($module, $method, $isAjax);
 
     }
 
@@ -77,10 +76,11 @@ class TXRouter {
     {
         $isAjax = false;
         if ($pathInfo = $this->getRouterInfo()){
-            List($module, $isAjax) = $pathInfo;
+            List($module, $method, $isAjax) = $pathInfo;
         } else {
             $module = $this->routerInfo['base_action'];
+            $method = null;
         }
-        $this->requests = TXRequest::create($module, $_REQUEST, $isAjax);
+        $this->requests = TXRequest::create($module, $_REQUEST, $isAjax, $method);
     }
 }

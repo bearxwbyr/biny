@@ -154,7 +154,6 @@ class TXDoubleDAO extends TXDAO
         }
         if ($group){
             $groups = [$fields];
-            $calc = ['max', 'min', 'sum', 'avg', 'count'];
             foreach ($group as $key => $values){
                 if (is_int($key)){
                     if (isset($this->doubles[$key])){
@@ -163,14 +162,14 @@ class TXDoubleDAO extends TXDAO
                         continue;
                     }
                     foreach ($values as $ck => $vals){
-                        if (!in_array(strtolower($ck), $calc)){
+                        if (!in_array(strtolower($ck), $this->calcs)){
                             continue;
                         }
                         foreach ($vals as $k => $value){
                             $groups[] = "{$ck}({$table}.{$k}) as {$value}";
                         }
                     }
-                } else if (!in_array($key, $calc)){
+                } else if (!in_array($key, $this->calcs)){
                     continue;
                 } else {
                     foreach ($values as $k => $value){

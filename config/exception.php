@@ -21,11 +21,13 @@ return array(
 
 
     /* controller error */
-    2000 => 'Action[%s] is exists.',
+    2000 => '%s[%s] is not exists.',
     2001 => 'Param [%s] must be exists.',
     2002 => 'Param [%s] type error',
-    2010 => 'access error',
+    2003 => 'Method [%s] not exists in [%s]',
     2005 => 'param Key [%s] checkType Error; %s given',
+    2010 => 'access error',
+    2020 => 'method [%s] not exists in [%s]',
 
     /* view error */
     3000 => '',

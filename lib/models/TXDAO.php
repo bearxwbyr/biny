@@ -10,6 +10,7 @@ class TXDAO
     private static $_cache = [];
 
     protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
+    protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
     /**
      * @param $obj
@@ -90,10 +91,10 @@ class TXDAO
                 $datas[] = $this->real_escape_string($arg);
             } elseif (is_array($arg)) {
                 foreach ($arg as &$value){
-                    $value = $this->real_escape_string($value);
+                    $value = "'{$this->real_escape_string($value)}'";
                 }
                 unset($value);
-                $datas[] = "'".join("','", $arg)."'";
+                $datas[] = join(",", $arg);
             } else {
                 $datas[] = $arg;
             }
@@ -184,17 +185,55 @@ class TXDAO
         return $this->sql($sql);
     }
 
-    /**
-     * 查询数量
-     * @return int
-     */
-    public function count()
-    {
-        $params = func_get_args();
-        $where = isset($params[0]) ? " WHERE ".$params[0] : "";
-        $sql = sprintf("SELECT COUNT(0) as count FROM %s%s", $this->table, $where);
+//    /**
+//     * 查询数量
+//     * @return int
+//     */
+//    public function total()
+//    {
+//        $params = func_get_args();
+//        $where = isset($params[0]) ? " WHERE ".$params[0] : "";
+//        $sql = sprintf("SELECT COUNT(0) as total FROM %s%s", $this->table, $where);
+//
+//        $ret = $this->sql($sql);
+//        return $ret ? $ret[0]['total'] : $ret;
+//    }
 
-        $ret = $this->sql($sql);
-        return $ret ? $ret[0]['count'] : $ret;
+    /**
+     * 查询条件
+     * @param $method ['max', 'min', 'sum', 'avg', 'count']
+     * @param $field
+     * @return mixed
+     */
+    public function calc($method, $field='0')
+    {
+        if (in_array($method, $this->calcs)){
+            return $this->$method($field);
+        }
+    }
+
+    /**     *
+     * 查询条件
+     * @param $method ['max', 'min', 'sum', 'avg', 'count']
+     * @param $method
+     * @param $args
+     * @return mixed
+     * @throws TXException
+     */
+    public function __call($method, $args)
+    {
+        if (in_array($method, $this->calcs)){
+            if (!$args){
+                $args = [0];
+            }
+            $where = isset($args[1]) ? " WHERE ".$args[1] : "";
+            $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->table, $where);
+//            TXLogger::info($sql);
+
+            $ret = $this->sql($sql);
+            return $ret ? $ret[0][$method] : $ret;
+        } else {
+            throw new TXException(2020, array($method, __CLASS__));
+        }
     }
 }

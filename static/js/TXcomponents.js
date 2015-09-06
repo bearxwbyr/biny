@@ -1,6 +1,65 @@
 /**
  * Created by billge on 14-10-27.
  */
+//ajax.js
+//jQuery(document).ajaxSend(function(event, xhr, settings) {
+//    function getUrlParams(param){
+//        var reg = new RegExp("(^|&)"+ param +"=([^&]*)(&|$)");
+//        var r = window.location.search.substr(1).match(reg);
+//        if (r!=null) return unescape(r[2]); return null;
+//    }
+//    function setUrlParam(params, key, value){
+//        if (params instanceof Object){
+//            return params;
+//        } else if (params){
+//            return params + "&" + key + "=" + encodeURIComponent(value);
+//        } else if (typeof xhr.setRequestHeader == "function") {
+//            xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded; charset=UTF-8');
+//            return key + "=" + encodeURIComponent(value);
+//        }
+//    }
+//    if (typeof xhr.setRequestHeader == "function"){
+//        xhr.setRequestHeader('X-CSRF-TOKEN', getCookie('wetest_token'));
+//    }
+//});
+
+jQuery(document).ajaxSuccess(function(event,xhr,options){
+    try {
+        var ret = $.parseJSON(xhr.responseText);
+        if (ret.__logs){
+            var logs = ret.__logs;
+            for (var i in logs){
+                var log = logs[i];
+                if (log instanceof Function){
+                    continue;
+                }
+                switch (log['type']){
+                    case 'log':
+                        console.log("{0} => ".format(log['key']), log['value']);
+                        break;
+
+                    case 'info':
+                        console.info("{0} => ".format(log['key']), log['value']);
+                        break;
+
+                    case 'error':
+                        console.error("{0} => ".format(log['key']), log['value']);
+                        break;
+
+                    case 'warn':
+                        console.warn("{0} => ".format(log['key']), log['value']);
+                        break;
+
+                    default :
+                        console.log("{0} => ".format(log['key']), log['value']);
+                        break;
+
+                }
+            }
+        }
+    } catch (e){}
+});
+
 (function ($) {
     $.fn.pagination = function (options) {
         var self = this;

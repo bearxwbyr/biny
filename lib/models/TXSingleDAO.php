@@ -74,9 +74,8 @@ class TXSingleDAO extends TXDAO
         }
         if ($group){
             $groups = [$fields];
-            $calc = ['max', 'min', 'sum', 'avg', 'count'];
             foreach ($group as $key => $values){
-                if (!in_array(strtolower($key), $calc)){
+                if (!in_array(strtolower($key), $this->calcs)){
                     continue;
                 }
                 foreach ($values as $k => $value){

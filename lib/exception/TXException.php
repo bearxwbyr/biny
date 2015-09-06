@@ -10,7 +10,7 @@ class TXException extends Exception
      * @param array $params
      * @param string $html
      */
-    public function __construct($code, $params = array(), $html="404")
+    public function __construct($code, $params=array(), $html="404")
     {
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
@@ -19,16 +19,11 @@ class TXException extends Exception
             if (SYS_DEBUG){
                 $message = $this->fmt_code($code, $params);
                 $message = $this->escapeString(htmlspecialchars($message, ENT_QUOTES));
-                if (!TXRequest::getInstance()->getAjax()){
-                    echo "<pre>";
-                    parent::__construct($message, $code);
-                } else {
-                    $data = array("flag" => false, "error" => $message);
-                    echo new TXJSONResponse($data);
-                }
+                echo "<pre>";
+                parent::__construct($message, $code);
 
             } else {
-                if (!TXRequest::getInstance()->getAjax()){
+                if (!TXRequest::getInstance()->isAjax){
                     ob_clean();
                     $params = [
                         'rootPath' => TXConfig::getAppConfig('rootPath', 'dns')
@@ -52,7 +47,7 @@ class TXException extends Exception
 
     public function __destruct()
     {
-        if (!TXRequest::getInstance()->getAjax()){
+        if (SYS_DEBUG || !TXRequest::getInstance()->isAjax){
             echo '</pre>';
         }
     }

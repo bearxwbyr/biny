@@ -16,6 +16,7 @@ class TXFilter
     protected $conds = [];
 
     private $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
+    protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
     /**
      * 静态创建
@@ -124,14 +125,47 @@ class TXFilter
         return $this->DAO->group($fields, $adds, $groupBy, $having, $limit, $orderBy, $where);
     }
 
+//    /**
+//     * 查询数量
+//     * @return int
+//     */
+//    public function total()
+//    {
+//        $where = $this->buildWhere($this->conds);
+//        return $this->DAO->total($where);
+//    }
+
     /**
-     * 查询数量
-     * @return int
+     * 查询条件
+     * @param $method ['max', 'min', 'sum', 'avg', 'count']
+     * @param $field
+     * @return mixed
      */
-    public function count()
+    public function calc($method, $field='0')
     {
-        $where = $this->buildWhere($this->conds);
-        return $this->DAO->count($where);
+        if (in_array($method, $this->calcs)){
+            return $this->$method($field);
+        }
+    }
+
+    /**
+     * 查询条件
+     * @param $method ['max', 'min', 'sum', 'avg', 'count']
+     * @param $args
+     * @return mixed
+     * @throws TXException
+     */
+    public function __call($method, $args)
+    {
+        if (in_array($method, $this->calcs)){
+            if (!$args){
+                $args = [0];
+            }
+            $args[] = $this->buildWhere($this->conds);
+            return call_user_func_array([$this->DAO, $method], $args);
+        } else {
+            throw new TXException(2020, array($method, __CLASS__));
+        }
     }
 
     /**
@@ -215,11 +249,11 @@ class TXFilter
                     }
                     foreach ($value as &$val){
                         if (is_string($val)){
-                            $val = $this->real_escape_string($val);
+                            $val = "'{$this->real_escape_string($val)}'";
                         }
                     }
                     unset($val);
-                    $value = "('". join("','", $value)."')";
+                    $value = "(". join(',', $value).")";
                     $where[] = "`{$key}` in {$value}";
                 } else {
                     $where[] = "`{$key}`={$value}";
@@ -281,11 +315,11 @@ class TXFilter
                     }
                     foreach ($value as &$val){
                         if (is_string($val)){
-                            $val = $this->real_escape_string($val);
+                            $val = "'{$this->real_escape_string($val)}'";
                         }
                     }
                     unset($val);
-                    $value = "('". join("','", $value)."')";
+                    $value = "(". join(",", $value).")";
                     $where[] = "{$table}.`{$key}` in {$value}";
                 } else {
                     $where[] = "{$table}.`{$key}`={$value}";
