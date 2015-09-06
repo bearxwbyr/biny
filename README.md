@@ -1,3 +1,5 @@
+2015-08-03 升级2.0版
+
 1. router 使用域名模式(ajax为需要返回json) e.g: /biny/Index/?xxx  /biny/ajax/DataGet/?xxx
 2. 模板内添加$this->isAjax() 判断是否异步请求
 3. getParam 方法添加 字符名命名法 匹配参数类型
