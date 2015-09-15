@@ -1,4 +1,4 @@
-<? include 'Base/common.tpl.php' ?>
+<? include dirname(__DIR__) . "/base/common.tpl.php" ?>
 
 <div>
     <object width="482" height="390" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" style="visibility:visible;"

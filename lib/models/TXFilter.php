@@ -77,7 +77,7 @@ class TXFilter
     /**
      * 查找不重复的项
      * @param string $fields
-     * @return mixed
+     * @return TXSqlData
      */
     public function distinct($fields='*'){
         $where = $this->buildWhere($this->conds);
@@ -88,7 +88,7 @@ class TXFilter
     /**
      * 找单条数据
      * @param string $fields
-     * @return array|bool|int|string
+     * @return TXObject
      */
     public function find($fields = '*')
     {
@@ -101,7 +101,7 @@ class TXFilter
      * @param array $limit array(40, 20)
      * @param array $orderBy array("id"=>"desc", "name"=>"asc")
      * @param string $fields id,name,fields
-     * @return mixed
+     * @return TXSqlData
      */
     public function query($limit = array(), $orderBy = array(), $fields = '*')
     {
@@ -111,18 +111,18 @@ class TXFilter
 
     /**
      * group语句
-     * @param $fields
      * @param array $adds ['sum'=>['id'=>'s_id']]
+     * @param $fields
      * @param array $groupBy ['id']
      * @param array $having ['>='=>['s_id'=>10]]
      * @param array $limit [10, 10]
      * @param array $orderBy ['id'=>'desc'] ['id'=>['desc', 'gbk']]
-     * @return mixed
+     * @return TXSqlData
      */
-    public function group($fields, $adds=array(), $groupBy=array(), $having=array(), $limit = array(), $orderBy = array())
+    public function group($adds=array(), $fields='', $groupBy=array(), $having=array(), $limit = array(), $orderBy = array())
     {
         $where = $this->buildWhere($this->conds);
-        return $this->DAO->group($fields, $adds, $groupBy, $having, $limit, $orderBy, $where);
+        return $this->DAO->group($adds, $fields, $groupBy, $having, $limit, $orderBy, $where);
     }
 
 //    /**
@@ -135,18 +135,18 @@ class TXFilter
 //        return $this->DAO->total($where);
 //    }
 
-    /**
-     * 查询条件
-     * @param $method ['max', 'min', 'sum', 'avg', 'count']
-     * @param $field
-     * @return mixed
-     */
-    public function calc($method, $field='0')
-    {
-        if (in_array($method, $this->calcs)){
-            return $this->$method($field);
-        }
-    }
+//    /**
+//     * 查询条件
+//     * @param $method ['max', 'min', 'sum', 'avg', 'count']
+//     * @param $field
+//     * @return mixed
+//     */
+//    public function calc($method, $field='0')
+//    {
+//        if (in_array($method, $this->calcs)){
+//            return $this->$method($field);
+//        }
+//    }
 
     /**
      * 查询条件

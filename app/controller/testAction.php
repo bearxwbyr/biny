@@ -18,4 +18,9 @@ class testAction extends baseAction
         return $this->display('main/index', $params);
 
     }
+
+    public function action_array()
+    {
+        return $this->display('main/index', []);
+    }
 }

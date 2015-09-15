@@ -12,6 +12,31 @@ class TXSingleDAO extends TXDAO
      */
     protected $table;
 
+    private $database = null;
+
+    public function __construct()
+    {
+        $this->setDbTable($this->table);
+    }
+
+    protected function setDbTable($table)
+    {
+        if (null === $this->database){
+            if (is_string($this->dbConfig) && $db = TXConfig::getAppConfig($this->dbConfig, 'dns')['database']){
+                $this->database = $db;
+            } else if (is_array($this->dbConfig)){
+                $master = TXConfig::getAppConfig($this->dbConfig[0], 'dns')['database'];
+                $slave = TXConfig::getAppConfig($this->dbConfig[1], 'dns')['database'];
+                if ($master === $slave){
+                    $this->database = $master;
+                } else {
+                    throw new TXException(1018, array($slave, $master));
+                }
+            }
+        }
+        $this->table = $this->database.".`{$table}`";
+    }
+
     /**
      * 返回表名
      * @return string
@@ -23,10 +48,11 @@ class TXSingleDAO extends TXDAO
 
     /**
      * 链接表
-     * @param TXSingleDAO $dao
+     * @param $dao TXSingleDAO
      * @param $relate
      * @param string $type
      * @return $this|TXDoubleDAO
+     * @throws TXException
      */
     protected function _join($dao, $relate, $type='join')
     {
@@ -34,6 +60,9 @@ class TXSingleDAO extends TXDAO
         $relateClass = substr(get_class($dao), 0, -3);
         if ($selfClass == $relateClass){
             return $this;
+        }
+        if (!$this->checkConfig($dao)){
+            throw new TXException(1012, "DAOs must be the same Host");
         }
         $DAOs = [
             $selfClass => $this->table,
@@ -45,7 +74,7 @@ class TXSingleDAO extends TXDAO
             $join[$selfClass.".".$key] = $relateClass.".".$value;
         }
         $relates[] = [$type => $join];
-        return new TXDoubleDAO($DAOs, $relates);
+        return new TXDoubleDAO($DAOs, $relates, $this->dbConfig);
     }
 
     /**
@@ -73,13 +102,21 @@ class TXSingleDAO extends TXDAO
             $fields = '`'.join('`,`', $fields).'`';
         }
         if ($group){
-            $groups = [$fields];
+            if ($fields){
+                $groups = [$fields];
+            } else {
+                $groups = [];
+            }
             foreach ($group as $key => $values){
                 if (!in_array(strtolower($key), $this->calcs)){
                     continue;
                 }
                 foreach ($values as $k => $value){
-                    $groups[] = "{$key}({$k}) as {$value}";
+                    if (is_string($k)){
+                        $groups[] = "{$key}({$k}) as {$value}";
+                    } else {
+                        $groups[] = "{$key}({$value}) as {$value}";
+                    }
                 }
             }
             return join(',', $groups);
@@ -195,7 +232,8 @@ class TXSingleDAO extends TXDAO
      * @param $orderBy
      * @return string
      */
-    protected function buildOrderBy($orderBy){
+    protected function buildOrderBy($orderBy)
+    {
         $orders = array();
         foreach ($orderBy as $key => $val){
             if (is_array($val)){
@@ -223,7 +261,7 @@ class TXSingleDAO extends TXDAO
         $params = func_get_args();
         $where = isset($params[1]) ? " WHERE ".$params[1] : "";
         $set = $this->buildSets($sets);
-        $sql = sprintf("UPDATE `%s` SET %s%s", $this->table, $set, $where);
+        $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
 //        echo $sql; exit;
 
         return $this->execute($sql);
@@ -238,7 +276,7 @@ class TXSingleDAO extends TXDAO
     public function add($sets, $id=true)
     {
         $fields = $this->buildInsert($sets);
-        $sql = sprintf("INSERT INTO `%s` %s", $this->table, $fields);
+        $sql = sprintf("INSERT INTO %s %s", $this->table, $fields);
         return $this->execute($sql, $id);
 
     }
@@ -251,7 +289,7 @@ class TXSingleDAO extends TXDAO
     {
         $params = func_get_args();
         $where = isset($params[0]) ? " WHERE ".$params[0] : "";
-        $sql = sprintf("DELETE FROM `%s`%s", $this->table, $where);
+        $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
 
         return $this->execute($sql);
     }
@@ -266,7 +304,7 @@ class TXSingleDAO extends TXDAO
         $params = func_get_args();
         $where = isset($params[1]) ? " WHERE ".$params[1] : "";
         $set = $this->buildCount($sets);
-        $sql = sprintf("UPDATE `%s` SET %s%s", $this->table, $set, $where);
+        $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
 //        \TXLogger::info($sql);
         return $this->execute($sql);
     }
@@ -281,7 +319,7 @@ class TXSingleDAO extends TXDAO
     {
         $set = $this->buildSets($sets);
         $fields = $this->buildInsert($inserts);
-        $sql = sprintf("INSERT INTO `%s` %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
+        $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
 //        \TXLogger::info($sql);
         return $this->execute($sql, true);
     }
@@ -296,7 +334,7 @@ class TXSingleDAO extends TXDAO
     {
         $set = $this->buildCount($adds);
         $fields = $this->buildInsert($inserts);
-        $sql = sprintf("INSERT INTO `%s` %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
+        $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
 //        \TXLogger::info($sql);
         return $this->execute($sql, true);
     }

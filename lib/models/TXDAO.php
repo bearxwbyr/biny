@@ -12,6 +12,8 @@ class TXDAO
     protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
+    protected $dbConfig = 'database';
+
     /**
      * @param $obj
      * @return BaseDAO
@@ -22,6 +24,49 @@ class TXDAO
             self::$_cache[$obj] = new $obj();
         }
         return self::$_cache[$obj];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbConfig()
+    {
+        return $this->dbConfig;
+    }
+
+    /**
+     * 判断是否可以合表
+     * @param $dao TXDAO
+     * @return bool
+     */
+    protected function checkConfig($dao)
+    {
+        $tMaster = is_array($this->dbConfig) ? $this->dbConfig[0] : $this->dbConfig;
+        $tSlave = is_array($this->dbConfig) ? $this->dbConfig[1] : $this->dbConfig;
+        $dDbConfig = $dao->getDbConfig();
+        $dMaster = is_array($dDbConfig) ? $dDbConfig[0] : $dDbConfig;
+        $dSlave = is_array($dDbConfig) ? $dDbConfig[1] : $dDbConfig;
+        if ($tMaster === $dMaster && $tSlave === $dSlave){
+            return true;
+        }
+        if ($tMaster !== $dMaster){
+            $tConfig = TXConfig::getAppConfig($tMaster, 'dns');
+            $dConfig = TXConfig::getAppConfig($dMaster, 'dns');
+            unset($tConfig['database']);
+            unset($dConfig['database']);
+            if (array_diff($tConfig, $dConfig)){
+                return false;
+            }
+        } else if ($tSlave !== $dSlave){
+            $tConfig = TXConfig::getAppConfig($tSlave, 'dns');
+            $dConfig = TXConfig::getAppConfig($dSlave, 'dns');
+            unset($tConfig['database']);
+            unset($dConfig['database']);
+            if (array_diff($tConfig, $dConfig)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -64,17 +109,19 @@ class TXDAO
      * @return bool|int|mysqli_result|string
      */
     public function execute($sql, $id=false) {
-        return TXDatabase::instance()->execute($sql, $id);
+        $dns = is_array($this->dbConfig) ? $this->dbConfig[0] : $this->dbConfig;
+        return TXDatabase::instance($dns)->execute($sql, $id);
     }
 
     /**
      * 从库查询SQL
      * @param $sql
      * @param int $mode
-     * @return mixed
+     * @return TXSqlData|TXObject
      */
     public function sql($sql, $mode = self::FETCH_TYPE_ALL) {
-        return TXDatabase::SlaveDB()->sql($sql, $mode);
+        $dns = is_array($this->dbConfig) ? $this->dbConfig[1] : $this->dbConfig;
+        return TXDatabase::instance($dns)->sql($sql, $mode);
     }
 
     /**
@@ -114,7 +161,7 @@ class TXDAO
     /**
      * 查找不重复的项
      * @param string $fields
-     * @return mixed
+     * @return TXSqlData
      */
     public function distinct($fields){
         $params = func_get_args();
@@ -128,7 +175,7 @@ class TXDAO
     /**
      * 找单条数据
      * @param string $fields
-     * @return array|bool|int|string
+     * @return TXObject
      */
     public function find($fields = '*')
     {
@@ -146,7 +193,7 @@ class TXDAO
      * @param array $limit array(40, 20)
      * @param array $orderBy array("id"=>"desc", "name"=>"asc")
      * @param string $fields id,name,fields
-     * @return mixed
+     * @return TXSqlData
      */
     public function query($limit = array(), $orderBy = array(), $fields = '*')
     {
@@ -163,15 +210,15 @@ class TXDAO
 
     /**
      * group语句
-     * @param $fields
      * @param array $adds ['sum'=>['id'=>'s_id']]
+     * @param $fields
      * @param array $groupBy ['id']
      * @param array $having ['>='=>['s_id'=>10]]
      * @param array $limit [10, 10]
      * @param array $orderBy ['id'=>'desc'] ['id'=>['desc', 'gbk']]
-     * @return mixed
+     * @return TXSqlData
      */
-    public function group($fields, $adds=array(), $groupBy=array(), $having=array(), $limit = array(), $orderBy = array())
+    public function group($adds=array(), $fields='', $groupBy=array(), $having=array(), $limit = array(), $orderBy = array())
     {
         $params = func_get_args();
         $where = isset($params[6]) ? " WHERE ".$params[6] : "";
@@ -202,19 +249,6 @@ class TXDAO
     /**
      * 查询条件
      * @param $method ['max', 'min', 'sum', 'avg', 'count']
-     * @param $field
-     * @return mixed
-     */
-    public function calc($method, $field='0')
-    {
-        if (in_array($method, $this->calcs)){
-            return $this->$method($field);
-        }
-    }
-
-    /**     *
-     * 查询条件
-     * @param $method ['max', 'min', 'sum', 'avg', 'count']
      * @param $method
      * @param $args
      * @return mixed
@@ -225,6 +259,8 @@ class TXDAO
         if (in_array($method, $this->calcs)){
             if (!$args){
                 $args = [0];
+            } else {
+                $args[0] = $args[0] ? "`{$args[0]}`" : $args[0];
             }
             $where = isset($args[1]) ? " WHERE ".$args[1] : "";
             $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->table, $where);

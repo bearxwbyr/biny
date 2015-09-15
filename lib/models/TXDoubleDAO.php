@@ -28,8 +28,9 @@ class TXDoubleDAO extends TXDAO
     /**
      * 构造函数
      */
-    public function __construct($DAOs, $relates)
+    public function __construct($DAOs, $relates, $db)
     {
+        $this->dbConfig = $db;
         $this->buildTable($DAOs, $relates);
     }
 
@@ -69,13 +70,13 @@ class TXDoubleDAO extends TXDAO
         $i = 0;
         foreach ($DAOs as $name => $table){
             if (!$dbtbs){
-                $dbtbs[] = "`{$table}` $name";
+                $dbtbs[] = "{$table} $name";
             } else {
                 $relate = $relates[$i++];
                 $join = array_keys($relate);
                 $on = array_values($relate);
                 $dbtbs[] = $join[0];
-                $dbtbs[] = "`{$table}` $name";
+                $dbtbs[] = "{$table} $name";
                 $ons = [];
                 foreach ($on[0] as $key=>$value){
                     $ons[] = "{$key}={$value}";
@@ -89,16 +90,20 @@ class TXDoubleDAO extends TXDAO
 
     /**
      * 链接表
-     * @param TXSingleDAO $dao
+     * @param $dao TXSingleDAO
      * @param $relateD
      * @param string $type
      * @return $this|TXDoubleDAO
+     * @throws TXException
      */
     protected function _join($dao, $relateD, $type='join')
     {
         $daoClass = substr(get_class($dao), 0, -3);
         if (isset($this->doubles[$daoClass])){
             return $this;
+        }
+        if (!$this->checkConfig($dao)){
+            throw new TXException(1012, "DAOs must be the same Host");
         }
         $DAOs = $this->DAOs;
         $DAOs[$daoClass] = $dao->getTable();
@@ -118,7 +123,7 @@ class TXDoubleDAO extends TXDAO
             }
         }
         $relates[] = [$type => $join];
-        return new TXDoubleDAO($DAOs, $relates);
+        return new TXDoubleDAO($DAOs, $relates, $this->dbConfig);
     }
 
     /**
@@ -153,7 +158,11 @@ class TXDoubleDAO extends TXDAO
             $fields = join(',', $temps);
         }
         if ($group){
-            $groups = [$fields];
+            if ($fields){
+                $groups = [$fields];
+            } else {
+                $groups = [];
+            }
             foreach ($group as $key => $values){
                 if (is_int($key)){
                     if (isset($this->doubles[$key])){
@@ -166,7 +175,11 @@ class TXDoubleDAO extends TXDAO
                             continue;
                         }
                         foreach ($vals as $k => $value){
-                            $groups[] = "{$ck}({$table}.{$k}) as {$value}";
+                            if (is_string($k)){
+                                $groups[] = "{$ck}({$table}.{$k}) as {$value}";
+                            } else {
+                                $groups[] = "{$ck}({$table}.{$value}) as {$value}";
+                            }
                         }
                     }
                 } else if (!in_array($key, $this->calcs)){

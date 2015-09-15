@@ -34,9 +34,14 @@ class TXResponse {
      * @param $content
      * @return string
      */
-    public function htmlEncode($content)
+    private function encode($content)
     {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE);
+        return TXString::encode($content);
+    }
+
+    private function decode($content)
+    {
+        return TXString::decode($content);
     }
 
     /**
@@ -48,8 +53,8 @@ class TXResponse {
         //防XSS注入
         foreach ($this->params as $key => &$param) {
             if (is_string($param) && !in_array($key, $this->ignores)){
-                $param = $this->htmlEncode($param);
-            }
+                $param = $this->encode($param);
+            } 
         }
         unset($param);
 

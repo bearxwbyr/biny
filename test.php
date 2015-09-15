@@ -1,2 +1,16 @@
 <?php
-echo strtotime("2015-08-30T22:08:00Z");
+$a = array(
+    'host'     => '127.0.0.1',
+    'user'     => 'root',
+    'password' => 'root',
+    'encode' => 'utf8',
+    'port' => 3306,
+);
+$b = array(
+    'host'     => '127.0.0.1',
+    'user'     => 'root',
+    'password' => 'root',
+    'encode' => 'utf8',
+    'port' => 3306,
+);
+var_dump(array_diff($a, $b));

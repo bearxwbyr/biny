@@ -3,27 +3,21 @@
  * Database
  */
 class TXDatabase {
-    private static $instance = null;
-    private static $slave = null;
+    private static $instance = [];
 
-    public static function instance()
+    /**
+     * @param string $name
+     * @return TXDatabase
+     */
+    public static function instance($name)
     {
-        if (null === self::$instance) {
-            $dbconfig = TXConfig::getAppConfig('database', 'dns');
+        if (!isset(self::$instance[$name])) {
+            $dbconfig = TXConfig::getAppConfig($name, 'dns');
 
-            self::$instance = new self($dbconfig);
+            self::$instance[$name] = new self($dbconfig);
         }
 
-        return self::$instance;
-    }
-
-    public static function SlaveDB(){
-        if (null === self::$slave) {
-            $slaveDB = TXConfig::getAppConfig('slaveDb', 'dns');
-
-            self::$slave = new self($slaveDB);
-        }
-        return self::$slave;
+        return self::$instance[$name];
     }
 
     const FETCH_TYPE_ALL = 0;
@@ -37,7 +31,10 @@ class TXDatabase {
 
     public function __construct($config)
     {
-        $this->handler = mysqli_connect($config['host'], $config['user'], $config['password'], $config['database'], $config['port']);
+        if (!$config || !isset($config['host']) || !isset($config['user']) || !isset($config['password']) || !isset($config['port'])){
+            throw new TXException(1004, array('unKnown'));
+        }
+        $this->handler = mysqli_connect($config['host'], $config['user'], $config['password'], '', $config['port']);
         if (!$this->handler) {
             throw new TXException(1004, array($config['host']));
         }
@@ -55,26 +52,25 @@ class TXDatabase {
      * sql query data
      * @param string $sql
      * @param int $mode
-     * @return mixed
+     * @return TXSqlData|TXObject
      */
     public function sql($sql, $mode = self::FETCH_TYPE_ALL)
     {
-
         $rs = mysqli_query($this->handler, $sql);
         if ($rs) {
             if ($mode == self::FETCH_TYPE_ALL) {
-                $result = array();
+                $result = new TXSqlData();
                 while($row = mysqli_fetch_assoc($rs)) {
-                    $result[] = $row;
+                    $result->append(new TXObject($row));
                 }
                 return $result;
             } else {
-                $result = mysqli_fetch_assoc($rs);
+                $result = new TXObject(mysqli_fetch_assoc($rs));
             }
             return $result;
         } else {
             TXLogger::error($sql, 'sql Error:');
-            return array();
+            return new TXObject();
         }
     }
 

@@ -25,3 +25,8 @@
 1. TXAction、TXAjax分离 分别返回TXResponse、TXJSONResponse
 2. 添加action子方法 /biny[/ajax]/Index/test => IndexAction::action_test()
 3. TXResponse添加SEO自定义 title、keywords、description
+
+2015-09-14
+1.sql返回类封装（TXSqlData/TXObject） 反XSS注入封装
+2.TXSqlData 添加lists/dict方法
+3.支持跨库连表（DAO dbConfig 动态设置）

@@ -45,4 +45,24 @@ class TXString
         return $result;
 //        return mb_substr( $str, $start, $len, 'utf-8');
     }
+
+    /**
+     * 实体化转义
+     * @param $content
+     * @return string
+     */
+    public static function encode($content)
+    {
+        return is_string($content) ? htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE) : $content;
+    }
+
+    /**
+     * 实体化转义
+     * @param $content
+     * @return string
+     */
+    public static function decode($content)
+    {
+        return is_string($content) ? htmlspecialchars_decode($content, ENT_QUOTES) : $content;
+    }
 }

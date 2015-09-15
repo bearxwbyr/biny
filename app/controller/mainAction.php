@@ -7,12 +7,14 @@ class mainAction extends baseAction
 {
     public function execute($id=10, $type)
     {
-        $iId = $this->getParam('iId', 10);
-        TXLogger::info($iId, 'iId');
-        $person = $this->testService->test();
-        TXLogger::info($person);
+        $arr = $this->testService->test();
+        TXLogger::info($arr);
 
-        $view = $this->display('main/index', []);
+        $params = [
+            'testArr' => $arr,
+            'string' => 'bb<>'
+        ];
+        $view = $this->display('main/test', $params);
         $view->title = "主页标题";
         return $view;
     }

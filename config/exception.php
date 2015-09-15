@@ -7,7 +7,7 @@ return array(
     1003 => 'Autoload registry handler is fail',
     1004 => 'Connect mysql[%s] is fail',
     1005 => 'Select mysql database[%s] is fail',
-    1006 => 'Language file[%s] is exists.',
+    1006 => 'Language file[%s] is not exists.',
     1007 => 'socket Create Error: [%s]',
     1008 => 'Socket Connect[%s:%s] Error',
     1010 => 'Socket Len Error',
@@ -18,6 +18,7 @@ return array(
     1015 => 'Filter / Merge must be same DAO',
     1016 => 'First Filter must be Array; %s given',
     1017 => 'Filter cannot be empty',
+    1018 => 'slave DataBase[%s] must be same to the master DataBase[%s]',
 
 
     /* controller error */

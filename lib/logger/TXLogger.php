@@ -70,6 +70,7 @@ class TXLogger
     public static function display($message)
     {
         echo '<pre>';
+        $message = (is_object($message) && method_exists($message, '__toLogger')) ? $message->__toLogger() : $message;
         print_r($message);
         echo '</pre>';
     }

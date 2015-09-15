@@ -6,20 +6,23 @@
 class baseService extends TXService
 {
     /**
-     * 根据key排序
      * @param $objects
-     * @param $key
-     * @param $sort
+     * @param $sorts ['id'=>SORT_DESC, 'type'=>SORT_ASC]
      * @return mixed
      */
-    function SortArray($objects, $key, $sort)
+    public function sortArray($objects, $sorts)
     {
-        $sortKey = array();
-        foreach ($objects as $k => $object){
-            $sortKey[$k] = $object[$key];
+        $avgs = array();
+        foreach ($sorts as $key => $type){
+            $sortKey = array();
+            foreach ($objects as $k => $object){
+                $sortKey[$k] = $object[$key];
+            }
+            $avgs[] = $sortKey;
+            $avgs[] = $type;
         }
-        array_multisort($sortKey, $sort, $objects);
-//    call_user_func_array('array_multisort', $params);
+        $avgs[] = &$objects;
+        call_user_func_array('array_multisort', $avgs);
         return $objects;
     }
 
