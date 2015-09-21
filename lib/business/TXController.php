@@ -55,7 +55,12 @@ class TXController {
     private function getAction($module, $params)
     {
         $object = new $module($params);
-
+        if (method_exists($object, 'init')){
+            $result = $object->init();
+            if ($result instanceof TXResponse || $result instanceof TXJSONResponse){
+                return $result;
+            }
+        }
         return $object;
     }
 
@@ -72,6 +77,9 @@ class TXController {
         $method = $request->getMethod();
 
         $object = $this->getAction($module, $params);
+        if ($object instanceof TXResponse || $object instanceof TXJSONResponse){
+            return $object;
+        }
 
         if ($object instanceof TXAction || $object instanceof TXAjax) {
             $args = $this->getArgs($object, $method, $params);

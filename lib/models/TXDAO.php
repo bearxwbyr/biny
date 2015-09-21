@@ -103,6 +103,18 @@ class TXDAO
     }
 
     /**
+     * 存在表
+     * @return bool
+     */
+    protected function isExist()
+    {
+        List($db, $table) = explode('.', $this->table);
+        $sql = sprintf("select table_name from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA='%s' and TABLE_NAME='%s' ;", $db, trim($table, '`'));
+        $result = $this->sql($sql);
+        return count($result) ? true : false;
+    }
+
+    /**
      * 执行sql
      * @param $sql
      * @param bool $id

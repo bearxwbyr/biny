@@ -12,10 +12,13 @@ class TXSingleDAO extends TXDAO
      */
     protected $table;
 
+    private $s_table;
+
     private $database = null;
 
     public function __construct()
     {
+        $this->s_table = $this->table;
         $this->setDbTable($this->table);
     }
 
@@ -44,6 +47,35 @@ class TXSingleDAO extends TXDAO
     public function getTable()
     {
         return $this->table;
+    }
+
+    /**
+     * 纯表名
+     * @return string
+     */
+    public function tableName()
+    {
+        return $this->s_table;
+    }
+
+    /**
+     * 选分表
+     * @param $id
+     * @return $this
+     */
+    public function choose($id)
+    {
+        $this->setDbTable($this->s_table.$id);
+        return $this;
+    }
+
+    /**
+     * 表是否存在
+     * @return bool
+     */
+    public function exist()
+    {
+        return $this->isExist();
     }
 
     /**

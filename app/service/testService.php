@@ -11,6 +11,7 @@ class testService extends baseService
 {
     public function test()
     {
+        TXLogger::info($this->testDAO->exist());
         $DAO = $this->testDAO->Join($this->anotherDAO, ['userId'=> $this->anotherDAO->getPk()]);
         $filter1 = $DAO->filter([[], ['<='=>['id'=>2]]]);
 //        $filter2 = $DAO->filter([[], ['id'=>2, 'name' => 'billge']]);
@@ -23,7 +24,12 @@ class testService extends baseService
 //
 ////        return $filter3->query([], [], [['id', 'name']]);
         TXLogger::info($this->testDAO->avg('userId'));
-        $result = $this->testDAO->query();
+        $result = $this->testDAO->filter(['id'=>1])->query();
+        if ($result()){
+            TXLogger::info($result, 'data');
+        } else {
+            TXLogger::info($result, 'empty');
+        }
         $array = [
             ['id'=>1, 'type'=>12, 'name'=>'3434s'],
             ['id'=>12, 'type'=>22, 'name'=>'dsfewf'],

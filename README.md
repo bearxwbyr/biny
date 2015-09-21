@@ -31,3 +31,8 @@
 1. sql返回类封装（TXSqlData/TXObject） 反XSS注入封装
 2. TXSqlData 添加lists/dict方法
 3. 支持跨库连表（DAO dbConfig 动态设置）
+
+2015-09-21
+
+1. TXDAO 添加choose分表 以及exist()方法判断表是否存在
+2. TXSqlData 添加是否空数据判断 $result()
