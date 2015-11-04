@@ -4,6 +4,11 @@
  * User: billge
  * Date: 15-8-3
  * Time: 上午11:50
+ * @method int count()
+ * @method int sum($field)
+ * @method int max($field)
+ * @method int min($field)
+ * @method int avg($field)
  */
 class TXFilter
 {
@@ -289,25 +294,25 @@ class TXFilter
                 if (in_array(strtolower($key), $this->extracts)){
                     foreach ($value as $arrk => $arrv){
                         if (is_null($arrv)){
-                            $where[] = "{$table}.`{$arrk}`{$key} NULL";
+                            $where[] = "`{$table}`.`{$arrk}`{$key} NULL";
                         }
                         else if (is_string($arrv)){
                             $arrv = $this->real_escape_string($arrv);
-                            $where[] = "{$table}.`{$arrk}`{$key}'{$arrv}'";
+                            $where[] = "`{$table}`.`{$arrk}`{$key}'{$arrv}'";
                         } else {
-                            $where[] = "{$table}.`{$arrk}`{$key}{$arrv}";
+                            $where[] = "`{$table}`.`{$arrk}`{$key}{$arrv}";
                         }
                     }
                 } elseif ($key === '__like__'){
                     foreach ($cond[$key] as $arrk => $arrv){
                         $arrv = $this->real_like_string($arrv);
-                        $where[] = "{$table}.`{$arrk}` like '%{$arrv}%'";
+                        $where[] = "`{$table}`.`{$arrk}` like '%{$arrv}%'";
                     }
                 } elseif (is_null($value)){
-                    $where[] = "{$table}.`{$key}`is NULL";
+                    $where[] = "`{$table}`.`{$key}`is NULL";
                 } elseif (is_string($value)) {
                     $value = $this->real_escape_string($value);
-                    $where[] = "{$table}.`{$key}`='{$value}'";
+                    $where[] = "`{$table}`.`{$key}`='{$value}'";
                 } elseif (is_array($value)){
                     if (!$value){
                         $where[] = 'FALSE';
@@ -320,9 +325,9 @@ class TXFilter
                     }
                     unset($val);
                     $value = "(". join(",", $value).")";
-                    $where[] = "{$table}.`{$key}` in {$value}";
+                    $where[] = "`{$table}`.`{$key}` in {$value}";
                 } else {
-                    $where[] = "{$table}.`{$key}`={$value}";
+                    $where[] = "`{$table}`.`{$key}`={$value}";
                 }
             }
         }

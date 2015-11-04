@@ -2,20 +2,8 @@
 /**
  * Action config class
  */
-class TXAction {
-
-    /**
-     * 请求参数
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * 字符串验证
-     * @var bool
-     */
-    protected $valueCheck = true;
-
+class TXAction extends TXBase
+{
     /**
      * 构造函数
      * @param $params
@@ -30,91 +18,6 @@ class TXAction {
         $this->params = $params;
         $this->setCharset();
         $this->setContentType();
-    }
-
-    /**
-     * 获取Service
-     * @param $obj
-     * @return TXService
-     */
-    public function __get($obj)
-    {
-        if (substr($obj, -7) == 'Service') {
-            return TXService::getService($obj);
-        }
-    }
-
-    /**
-     * 获取请求参数
-     * @param $key
-     * @param null $default
-     * @param bool $check
-     * @return float|int|mixed|null
-     */
-    public function getParam($key, $default=null, $check=true)
-    {
-        if (isset($this->params[$key])){
-            //参数验证
-            return $check ? $this->checkParam($key) : $this->params[$key];
-        } else {
-            return $default;
-        }
-    }
-
-    /**
-     * 参数名验证法
-     * @param $key
-     * @return float|int|mixed
-     * @throws TXException
-     */
-    private function checkParam($key)
-    {
-        $t = substr($key, 0, 1);
-        switch ($t){
-            //数字
-            case 'i':
-                if (!is_numeric($this->params[$key]) && $this->valueCheck){
-                    throw new TXException(2005, array($key, gettype($this->params[$key])));
-                }
-                if (strstr($this->params[$key], '.')){
-                    return intval($this->params[$key]);
-                } else {
-                    return doubleval($this->params[$key]);
-                }
-
-            //字符串
-            case 's':
-                if (!is_string($this->params[$key]) && $this->valueCheck){
-                    throw new TXException(2005, array($key, gettype($this->params[$key])));
-                } else {
-                    return $this->params[$key];
-                }
-
-            //数组
-            case 'o':
-                if (!is_array($this->params[$key]) && $this->valueCheck){
-                    throw new TXException(2005, array($key, gettype($this->params[$key])));
-                }
-                return $this->params[$key];
-
-            //bool
-            case 'b':
-                if ($this->params[$key] !== "true" && $this->params[$key] !== "false" && $this->valueCheck){
-                    throw new TXException(2005, array($key, gettype($this->params[$key])));
-                }
-                return json_decode($this->params[$key], true);
-
-            //日期格式
-            case 'd':
-                if (!strtotime($this->params[$key]) && $this->valueCheck){
-                    throw new TXException(2005, array($key, gettype($this->params[$key])));
-                }
-                return $this->params[$key];
-
-            default:
-
-                return $this->params[$key];
-        }
     }
 
     /**
@@ -146,8 +49,7 @@ class TXAction {
 
     public function redirectAction($action, $params = array())
     {
-        $params['action'] = $action;
-        $url = "index.php?" . http_build_query($params);
+        $url = TXRouter::$rootPath.DS.$action. "?" . http_build_query($params);
 //        echo $url;
         $this->redirect($url);
     }

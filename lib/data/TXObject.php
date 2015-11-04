@@ -16,7 +16,7 @@ class TXObject extends ArrayObject
 
     public function __toString()
     {
-        return 'TXObject';
+        return 'Object';
     }
 
     /**

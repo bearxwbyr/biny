@@ -1,30 +1,21 @@
 <?php
 /**
  * 数据库
+ * @method int count()
+ * @method int sum($field)
+ * @method int max($field)
+ * @method int min($field)
+ * @method int avg($field)
  */
 class TXDAO
 {
     const FETCH_TYPE_ALL = 0;
     const FETCH_TYPE_ONE = 1;
 
-    private static $_cache = [];
-
     protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
     protected $dbConfig = 'database';
-
-    /**
-     * @param $obj
-     * @return BaseDAO
-     */
-    public static function getDAO($obj)
-    {
-        if (!isset(self::$_cache[$obj])){
-            self::$_cache[$obj] = new $obj();
-        }
-        return self::$_cache[$obj];
-    }
 
     /**
      * @return string
@@ -177,7 +168,7 @@ class TXDAO
      */
     public function distinct($fields){
         $params = func_get_args();
-        $where = isset($params[1]) ? " WHERE ".$params[1] : "";
+        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
         $fields = $this->buildFields($fields);
         $sql = sprintf("SELECT distinct %s FROM %s%s", $fields, $this->table, $where);
 
@@ -192,7 +183,7 @@ class TXDAO
     public function find($fields = '*')
     {
         $params = func_get_args();
-        $where = isset($params[1]) ? " WHERE ".$params[1] : "";
+        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
         $fields = $this->buildFields($fields);
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->table, $where);
 //        TXLogger::info($sql);
@@ -210,7 +201,7 @@ class TXDAO
     public function query($limit = array(), $orderBy = array(), $fields = '*')
     {
         $params = func_get_args();
-        $where = isset($params[3]) ? " WHERE ".$params[3] : "";
+        $where = (isset($params[3]) && $params[3]) ? " WHERE ".$params[3] : "";
         $limit = $this->buildLimit($limit);
         $orderBy = $this->buildOrderBy($orderBy);
         $fields = $this->buildFields($fields);
@@ -233,7 +224,7 @@ class TXDAO
     public function group($adds=array(), $fields='', $groupBy=array(), $having=array(), $limit = array(), $orderBy = array())
     {
         $params = func_get_args();
-        $where = isset($params[6]) ? " WHERE ".$params[6] : "";
+        $where = (isset($params[6]) && $params[6]) ? " WHERE ".$params[6] : "";
         $limit = $this->buildLimit($limit);
         $orderBy = $this->buildOrderBy($orderBy);
         $fields = $this->buildFields($fields, $adds);
@@ -244,24 +235,9 @@ class TXDAO
         return $this->sql($sql);
     }
 
-//    /**
-//     * 查询数量
-//     * @return int
-//     */
-//    public function total()
-//    {
-//        $params = func_get_args();
-//        $where = isset($params[0]) ? " WHERE ".$params[0] : "";
-//        $sql = sprintf("SELECT COUNT(0) as total FROM %s%s", $this->table, $where);
-//
-//        $ret = $this->sql($sql);
-//        return $ret ? $ret[0]['total'] : $ret;
-//    }
-
     /**
      * 查询条件
      * @param $method ['max', 'min', 'sum', 'avg', 'count']
-     * @param $method
      * @param $args
      * @return mixed
      * @throws TXException
@@ -274,7 +250,7 @@ class TXDAO
             } else {
                 $args[0] = $args[0] ? "`{$args[0]}`" : $args[0];
             }
-            $where = isset($args[1]) ? " WHERE ".$args[1] : "";
+            $where = (isset($args[1]) && $args[1]) ? " WHERE ".$args[1] : "";
             $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->table, $where);
 //            TXLogger::info($sql);
 

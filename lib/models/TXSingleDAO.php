@@ -271,8 +271,16 @@ class TXSingleDAO extends TXDAO
             if (is_array($val)){
                 $asc = isset($val[0]) ? $val[0] : 'ASC';
                 $code = isset($val[1]) ? $val[1] : 'gbk';
+                if (!in_array(strtoupper($asc), array('ASC', 'DESC'))){
+                    TXLogger::error("order must be ASC/DESC, {$asc} given", 'sql Error');
+                    continue;
+                }
                 $orders[] = "CONVERT(`{$key}` USING {$code}) $asc";
             } else {
+                if (!in_array(strtoupper($val), array('ASC', 'DESC'))){
+                    TXLogger::error("order must be ASC/DESC, {$val} given", 'sql Error');
+                    continue;
+                }
                 $orders[] = '`'.$key."` ".$val;
             }
         }
@@ -291,7 +299,7 @@ class TXSingleDAO extends TXDAO
     public function update($sets)
     {
         $params = func_get_args();
-        $where = isset($params[1]) ? " WHERE ".$params[1] : "";
+        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
         $set = $this->buildSets($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
 //        echo $sql; exit;
@@ -310,7 +318,29 @@ class TXSingleDAO extends TXDAO
         $fields = $this->buildInsert($sets);
         $sql = sprintf("INSERT INTO %s %s", $this->table, $fields);
         return $this->execute($sql, $id);
+    }
 
+    /**
+     * 批量添加
+     * @param $fields
+     * @param $values
+     * @return bool|string
+     */
+    public function addList($fields, $values)
+    {
+        $fields = $fields ? '(`'.join('`,`', $fields).'`)' : "";
+        $columns = array();
+        foreach ($values as $value){
+            foreach ($value as &$val){
+                $val = is_string($val) ? "'{$this->real_escape_string($val)}'" : $val;
+            }
+            unset($val);
+            $columns[] = '('.join(',', $value).')';
+        }
+        $columns = join(',', $columns);
+        $sql = sprintf("INSERT INTO %s %s VALUES  %s", $this->table, $fields, $columns);
+//        \TXLogger::info($sql);
+        return $this->execute($sql, false);
     }
 
     /**
@@ -320,7 +350,7 @@ class TXSingleDAO extends TXDAO
     public function delete()
     {
         $params = func_get_args();
-        $where = isset($params[0]) ? " WHERE ".$params[0] : "";
+        $where = (isset($params[0]) && $params[0]) ? " WHERE ".$params[0] : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
 
         return $this->execute($sql);
@@ -334,7 +364,7 @@ class TXSingleDAO extends TXDAO
     public function addCount($sets)
     {
         $params = func_get_args();
-        $where = isset($params[1]) ? " WHERE ".$params[1] : "";
+        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
         $set = $this->buildCount($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
 //        \TXLogger::info($sql);
@@ -377,9 +407,9 @@ class TXSingleDAO extends TXDAO
      * @param $cond
      * @return TXSingleFilter
      */
-    public function filter($cond)
+    public function filter($cond=array())
     {
-        return new TXSingleFilter($this, $cond, "__and__");
+        return $cond ? new TXSingleFilter($this, $cond, "__and__") : $this;
     }
 
     /**
@@ -387,8 +417,8 @@ class TXSingleDAO extends TXDAO
      * @param $cond
      * @return TXSingleFilter
      */
-    public function merge($cond)
+    public function merge($cond=array())
     {
-        return new TXSingleFilter($this, $cond, "__or__");
+        return $cond ? new TXSingleFilter($this, $cond, "__or__") : $this;
     }
 }

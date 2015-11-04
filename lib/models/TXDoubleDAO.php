@@ -70,13 +70,13 @@ class TXDoubleDAO extends TXDAO
         $i = 0;
         foreach ($DAOs as $name => $table){
             if (!$dbtbs){
-                $dbtbs[] = "{$table} $name";
+                $dbtbs[] = "{$table} `$name`";
             } else {
                 $relate = $relates[$i++];
                 $join = array_keys($relate);
                 $on = array_values($relate);
                 $dbtbs[] = $join[0];
-                $dbtbs[] = "{$table} $name";
+                $dbtbs[] = "{$table} `$name`";
                 $ons = [];
                 foreach ($on[0] as $key=>$value){
                     $ons[] = "{$key}={$value}";
@@ -144,13 +144,13 @@ class TXDoubleDAO extends TXDAO
                     continue;
                 }
                 if ($field === "*"){
-                    $temps[] = $table.".*";
+                    $temps[] = "`{$table}`.*";
                 } else {
                     foreach ($field as $key => $column){
                         if (is_string($key)){
-                            $temps[] = $table.".`".$key."` $column";
+                            $temps[] = "`{$table}`.`".$key."` $column";
                         } else {
-                            $temps[] = $table.".`".$column."`";
+                            $temps[] = "`{$table}`.`".$column."`";
                         }
                     }
                 }
@@ -176,9 +176,9 @@ class TXDoubleDAO extends TXDAO
                         }
                         foreach ($vals as $k => $value){
                             if (is_string($k)){
-                                $groups[] = "{$ck}({$table}.{$k}) as {$value}";
+                                $groups[] = "{$ck}(`{$table}`.{$k}) as {$value}";
                             } else {
-                                $groups[] = "{$ck}({$table}.{$value}) as {$value}";
+                                $groups[] = "{$ck}(`{$table}`.{$value}) as {$value}";
                             }
                         }
                     }
@@ -212,8 +212,16 @@ class TXDoubleDAO extends TXDAO
                 if (is_array($orderBy)){
                     $asc = isset($orderBy[0]) ? $orderBy[0] : 'ASC';
                     $code = isset($orderBy[1]) ? $orderBy[1] : 'gbk';
+                    if (!in_array(strtoupper($asc), array('ASC', 'DESC'))){
+                        TXLogger::error("order must be ASC/DESC, {$asc} given", 'sql Error');
+                        continue;
+                    }
                     $orders[] = "CONVERT(`{$k}` USING {$code}) $asc";
                 } else {
+                    if (!in_array(strtoupper($orderBy), array('ASC', 'DESC'))){
+                        TXLogger::error("order must be ASC/DESC, {$orderBy} given", 'sql Error');
+                        continue;
+                    }
                     $orders[] = '`'.$k."` ".$orderBy;
                 }
                 continue;
@@ -225,8 +233,16 @@ class TXDoubleDAO extends TXDAO
                     $field = $table.".`".$key.'`';
                     $asc = isset($val[0]) ? $val[0] : 'ASC';
                     $code = isset($val[1]) ? $val[1] : 'gbk';
+                    if (!in_array(strtoupper($asc), array('ASC', 'DESC'))){
+                        TXLogger::error("order must be ASC/DESC, {$asc} given", 'sql Error');
+                        continue;
+                    }
                     $orders[] = "CONVERT({$field} USING {$code}) $asc";
                 } else {
+                    if (!in_array(strtoupper($val), array('ASC', 'DESC'))){
+                        TXLogger::error("order must be ASC/DESC, {$val} given", 'sql Error');
+                        continue;
+                    }
                     $orders[] = $table.".`".$key."` ".$val;
                 }
             }
@@ -308,9 +324,9 @@ class TXDoubleDAO extends TXDAO
      * @param $cond
      * @return TXDoubleFilter
      */
-    public function filter($cond)
+    public function filter($cond=array())
     {
-        return new TXDoubleFilter($this, $cond, "__and__");
+        return $cond ? new TXDoubleFilter($this, $cond, "__and__") : $this;
     }
 
     /**
@@ -318,8 +334,8 @@ class TXDoubleDAO extends TXDAO
      * @param $cond
      * @return TXDoubleFilter
      */
-    public function merge($cond)
+    public function merge($cond=array())
     {
-        return new TXDoubleFilter($this, $cond, "__or__");
+        return $cond ? new TXDoubleFilter($this, $cond, "__or__") : $this;
     }
 }

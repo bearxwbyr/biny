@@ -20,6 +20,8 @@ return array(
     1017 => 'Filter cannot be empty',
     1018 => 'slave DataBase[%s] must be same to the master DataBase[%s]',
 
+    1020 => 'Permission Error: AutoLoad File[%s] can not write',
+
 
     /* controller error */
     2000 => '%s[%s] is not exists.',
@@ -30,8 +32,9 @@ return array(
     2010 => 'access error',
     2020 => 'method [%s] not exists in [%s]',
 
-    /* view error */
-    3000 => '',
+    /* form error */
+    3000 => '[%s] not in form[%s] values',
+    3001 => 'check Method[%s] not exists in form[%s]',
 
     /* model error */
     4000 => '',

@@ -19,8 +19,12 @@ class testAction extends baseAction
 
     }
 
-    public function action_array()
+    public function action_form()
     {
+        $form = $this->getForm('test', 'get_user');
+        TXLogger::info($form->values());
+        TXLogger::info($form->check());
+        TXLogger::info($form->status);
         return $this->display('main/index', []);
     }
 }

@@ -23,7 +23,7 @@ class TXSqlData extends ArrayObject
 
     public function __invoke()
     {
-        return count($this->getIterator()) ? true : false;
+        return $this->getArrayCopy() ? true : false;
     }
 
     /**
@@ -72,16 +72,20 @@ class TXSqlData extends ArrayObject
     /**
      * 获取字典
      * @param $field
-     * @return array
+     * @param null $value
+     * @return $this
      */
-    public function dict($field)
+    public function dict($field, $value=null)
     {
         $dict = array();
         foreach ($this->getIterator() as $data){
             if (!isset($data->$field)){
                 break;
             }
-            $dict[$data->$field] = $data;
+            $dict[$data[$field]] = $value ? $data[$value] : $data;
+        }
+        if ($value){
+            return $dict;
         }
         $this->exchangeArray($dict);
         return $this;

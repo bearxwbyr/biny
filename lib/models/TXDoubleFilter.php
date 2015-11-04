@@ -18,9 +18,9 @@ class TXDoubleFilter extends TXFilter
      * @param $cond
      * @return TXDoubleFilter
      */
-    public function filter($cond)
+    public function filter($cond=array())
     {
-        return new self($this->DAO, $cond, "__and__", $this->conds[0]);
+        return $cond ? new self($this->DAO, $cond, "__and__", $this->conds[0]) : $this;
     }
 
     /**
@@ -30,6 +30,6 @@ class TXDoubleFilter extends TXFilter
      */
     public function merge($cond)
     {
-        return new self($this->DAO, $cond, "__or__", $this->conds[0]);
+        return $cond ? new self($this->DAO, $cond, "__or__", $this->conds[0]) : $this;
     }
 }

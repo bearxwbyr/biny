@@ -39,11 +39,6 @@ class TXResponse {
         return TXString::encode($content);
     }
 
-    private function decode($content)
-    {
-        return TXString::decode($content);
-    }
-
     /**
      * 获得模板渲染后的内容
      * @return string

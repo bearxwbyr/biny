@@ -8,7 +8,7 @@ class mainAction extends baseAction
     public function execute($id=10, $type)
     {
         $arr = $this->testService->test();
-        TXLogger::info($arr);
+//        TXLogger::display($arr);
 
         $params = [
             'testArr' => $arr,

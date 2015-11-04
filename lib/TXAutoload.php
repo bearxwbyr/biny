@@ -2,21 +2,21 @@
 /**
  * Class TXAutoload
  */
-include 'data/TXMemcache.php';
 
 class TXAutoload
 {
     private static $loaders;
-    private static $memKey;
+    private static $autoPath;
     private static $isReload = false;
     /**
      * Autoload init
      */
     public static function init()
     {
-        self::$memKey = TXConfig::getConfig('autoMemKey');
-        self::$loaders = TXMemcache::instance()->get(self::$memKey);
-        if (!self::$loaders){
+        self::$autoPath = TXApp::$base_root.DS.TXConfig::getConfig('autoPath');
+        if (is_readable(self::$autoPath)){
+            self::$loaders = require(self::$autoPath);
+        } else {
             self::$isReload = true;
             self::loading();
         }
@@ -36,8 +36,14 @@ class TXAutoload
         self::getLoads(TXApp::$app_root. DS . "controller");
         self::getLoads(TXApp::$app_root. DS . "service");
         self::getLoads(TXApp::$app_root. DS . "dao");
+        self::getLoads(TXApp::$app_root. DS . "form");
         self::getLoads(TXApp::$app_root. DS . "model");
-        TXMemcache::instance()->set(self::$memKey, self::$loaders);
+        //写入文件
+        if (is_writeable(self::$autoPath)) {
+            file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');
+        } else {
+            throw new TXException(1020, array(self::$autoPath));
+        }
     }
 
     /**

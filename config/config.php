@@ -8,5 +8,6 @@ return array(
 
     ),
 
-    'autoMemKey' => 'BINY_AUTOLOAD'
+    'autoPath' => 'config/autoload.php',
+    'pkCache' => 'tb:%s'
 );

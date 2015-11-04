@@ -8,18 +8,16 @@ class testAjax extends TXAjax
     {
         TXLogger::info($aaa, 'aaa');
         TXLogger::info($bbb, 'bbb');
+        return $this->error("errrrrrror!!!");
+    }
 
+    public function action_xxx()
+    {
         $params = array(
 
         );
 
         $html = $this->display('main/index', $params);
         return $this->correct($html);
-
-    }
-
-    public function xxx()
-    {
-        return $this->error("errrrrrror!!!");
     }
 }

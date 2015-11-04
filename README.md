@@ -36,3 +36,15 @@
 
 1. TXDAO 添加choose分表 以及exist()方法判断表是否存在
 2. TXSqlData 添加是否空数据判断 $result()
+
+2015-10-20
+
+1.getByPK, updateByPK, deleteByPK方法 添加缓存开关，默认关闭
+2.DAO 添加批量插入接口addList
+3.DAO 添加默认choose分表函数 以及 isExists() 判断表是否存在
+4.自动加载方法改为静态require模式，提升框架性能
+
+2015-11-04
+
+1.添加TXForm 表单验证类 ACTION/AJAX 通过getForm()加载
+2.单例类默认用TXFactory 工厂类加载

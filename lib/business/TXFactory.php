@@ -12,12 +12,11 @@ class TXFactory {
 
     /**
      * dynamic create object
-     *
      * @param string $class
      * @param string $alias
      * @return mixed
      */
-    public static function create($class, $alias = null)
+    public static function create($class, $alias=null)
     {
         if (null === $alias) {
             $alias = $class;

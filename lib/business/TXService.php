@@ -4,8 +4,6 @@
  */
 class TXService {
 
-    private static $_cache = [];
-
     /**
      * 获取Service
      * @param $obj
@@ -14,20 +12,7 @@ class TXService {
     public function __get($obj)
     {
         if (substr($obj, -3) == 'DAO') {
-            return TXDAO::getDAO($obj);
+            return TXFactory::create($obj);
         }
-    }
-
-    /**
-     * 获取Service类
-     * @param $obj
-     * @return TXService
-     */
-    public static function getService($obj)
-    {
-        if (!isset(self::$_cache[$obj])){
-            self::$_cache[$obj] = new $obj();
-        }
-        return self::$_cache[$obj];
     }
 }

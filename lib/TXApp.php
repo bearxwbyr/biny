@@ -61,6 +61,7 @@ class TXApp
     {
         TXDefine::init();
         TXAutoload::init();
+        self::$controller = TXFactory::create('TXController');
     }
 
     /**
@@ -68,7 +69,6 @@ class TXApp
      */
     public static function run()
     {
-        self::$controller = new TXController();
         self::$controller->dispatcher();
     }
 

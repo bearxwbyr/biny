@@ -10,7 +10,7 @@ class TXController {
 
     public function __construct()
     {
-        $this->router = new TXRouter();
+        $this->router = TXFactory::create('TXRouter');
     }
 
     /**

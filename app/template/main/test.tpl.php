@@ -3,12 +3,6 @@
 
 <div class="container">
     <table>
-        <?foreach ($testArr as $key => $val){?>
-            <tr>
-                <td><?=$val->name?></td>
-                <td><?=$val['name']?></td>
-            </tr>
-        <?}?>
     </table>
     <div><?=$string?></div>
 </div>
@@ -16,7 +10,16 @@
 <? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
 
 <script type="text/javascript">
-
+//    $(function(){
+//        $.ajax({
+//            url: '/biny/test.php',
+//            async:true,
+//            cache:false,
+//            success: function(data){
+//                console.log(data);
+//            }
+//        });
+//    });
 </script>
 
 
