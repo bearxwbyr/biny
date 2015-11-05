@@ -16,5 +16,11 @@ class TXDefine
         defined('ENV_PUB') or define('ENV_PUB', SYS_ENV === 'pub');
 
         defined('isLog') or define('isLog', true);
+
+        //TXEvent 默认事件
+        defined('beforeAction') or define('beforeAction', 1);
+        defined('afterAction') or define('afterAction', 2);
+        defined('onException') or define('onException', 3);
+        defined('onError') or define('onError', 4);
     }
 }

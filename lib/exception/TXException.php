@@ -12,6 +12,7 @@ class TXException extends Exception
      */
     public function __construct($code, $params=array(), $html="404")
     {
+        TXEvent::trigger(onException, array($code));
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);

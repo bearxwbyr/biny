@@ -36,8 +36,8 @@ return array(
     3000 => '[%s] not in form[%s] values',
     3001 => 'check Method[%s] not exists in form[%s]',
 
-    /* model error */
-    4000 => '',
+    /* event error */
+    4000 => 'event class[%s] not exists',
 
     /* service error */
 );

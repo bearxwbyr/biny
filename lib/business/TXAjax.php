@@ -57,6 +57,7 @@ class TXAjax extends TXBase
      */
     public function error($msg)
     {
+        TXEvent::trigger(onError, array($msg));
         $data = array("flag" => false, "error" => $msg);
         return $this->json($data);
     }

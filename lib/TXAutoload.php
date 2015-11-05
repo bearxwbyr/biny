@@ -37,6 +37,7 @@ class TXAutoload
         self::getLoads(TXApp::$app_root. DS . "service");
         self::getLoads(TXApp::$app_root. DS . "dao");
         self::getLoads(TXApp::$app_root. DS . "form");
+        self::getLoads(TXApp::$app_root. DS . "event");
         self::getLoads(TXApp::$app_root. DS . "model");
         //写入文件
         if (is_writeable(self::$autoPath)) {

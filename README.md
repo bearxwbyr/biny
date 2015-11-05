@@ -48,3 +48,8 @@
 
 1. 添加TXForm 表单验证类 ACTION/AJAX 通过getForm()加载
 2. 单例类默认用TXFactory 工厂类加载
+
+2015-11-05
+
+1. 添加TXEvent事件(on one off) 默认事件 beforeAction afterAction onException onError
+2. 性能调优

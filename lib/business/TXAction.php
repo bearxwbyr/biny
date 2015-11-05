@@ -38,6 +38,7 @@ class TXAction extends TXBase
      */
     public function error($msg)
     {
+        TXEvent::trigger(onError, array($msg));
         return $this->display('error/msg', ['message'=> $msg]);
     }
 

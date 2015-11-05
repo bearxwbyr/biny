@@ -55,6 +55,7 @@ class TXController {
     private function getAction($module, $params)
     {
         $object = new $module($params);
+        TXEvent::trigger(beforeAction);
         if (method_exists($object, 'init')){
             $result = $object->init();
             if ($result instanceof TXResponse || $result instanceof TXJSONResponse){
@@ -84,6 +85,7 @@ class TXController {
         if ($object instanceof TXAction || $object instanceof TXAjax) {
             $args = $this->getArgs($object, $method, $params);
             $result = call_user_func_array([$object, $method], $args);
+            TXEvent::trigger(afterAction);
             return $result;
         } else {
             throw new TXException(2000, array($request->isAjax ? 'Ajax' :'Action', $request->getModule()));
