@@ -30,6 +30,15 @@ class TXResponse {
     }
 
     /**
+     * 获取csrf
+     * @return null
+     */
+    private function getCsrfToken()
+    {
+        return TXRequest::$csrfToken;
+    }
+
+    /**
      * 实体化转义
      * @param $content
      * @return string

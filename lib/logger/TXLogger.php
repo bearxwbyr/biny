@@ -22,9 +22,20 @@ class TXLogger
      * @param $size
      * @return string
      */
-    private static function convert($size){
+    private static function convert($size)
+    {
         $unit=array('b','kb','mb','gb','tb','pb');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+    }
+
+    /**
+     * 事件触发写sql
+     * @param $e
+     * @param $sql
+     */
+    public function event($e, $sql)
+    {
+        $this->logger($sql, $e, "info");
     }
 
     /**

@@ -10,7 +10,7 @@ class TXAction extends TXBase
      */
     public function __construct($params)
     {
-
+        parent::__construct();
         if (isMaintenance){
             echo $this->display('Main/maintenance');
             exit;
@@ -36,7 +36,7 @@ class TXAction extends TXBase
      * @param $msg
      * @return TXResponse
      */
-    public function error($msg)
+    public function error($msg="数据异常")
     {
         TXEvent::trigger(onError, array($msg));
         return $this->display('error/msg', ['message'=> $msg]);

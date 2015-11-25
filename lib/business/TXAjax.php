@@ -10,6 +10,7 @@ class TXAjax extends TXBase
      */
     public function __construct($params)
     {
+        parent::__construct();
         if (isMaintenance){
             echo $this->error("网站维护中，请稍候再试");
             exit;

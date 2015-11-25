@@ -138,7 +138,7 @@ class TXDAO
         $datas[] = array_shift($args);
         foreach ($args as $arg){
             if (is_string($arg)){
-                $datas[] = $this->real_escape_string($arg);
+                $datas[] = $this->real_escape_string($arg, false);
             } elseif (is_array($arg)) {
                 foreach ($arg as &$value){
                     $value = "'{$this->real_escape_string($value)}'";
@@ -155,10 +155,12 @@ class TXDAO
     /**
      * real_escape_string
      * @param $string
-     * @return mixed
+     * @param bool $ignore
+     * @return mixed|string
      */
-    protected function real_escape_string($string){
-        return addslashes($string);
+    protected function real_escape_string($string, $ignore=true){
+        $string = addslashes($string);
+        return $ignore ? str_replace('`', '\`', $string) : $string;
     }
 
     /**
@@ -206,7 +208,7 @@ class TXDAO
         $orderBy = $this->buildOrderBy($orderBy);
         $fields = $this->buildFields($fields);
         $sql = sprintf("SELECT %s FROM %s%s%s%s", $fields, $this->table, $where, $orderBy, $limit);
-        TXLogger::info($sql);
+        TXEvent::trigger('onSql', [$sql]);
 
         return $this->sql($sql);
     }

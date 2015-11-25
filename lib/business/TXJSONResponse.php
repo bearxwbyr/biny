@@ -20,6 +20,6 @@ class TXJSONResponse {
 
     function __toString()
     {
-        return json_encode($this->data, JSON_UNESCAPED_UNICODE);
+        return json_encode($this->data, JSON_UNESCAPED_UNICODE) ?: json_last_error_msg();
     }
 }

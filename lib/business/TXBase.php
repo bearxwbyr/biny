@@ -20,6 +20,25 @@ class TXBase
     protected $valueCheck = true;
 
     /**
+     * csrf验证
+     * @var bool
+     */
+    protected $csrfValidate = true;
+
+    /**
+     * 构造函数
+     */
+    public function __construct()
+    {
+        if ($this->csrfValidate && !TXRequest::validateCsrfToken()){
+            header(TXConfig::getConfig(401, 'http'));
+            echo $this->error();
+            exit();
+        }
+        TXRequest::createCsrfToken();
+    }
+
+    /**
      * 获取Service
      * @param $obj
      * @return TXService

@@ -119,7 +119,7 @@ class TXSingleDAO extends TXDAO
         if (empty($limit)) {
             return '';
         } else {
-            return sprintf(' LIMIT %s,%s', $limit[0], $limit[1]);
+            return sprintf(' LIMIT %d,%d', $limit[0], $limit[1]);
         }
     }
 
@@ -131,6 +131,10 @@ class TXSingleDAO extends TXDAO
      */
     protected function buildFields($fields, $group=array()){
         if (is_array($fields)){
+            foreach ($fields as &$field){
+                $field = $this->real_escape_string($field);
+            }
+            unset($field);
             $fields = '`'.join('`,`', $fields).'`';
         }
         if ($group){
@@ -144,10 +148,12 @@ class TXSingleDAO extends TXDAO
                     continue;
                 }
                 foreach ($values as $k => $value){
+                    $value = $this->real_escape_string($value);
                     if (is_string($k)){
-                        $groups[] = "{$key}({$k}) as {$value}";
+                        $k = $this->real_escape_string($k);
+                        $groups[] = "{$key}(`{$k}`) as '{$value}'";
                     } else {
-                        $groups[] = "{$key}({$value}) as {$value}";
+                        $groups[] = "{$key}(`{$value}`) as '{$value}'";
                     }
                 }
             }
@@ -165,6 +171,7 @@ class TXSingleDAO extends TXDAO
     {
         $sets = array();
         foreach($set as $key => $value) {
+            $key = $this->real_escape_string($key);
             if ($value === null) {
                 $sets[] = "`{$key}`=NULL";
             }
@@ -190,6 +197,7 @@ class TXSingleDAO extends TXDAO
             if (!is_int($value) || $value <= 0 ) {
                 continue;
             }
+            $key = $this->real_escape_string($key);
             $sets[] = "`{$key}`=`{$key}`+{$value}";
         }
         return join(', ', $sets);
@@ -207,6 +215,10 @@ class TXSingleDAO extends TXDAO
             return '';
         }
         if (is_array($groupBy)){
+            foreach ($groupBy as &$group){
+                $group = $this->real_escape_string($group);
+            }
+            unset($group);
             $groupBy = '`'.join('`,`', $groupBy).'`';
         }
         if ($having){
@@ -216,6 +228,7 @@ class TXSingleDAO extends TXDAO
                     continue;
                 }
                 foreach ($value as $arrk => $arrv){
+                    $arrk = $this->real_escape_string($arrk);
                     if (is_null($arrv)){
                         $havings[] = "`{$arrk}`{$ys} NULL";
                     }elseif (is_string($arrv)){
@@ -244,7 +257,7 @@ class TXSingleDAO extends TXDAO
         $field = array();
         $value = array();
         foreach ($sets as $key => $val){
-            $field[] = "`{$key}`";
+            $field[] = "`{$this->real_escape_string($key)}`";
             if ($val === null) {
                 $value[] = "NULL";
             }
@@ -268,6 +281,7 @@ class TXSingleDAO extends TXDAO
     {
         $orders = array();
         foreach ($orderBy as $key => $val){
+            $key = $this->real_escape_string($key);
             if (is_array($val)){
                 $asc = isset($val[0]) ? $val[0] : 'ASC';
                 $code = isset($val[1]) ? $val[1] : 'gbk';
@@ -328,6 +342,12 @@ class TXSingleDAO extends TXDAO
      */
     public function addList($fields, $values)
     {
+        if (is_array($fields)){
+            foreach ($fields as &$field){
+                $field = $this->real_escape_string($field);
+            }
+            unset($field);
+        }
         $fields = $fields ? '(`'.join('`,`', $fields).'`)' : "";
         $columns = array();
         foreach ($values as $value){

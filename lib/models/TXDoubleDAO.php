@@ -147,7 +147,9 @@ class TXDoubleDAO extends TXDAO
                     $temps[] = "`{$table}`.*";
                 } else {
                     foreach ($field as $key => $column){
+                        $column = $this->real_escape_string($column);
                         if (is_string($key)){
+                            $key = $this->real_escape_string($key);
                             $temps[] = "`{$table}`.`".$key."` $column";
                         } else {
                             $temps[] = "`{$table}`.`".$column."`";
@@ -164,29 +166,25 @@ class TXDoubleDAO extends TXDAO
                 $groups = [];
             }
             foreach ($group as $key => $values){
-                if (is_int($key)){
-                    if (isset($this->doubles[$key])){
-                        $table = $this->doubles[$key];
-                    } else {
+                if (is_string($key) && in_array($key, $this->doubles)){
+                    $table = $key;
+                } else if (isset($this->doubles[$key])){
+                    $table = $this->doubles[$key];
+                } else {
+                    continue;
+                }
+                foreach ($values as $ck => $vals){
+                    if (!in_array(strtolower($ck), $this->calcs)){
                         continue;
                     }
-                    foreach ($values as $ck => $vals){
-                        if (!in_array(strtolower($ck), $this->calcs)){
-                            continue;
+                    foreach ($vals as $k => $value){
+                        $value = $this->real_escape_string($value);
+                        if (is_string($k)){
+                            $k = $this->real_escape_string($k);
+                            $groups[] = "{$ck}(`{$table}`.`{$k}`) as '{$value}'";
+                        } else {
+                            $groups[] = "{$ck}(`{$table}`.`{$value}`) as '{$value}'";
                         }
-                        foreach ($vals as $k => $value){
-                            if (is_string($k)){
-                                $groups[] = "{$ck}(`{$table}`.{$k}) as {$value}";
-                            } else {
-                                $groups[] = "{$ck}(`{$table}`.{$value}) as {$value}";
-                            }
-                        }
-                    }
-                } else if (!in_array($key, $this->calcs)){
-                    continue;
-                } else {
-                    foreach ($values as $k => $value){
-                        $groups[] = "{$key}({$k}) as {$value}";
                     }
                 }
             }
@@ -208,6 +206,7 @@ class TXDoubleDAO extends TXDAO
             } else if (isset($this->doubles[$k])){
                 $table = $this->doubles[$k];
             } else if (is_string($k)) {
+                $k = $this->real_escape_string($k);
                 //外层循环
                 if (is_array($orderBy)){
                     $asc = isset($orderBy[0]) ? $orderBy[0] : 'ASC';
@@ -229,6 +228,7 @@ class TXDoubleDAO extends TXDAO
                 continue;
             }
             foreach ($orderBy as $key => $val){
+                $key = $this->real_escape_string($key);
                 if (is_array($val)){
                     $field = $table.".`".$key.'`';
                     $asc = isset($val[0]) ? $val[0] : 'ASC';
@@ -276,6 +276,7 @@ class TXDoubleDAO extends TXDAO
                     continue;
                 }
                 foreach ($group as $column){
+                    $column = $this->real_escape_string($column);
                     $temps[] = $table.".`".$column."`";
                 }
             }
@@ -288,6 +289,7 @@ class TXDoubleDAO extends TXDAO
                     continue;
                 }
                 foreach ($value as $arrk => $arrv){
+                    $arrk = $this->real_escape_string($arrk);
                     if (is_null($arrv)){
                         $havings[] = "`{$arrk}`{$ys} NULL";
                     }elseif (is_string($arrv)){
@@ -315,7 +317,7 @@ class TXDoubleDAO extends TXDAO
         if (empty($limit)) {
             return '';
         } else {
-            return sprintf(' LIMIT %s,%s', $limit[0], $limit[1]);
+            return sprintf(' LIMIT %d,%d', $limit[0], $limit[1]);
         }
     }
 

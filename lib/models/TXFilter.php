@@ -225,9 +225,11 @@ class TXFilter
             return '';
         } else {
             $where = array();
-            foreach($cond as $key => $value) {;
+            foreach($cond as $key => $value) {
+                $key = $this->real_escape_string($key);
                 if (in_array(strtolower($key), $this->extracts)){
                     foreach ($value as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
                         if (is_null($arrv)){
                             $where[] = "`{$arrk}`{$key} NULL";
                         }elseif (is_string($arrv)){
@@ -239,6 +241,7 @@ class TXFilter
                     }
                 } elseif ($key === '__like__'){
                     foreach ($cond[$key] as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
                         $arrv = $this->real_like_string($arrv);
                         $where[] = "`{$arrk}` like '%{$arrv}%'";
                     }
@@ -291,8 +294,10 @@ class TXFilter
                 continue;
             }
             foreach($cond as $key => $value) {
+                $key = $this->real_escape_string($key);
                 if (in_array(strtolower($key), $this->extracts)){
                     foreach ($value as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
                         if (is_null($arrv)){
                             $where[] = "`{$table}`.`{$arrk}`{$key} NULL";
                         }
@@ -305,6 +310,7 @@ class TXFilter
                     }
                 } elseif ($key === '__like__'){
                     foreach ($cond[$key] as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
                         $arrv = $this->real_like_string($arrv);
                         $where[] = "`{$table}`.`{$arrk}` like '%{$arrv}%'";
                     }
@@ -337,14 +343,16 @@ class TXFilter
     /**
      * real_escape_string
      * @param $string
-     * @return mixed
+     * @param bool $ignore
+     * @return mixed|string
      */
-    private function real_escape_string($string){
-        return addslashes($string);
+    private function real_escape_string($string, $ignore=true){
+        $string = addslashes($string);
+        return $ignore ? str_replace('`', '\`', $string) : $string;
     }
 
     /**
-     * real_like_string
+     * real_like_string\
      * @param $str
      * @return mixed
      */
