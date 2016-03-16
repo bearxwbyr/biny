@@ -16,34 +16,26 @@ class TXString
         $result = '';
         $length = 0;
         $inc = 1;
-        $flag = 0; //1表示上个是中文，0表示上个非中文
         for ($j = 0; $j < strlen($str); $j += $inc) {
             if ($length < $len) {
-                if (ord($str[$j]) > 128) {
-                    // $result += ($str[$j]+$str[$j+1]+$str[$j+2]);
-                    $result .= substr($str, $j, 3);
+                if (ord($str[$j]) == 194){
+                    $inc = 2;
+                    $length += 1;
+                } else if (ord($str[$j]) > 128) {
                     $inc = 3;
                     $length += 2;
-                    $flag = 1;
                 } else {
-                    $result .= $str[$j];
                     $inc = 1;
                     $length += 1;
-                    $flag = 0;
                 }
+                $result .= substr($str, $j, $inc);
             } else {
-                if ($flag == 0) {
-                    $result = substr($result, 0, strlen($result) - 1) . "...";
-                    break;
-                } else if ($flag == 1) {
-                    $result = substr($result, 0, strlen($result) - 3) . "...";
-                    break;
-                }
+                $result = substr($result, 0, strlen($result) - $inc) . "...";
+                break;
 
             }
         }
         return $result;
-//        return mb_substr( $str, $start, $len, 'utf-8');
     }
 
     /**
@@ -64,5 +56,29 @@ class TXString
     public static function decode($content)
     {
         return is_string($content) ? htmlspecialchars_decode($content, ENT_QUOTES) : $content;
+    }
+
+    /**
+     * 递归替换Encode
+     * @param $array
+     * @param bool $encode
+     * @return array
+     */
+    public static function recursionEncode(&$array, $encode=true)
+    {
+        $newArray = array();
+        foreach ($array as $key => $arr){
+            if (is_array($arr)){
+                $arr = self::recursionEncode($arr, $encode);
+            } elseif (is_string($arr)){
+                $arr = $encode ? self::encode($arr) : $arr;
+            } elseif ($arr instanceof TXResponse){
+                $arr = $arr->getContent();
+            }
+            $key = (is_string($key) && $encode) ? self::encode($key) : $key;
+            $newArray[$key] = $arr;
+        }
+        unset($array);
+        return $newArray;
     }
 }

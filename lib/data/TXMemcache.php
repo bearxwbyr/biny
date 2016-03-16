@@ -27,7 +27,7 @@ class TXMemcache
     {
         $this->handler = new Memcache();
         if (!$this->handler->addserver($config['host'], $config['port'])){
-            throw new TXException(1011, array($config['host'], $config['port']));
+            throw new TXException(4004, array($config['host'], $config['port']));
         }
     }
 

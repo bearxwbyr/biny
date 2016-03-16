@@ -39,8 +39,8 @@ class TXSingleFilter extends TXFilter
      */
     public function delete()
     {
-        $where = $this->buildWhere($this->conds);
-        return $this->DAO->delete($where);
+        $this->DAO->setWhere($this->buildWhere($this->conds));
+        return $this->DAO->delete();
     }
 
     /**
@@ -50,8 +50,8 @@ class TXSingleFilter extends TXFilter
      */
     public function update($sets)
     {
-        $where = $this->buildWhere($this->conds);
-        return $this->DAO->update($sets, $where);
+        $this->DAO->setWhere($this->buildWhere($this->conds));
+        return $this->DAO->update($sets);
     }
 
     /**
@@ -61,8 +61,8 @@ class TXSingleFilter extends TXFilter
      */
     public function addCount($sets)
     {
-        $where = $this->buildWhere($this->conds);
-        return $this->DAO->addCount($sets, $where);
+        $this->DAO->setWhere($this->buildWhere($this->conds));
+        return $this->DAO->addCount($sets);
     }
 
 

@@ -106,29 +106,43 @@ class TXLogger
     }
 
     /**
+     * 格式化输出项
+     */
+    public static function format()
+    {
+        foreach (self::$ConsoleOut as &$Out){
+            $value = $Out['value'];
+            if (is_object($value)){
+                if (method_exists($value, '__toLogger')){
+                    $value = $value->__toLogger();
+                } else {
+                    $value = self::object_to_array($value);
+                }
+            } elseif ($value === null){
+                $value = 'NULL';
+            } else if (is_bool($value)){
+                $value = $value ? "true" : "false";
+            }
+            $Out['value'] = $value;
+        }
+        unset($Out);
+    }
+
+
+    /**
      * 返回所有日志
      */
     public static function showLogs(){
         if (SYS_CONSOLE && self::$ConsoleOut){
+            self::format();
             echo "\n<script type=\"text/javascript\">\n";
             foreach (self::$ConsoleOut as $Out){
                 $value = $Out['value'];
                 $key = $Out['key'];
                 $type = $Out['type'];
-                if (is_object($value)){
-                    if (method_exists($value, '__toLogger')){
-                        $value = $value->__toLogger();
-                    } else {
-                        $value = self::object_to_array($value);
-                    }
-                }
-                if ($value === null){
-                    $message = sprintf('console.%s("%s => ", "NULL");', $type, $key);
-                } else if (is_array($value) || is_object($value)){
+                if (is_array($value)){
                     $value = json_encode($value);
                     $message = sprintf('console.%s("%s => ", %s);', $type, $key, $value ?: "false");
-                } else if (is_bool($value)){
-                    $message = sprintf('console.%s("%s => ", %s);', $type, $key, $value ? "true" : "false");
                 } else {
                     $message = sprintf('console.%s("%s => ", "%s");', $type, $key, addslashes(str_replace(array("\r\n", "\r", "\n"), "", $value)));
                 }
@@ -143,8 +157,38 @@ class TXLogger
      * 析构函数
      */
     public function __destruct(){
-        if (TXRequest::getInstance() && !TXRequest::getInstance()->isAjax){
+        if (TXApp::$base->request && !TXApp::$base->request->isAjax){
             self::showLogs();
         }
+    }
+
+    /**
+     * 记录错误日志
+     * @param $message
+     */
+    public static function addError($message){
+        if (is_array($message) || is_object($message)){
+            $message = var_export($message, true);
+        }
+        $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getClientIp());
+        $user = TXApp::$base->person ? TXApp::$base->person->getPk() : "guest";
+        $message = $header."\n".$message."\nuser: $user\n";
+        $filename = sprintf("%s/error_%s.log", TXApp::$log_root, date('Y-m-d'));
+        file_put_contents($filename, $message, FILE_APPEND);
+    }
+
+    /**
+     *记录日志
+     * @param $message
+     */
+    public static function addLog($message){
+        if (is_array($message) || is_object($message)){
+            $message = var_export($message, true);
+        }
+        $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getClientIp());
+        $user = TXApp::$base->person ? TXApp::$base->person->getPk() : "guest";
+        $message = $header."\n".$message."\nuser: $user\n";
+        $filename = sprintf("%s/log_%s.log", TXApp::$log_root, date('Y-m-d'));
+        file_put_contents($filename, $message, FILE_APPEND);
     }
 }

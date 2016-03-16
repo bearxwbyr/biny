@@ -10,7 +10,7 @@ class TXController {
 
     public function __construct()
     {
-        $this->router = TXFactory::create('TXRouter');
+        $this->router = TXApp::$base->router;
     }
 
     /**
@@ -28,12 +28,12 @@ class TXController {
      */
     private function execute()
     {
-        $requests = $this->router->getRequests();
+        $requests = TXApp::$base->request;
 //        $Module = $requests->getModule();
 //        $unable_module = TXConfig::getConfig('unable_modules');
 //        if ($unable_module && in_array($Module, $unable_module)) {
 //            echo "Url Forbidden!";
-//            throw new TXException(2010);
+//            throw new TXException(2004);
 //        }
         $result = array();
         if ($requests instanceof TXRequest) {   //web view
@@ -49,12 +49,11 @@ class TXController {
 
     /**
      * @param $module
-     * @param $params
      * @return mixed
      */
-    private function getAction($module, $params)
+    private function getAction($module)
     {
-        $object = new $module($params);
+        $object = new $module();
         TXEvent::trigger(beforeAction);
         if (method_exists($object, 'init')){
             $result = $object->init();
@@ -73,22 +72,22 @@ class TXController {
      */
     private function call(TXRequest $request)
     {
-        $module = $request->getModule() . ($request->isAjax ? 'Ajax' :'Action');
-        $params = $request->getParams();
+        $module = $request->getModule() . 'Action';
         $method = $request->getMethod();
 
-        $object = $this->getAction($module, $params);
+        $object = $this->getAction($module);
         if ($object instanceof TXResponse || $object instanceof TXJSONResponse){
+            TXEvent::trigger(afterAction);
             return $object;
         }
 
-        if ($object instanceof TXAction || $object instanceof TXAjax) {
-            $args = $this->getArgs($object, $method, $params);
+        if ($object instanceof TXAction) {
+            $args = $this->getArgs($object, $method);
             $result = call_user_func_array([$object, $method], $args);
             TXEvent::trigger(afterAction);
             return $result;
         } else {
-            throw new TXException(2000, array($request->isAjax ? 'Ajax' :'Action', $request->getModule()));
+            throw new TXException(2001, $request->getModule());
         }
     }
 
@@ -96,15 +95,15 @@ class TXController {
      * 获取默认参数
      * @param $obj
      * @param $method
-     * @param $params
      * @return array
      * @throws TXException
      */
-    private function getArgs($obj, $method, $params)
+    private function getArgs($obj, $method)
     {
+        $params = $_GET;
         $args = [];
         if (!method_exists($obj, $method)){
-            throw new TXException(2003, array($method, get_class($obj)));
+            throw new TXException(2002, array($method, get_class($obj)));
         }
         $action = new ReflectionMethod($obj, $method);
         foreach ($action->getParameters() as $param) {

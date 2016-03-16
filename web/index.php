@@ -12,12 +12,12 @@ if (SYS_DEBUG){
     error_reporting(E_ALL ^ E_NOTICE);
 }
 
-include 'lib/TXApp.php';
+include __DIR__.'/../lib/TXApp.php';
 
 //include 'lib/logger/XHProf.php';
 //XHProf::start();
 
-TXApp::registry(__DIR__ . DS . 'app');
+TXApp::registry(__DIR__. '/../app');
 TXApp::run();
 
 //$data = XHProf::end();

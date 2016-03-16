@@ -13,9 +13,17 @@ class Person extends TXModel
     protected $DAO;
     protected $_pk;
 
-    public static function get($id)
+    /**
+     * @param null $id
+     * @return Person
+     */
+    public static function get($id=null)
     {
-        if (!array_key_exists($id, self::$_cache)){
+        $id = $id ?: TXApp::$base->session->userId;
+        if (!$id){
+            return null;
+        }
+        if (!isset(self::$_cache[$id])){
             self::$_cache[$id] = new self($id);
         }
         return self::$_cache[$id];
@@ -28,10 +36,37 @@ class Person extends TXModel
         $this->_pk = $id;
     }
 
-    public function getProject()
+    /**
+     * 是否存在
+     * @return mixed
+     */
+    public function exist()
     {
-        $projectDAO = TXFactory::create('userDAO');
-        return $projectDAO->getByPk($this->projectId);
+        return $this->_data ? true : false;
+    }
 
+    /**
+     * 获取键值
+     * @return mixed
+     */
+    public function getPk()
+    {
+        return $this->_pk;
+    }
+
+    /**
+     * 登录
+     */
+    public function login()
+    {
+        TXApp::$base->session->userId = $this->_pk;
+    }
+
+    /**
+     * 登出
+     */
+    public function loginOut()
+    {
+        unset(TXApp::$base->session->userId);
     }
 }

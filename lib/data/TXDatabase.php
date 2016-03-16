@@ -32,45 +32,45 @@ class TXDatabase {
     public function __construct($config)
     {
         if (!$config || !isset($config['host']) || !isset($config['user']) || !isset($config['password']) || !isset($config['port'])){
-            throw new TXException(1004, array('unKnown'));
+            throw new TXException(3001, array('unKnown'));
         }
         $this->handler = mysqli_connect($config['host'], $config['user'], $config['password'], '', $config['port']);
         if (!$this->handler) {
-            throw new TXException(1004, array($config['host']));
+            throw new TXException(3001, array($config['host']));
         }
 
-//        $ret = mysqli_select_db($this->handler, $config['database']);
-
         mysqli_query($this->handler, "set NAMES {$config['encode']}");
-
-//        if (!$ret) {
-//            throw new TXException(1005, array($config['database']));
-//        }
     }
 
     /**
      * sql query data
      * @param string $sql
+     * @param $key
      * @param int $mode
-     * @return TXSqlData|TXObject
+     * @return array
      */
-    public function sql($sql, $mode = self::FETCH_TYPE_ALL)
+    public function sql($sql, $key=null, $mode = self::FETCH_TYPE_ALL)
     {
         $rs = mysqli_query($this->handler, $sql);
         if ($rs) {
             if ($mode == self::FETCH_TYPE_ALL) {
-                $result = new TXSqlData();
+                $result = array();
                 while($row = mysqli_fetch_assoc($rs)) {
-                    $result->append(new TXObject($row));
+                    if ($key){
+                        $result[$row[$key]] = $row;
+                    } else {
+                        $result[] = $row;
+                    }
+
                 }
                 return $result;
             } else {
-                $result = new TXObject(mysqli_fetch_assoc($rs));
+                $result = mysqli_fetch_assoc($rs) ?: [];
             }
             return $result;
         } else {
             TXLogger::error($sql, 'sql Error:');
-            return new TXObject();
+            return [];
         }
     }
 

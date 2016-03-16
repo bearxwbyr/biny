@@ -5,31 +5,15 @@
  */
 class mainAction extends baseAction
 {
-    private $eventFH;
-    public function __construct($params)
-    {
-        parent::__construct($params);
-//        TXEvent::on(array($this, 'testEvent'), beforeAction);
-//        TXEvent::on(array($this, 'testEvent2'), afterAction);
-//        TXEvent::on(array(TXFactory::create('testEvent'), 'another'), 'myEvent');
-//        $this->eventFH = TXEvent::on(array(TXFactory::create('testEvent'), 'before'), 'myEvent');
-    }
-
-    public function init()
-    {
-
-    }
-
-    public function execute($id=10, $type)
+    public function action_index($id=10, $type)
     {
         $arr = $this->testService->test();
-//        TXLogger::display($arr);
-
         $params = [
             'testArr' => $arr,
-            'string' => 'bb<>'
+            'string' => 'bb<>',
+            'src' => 'alert(1)'
         ];
-        $view = $this->display('main/test', $params);
+        $view = $this->display('main/test', $params, array('src'=>'<f333>'));
         $view->title = "主页标题";
         return $view;
     }
@@ -39,6 +23,13 @@ class mainAction extends baseAction
         TXLogger::info($id, '$id');
         TXLogger::info($type, '$type');
         return $this->error('出大事了');
+    }
+
+    public function ajax_xxx($aaa=10, $bbb)
+    {
+        TXLogger::info($aaa, 'aaa');
+        TXLogger::info($bbb, 'bbb');
+        return $this->error("errrrrrror!!!");
     }
 
     /**

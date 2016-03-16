@@ -1,4 +1,4 @@
 <script type="text/javascript">
-    var rootPath = '<?=$rootPath?>';
+    var webRoot = '<?=$webRoot?>';
 </script>
 <body>

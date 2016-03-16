@@ -4,18 +4,13 @@
  */
 class testAction extends baseAction
 {
-    public function execute($aaa=10, $bbb)
+    public function action_index()
     {
-        TXLogger::info($aaa, 'aaa');
-        TXLogger::info($bbb, 'bbb');
-        $person = $this->getUser();
-        TXLogger::info($person->getProject());
-
         $params = array(
 
         );
 
-        return $this->display('main/index', $params);
+        return $this->display('test/test', $params);
 
     }
 

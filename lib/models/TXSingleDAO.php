@@ -33,7 +33,7 @@ class TXSingleDAO extends TXDAO
                 if ($master === $slave){
                     $this->database = $master;
                 } else {
-                    throw new TXException(1018, array($slave, $master));
+                    throw new TXException(3008, array($slave, $master));
                 }
             }
         }
@@ -41,10 +41,19 @@ class TXSingleDAO extends TXDAO
     }
 
     /**
+     * 返回Log
+     * @return string
+     */
+    public function getDAO()
+    {
+        return $this->table;
+    }
+
+    /**
      * 返回表名
      * @return string
      */
-    public function getTable()
+    protected function getTable()
     {
         return $this->table;
     }
@@ -94,7 +103,7 @@ class TXSingleDAO extends TXDAO
             return $this;
         }
         if (!$this->checkConfig($dao)){
-            throw new TXException(1012, "DAOs must be the same Host");
+            throw new TXException(3002, "DAOs must be the same Host");
         }
         $DAOs = [
             $selfClass => $this->table,
@@ -107,6 +116,86 @@ class TXSingleDAO extends TXDAO
         }
         $relates[] = [$type => $join];
         return new TXDoubleDAO($DAOs, $relates, $this->dbConfig);
+    }
+
+    /**
+     * buildWhere
+     * @param $cond
+     * @param string $type
+     * @return string
+     */
+    public function buildWhere($cond, $type='and')
+    {
+        if (empty($cond)) {
+            return '';
+        } else {
+            $where = array();
+            foreach($cond as $key => $value) {
+                $key = $this->real_escape_string($key);
+                if (in_array(strtolower($key), $this->extracts)){
+                    foreach ($value as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
+                        if (is_null($arrv)){
+                            $where[] = "`{$arrk}`{$key} NULL";
+                        }elseif (is_string($arrv)){
+                            $arrv = $this->real_escape_string($arrv);
+                            $where[] = "`{$arrk}`{$key}'{$arrv}'";
+                        } else {
+                            $where[] = "`{$arrk}`{$key}{$arrv}";
+                        }
+                    }
+                } elseif ($key === '__like__'){
+                    foreach ($cond[$key] as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
+                        if (is_array($arrv)){
+                            foreach ($arrv as $like){
+                                $like = $this->real_like_string($like);
+                                if (substr($like, 0, 1) !== '^'){
+                                    $like = '%'.$like;
+                                }
+                                if (substr($like, -1, 1) !== '$'){
+                                    $like .= '%';
+                                }
+                                $like = trim($like, "^$");
+                                $where[] = "`{$arrk}` like '{$like}'";
+                            }
+                        } else {
+                            $arrv = $this->real_like_string($arrv);
+                            if (substr($arrv, 0, 1) !== '^'){
+                                $arrv = '%'.$arrv;
+                            }
+                            if (substr($arrv, -1, 1) !== '$'){
+                                $arrv .= '%';
+                            }
+                            $arrv = trim($arrv, "^$");
+                            $where[] = "`{$arrk}` like '{$arrv}'";
+                        }
+                    }
+                } elseif (is_null($value)){
+                    $where[] = "`{$key}`is NULL";
+                } elseif (is_string($value)) {
+                    $value = $this->real_escape_string($value);
+                    $where[] = "`{$key}`='{$value}'";
+                } elseif (is_array($value)){
+                    if (!$value){
+                        $where[] = 'FALSE';
+                        continue;
+                    }
+                    foreach ($value as &$val){
+                        if (is_string($val)){
+                            $val = "'{$this->real_escape_string($val)}'";
+                        }
+                    }
+                    unset($val);
+                    $value = "(". join(',', $value).")";
+                    $where[] = "`{$key}` in {$value}";
+                } else {
+                    $where[] = "`{$key}`={$value}";
+                }
+            }
+
+            return join(" {$type} ", $where);
+        }
     }
 
     /**
@@ -145,21 +234,29 @@ class TXSingleDAO extends TXDAO
             }
             foreach ($group as $key => $values){
                 if (!in_array(strtolower($key), $this->calcs)){
-                    continue;
+                    throw new TXException(3011, array($ck));
                 }
                 foreach ($values as $k => $value){
                     $value = $this->real_escape_string($value);
                     if (is_string($k)){
                         $k = $this->real_escape_string($k);
-                        $groups[] = "{$key}(`{$k}`) as '{$value}'";
+                        if ($key == 'distinct'){
+                            $groups[] = "COUNT(DISTINCT `{$k}`) as '{$value}'";
+                        } else {
+                            $groups[] = "{$key}(`{$k}`) as '{$value}'";
+                        }
                     } else {
-                        $groups[] = "{$key}(`{$value}`) as '{$value}'";
+                        if ($key == 'distinct'){
+                            $groups[] = "COUNT(DISTINCT `{$value}`) as '{$value}'";
+                        } else {
+                            $groups[] = "{$key}(`{$value}`) as '{$value}'";
+                        }
                     }
                 }
             }
             return join(',', $groups);
         }
-        return $fields;
+        return $fields ?: "*";
     }
 
     /**
@@ -312,11 +409,10 @@ class TXSingleDAO extends TXDAO
      */
     public function update($sets)
     {
-        $params = func_get_args();
-        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
+        $where = $this->where ? " WHERE ".$this->where : "";
         $set = $this->buildSets($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-//        echo $sql; exit;
+        TXEvent::trigger('onSql', [$sql]);
 
         return $this->execute($sql);
     }
@@ -331,6 +427,7 @@ class TXSingleDAO extends TXDAO
     {
         $fields = $this->buildInsert($sets);
         $sql = sprintf("INSERT INTO %s %s", $this->table, $fields);
+        TXEvent::trigger('onSql', [$sql]);
         return $this->execute($sql, $id);
     }
 
@@ -352,14 +449,18 @@ class TXSingleDAO extends TXDAO
         $columns = array();
         foreach ($values as $value){
             foreach ($value as &$val){
-                $val = is_string($val) ? "'{$this->real_escape_string($val)}'" : $val;
+                if ($val === null) {
+                    $val = "NULL";
+                } else {
+                    $val = is_string($val) ? "'{$this->real_escape_string($val)}'" : $val;
+                }
             }
             unset($val);
             $columns[] = '('.join(',', $value).')';
         }
         $columns = join(',', $columns);
         $sql = sprintf("INSERT INTO %s %s VALUES  %s", $this->table, $fields, $columns);
-//        \TXLogger::info($sql);
+        TXEvent::trigger('onSql', [$sql]);
         return $this->execute($sql, false);
     }
 
@@ -369,9 +470,9 @@ class TXSingleDAO extends TXDAO
      */
     public function delete()
     {
-        $params = func_get_args();
-        $where = (isset($params[0]) && $params[0]) ? " WHERE ".$params[0] : "";
+        $where = $this->where ? " WHERE ".$this->where : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
+        TXEvent::trigger('onSql', [$sql]);
 
         return $this->execute($sql);
     }
@@ -383,11 +484,10 @@ class TXSingleDAO extends TXDAO
      */
     public function addCount($sets)
     {
-        $params = func_get_args();
-        $where = (isset($params[1]) && $params[1]) ? " WHERE ".$params[1] : "";
+        $where = $this->where ? " WHERE ".$this->where : "";
         $set = $this->buildCount($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-//        \TXLogger::info($sql);
+        TXEvent::trigger('onSql', [$sql]);
         return $this->execute($sql);
     }
 
@@ -402,7 +502,8 @@ class TXSingleDAO extends TXDAO
         $set = $this->buildSets($sets);
         $fields = $this->buildInsert($inserts);
         $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
-//        \TXLogger::info($sql);
+        TXEvent::trigger('onSql', [$sql]);
+
         return $this->execute($sql, true);
     }
 
@@ -417,7 +518,7 @@ class TXSingleDAO extends TXDAO
         $set = $this->buildCount($adds);
         $fields = $this->buildInsert($inserts);
         $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
-//        \TXLogger::info($sql);
+        TXEvent::trigger('onSql', [$sql]);
         return $this->execute($sql, true);
     }
 

@@ -8,7 +8,7 @@ class TXDoubleDAO extends TXDAO
      * 表格名称
      * @var string
      */
-    protected $table;
+    protected $table = null;
 
     /**
      * 连表位
@@ -31,60 +31,51 @@ class TXDoubleDAO extends TXDAO
     public function __construct($DAOs, $relates, $db)
     {
         $this->dbConfig = $db;
-        $this->buildTable($DAOs, $relates);
+        if (count($relates) !== count($DAOs)-1){
+            throw new TXException(3002, array(json_encode($DAOs)));
+        }
+        $this->DAOs = $DAOs;
+        $this->doubles = array_keys($DAOs);
+        $this->relates = $relates;
     }
 
     /**
-     * 获得连表
+     * 获取Log DAO
      * @return string
      */
-    public function getTable()
+    public function getDAO()
     {
         $tables = array_values($this->DAOs);
         return join("--", $tables);
     }
 
     /**
-     * @return mixed
-     */
-    public function getDoubles()
-    {
-        return $this->doubles;
-    }
-
-    /**
-     * 多表构建
-     * @param $DAOs
-     * @param $relates
+     * 获取连表
      * @return string
-     * @throws Exception
      */
-    private function buildTable($DAOs, $relates){
-        if (count($relates) !== count($DAOs)-1){
-            throw new TXException(1012, array(json_encode($DAOs)));
-        }
-        $this->DAOs = $DAOs;
-        $this->doubles = array_keys($DAOs);
-        $this->relates = $relates;
-        $dbtbs = [];
-        $i = 0;
-        foreach ($DAOs as $name => $table){
-            if (!$dbtbs){
-                $dbtbs[] = "{$table} `$name`";
-            } else {
-                $relate = $relates[$i++];
-                $join = array_keys($relate);
-                $on = array_values($relate);
-                $dbtbs[] = $join[0];
-                $dbtbs[] = "{$table} `$name`";
-                $ons = [];
-                foreach ($on[0] as $key=>$value){
-                    $ons[] = "{$key}={$value}";
+    protected function getTable()
+    {
+        if (!$this->table){
+            $dbtbs = [];
+            $i = 0;
+            foreach ($this->DAOs as $name => $table){
+                if (!$dbtbs){
+                    $dbtbs[] = "{$table} `$name`";
+                } else {
+                    $relate = $this->relates[$i++];
+                    $join = array_keys($relate);
+                    $on = array_values($relate);
+                    $dbtbs[] = $join[0];
+                    $dbtbs[] = "{$table} `$name`";
+                    $ons = [];
+                    foreach ($on[0] as $key=>$value){
+                        $ons[] = "{$key}={$value}";
+                    }
+                    $dbtbs[] = "on ".join(' and ', $ons);
                 }
-                $dbtbs[] = "on ".join(' and ', $ons);
             }
+            $this->table = join(" ", $dbtbs);
         }
-        $this->table = join(" ", $dbtbs);
         return $this->table;
     }
 
@@ -103,7 +94,7 @@ class TXDoubleDAO extends TXDAO
             return $this;
         }
         if (!$this->checkConfig($dao)){
-            throw new TXException(1012, "DAOs must be the same Host");
+            throw new TXException(3002, "DAOs must be the same Host");
         }
         $DAOs = $this->DAOs;
         $DAOs[$daoClass] = $dao->getTable();
@@ -124,6 +115,95 @@ class TXDoubleDAO extends TXDAO
         }
         $relates[] = [$type => $join];
         return new TXDoubleDAO($DAOs, $relates, $this->dbConfig);
+    }
+
+    /**
+     * buildWhere
+     * @param $conds
+     * @param string $type
+     * @return string
+     */
+    public function buildWhere($conds, $type='and')
+    {
+        if (empty($conds)) {
+            return '';
+        }
+        $doubles = $this->doubles;
+        $where = array();
+        foreach ($conds as $k => $cond){
+            if (is_string($k) && in_array($k, $doubles)){
+                $table = $k;
+            } else if (isset($doubles[$k])){
+                $table = $doubles[$k];
+            } else {
+                continue;
+            }
+            foreach($cond as $key => $value) {
+                $key = $this->real_escape_string($key);
+                if (in_array(strtolower($key), $this->extracts)){
+                    foreach ($value as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
+                        if (is_null($arrv)){
+                            $where[] = "`{$table}`.`{$arrk}`{$key} NULL";
+                        }
+                        else if (is_string($arrv)){
+                            $arrv = $this->real_escape_string($arrv);
+                            $where[] = "`{$table}`.`{$arrk}`{$key}'{$arrv}'";
+                        } else {
+                            $where[] = "`{$table}`.`{$arrk}`{$key}{$arrv}";
+                        }
+                    }
+                } elseif ($key === '__like__'){
+                    foreach ($cond[$key] as $arrk => $arrv){
+                        $arrk = $this->real_escape_string($arrk);
+                        if (is_array($arrv)){
+                            foreach ($arrv as $like){
+                                $like = $this->real_like_string($like);
+                                if (substr($like, 0, 1) !== '^'){
+                                    $like = '%'.$like;
+                                }
+                                if (substr($like, -1, 1) !== '$'){
+                                    $like .= '%';
+                                }
+                                $like = trim($like, "^$");
+                                $where[] = "`{$table}`.`{$arrk}` like '{$like}'";
+                            }
+                        } else {
+                            $arrv = $this->real_like_string($arrv);
+                            if (substr($arrv, 0, 1) !== '^'){
+                                $arrv = '%'.$arrv;
+                            }
+                            if (substr($arrv, -1, 1) !== '$'){
+                                $arrv .= '%';
+                            }
+                            $arrv = trim($arrv, "^$");
+                            $where[] = "`{$table}`.`{$arrk}` like '{$arrv}'";
+                        }
+                    }
+                } elseif (is_null($value)){
+                    $where[] = "`{$table}`.`{$key}`is NULL";
+                } elseif (is_string($value)) {
+                    $value = $this->real_escape_string($value);
+                    $where[] = "`{$table}`.`{$key}`='{$value}'";
+                } elseif (is_array($value)){
+                    if (!$value){
+                        $where[] = 'FALSE';
+                        continue;
+                    }
+                    foreach ($value as &$val){
+                        if (is_string($val)){
+                            $val = "'{$this->real_escape_string($val)}'";
+                        }
+                    }
+                    unset($val);
+                    $value = "(". join(",", $value).")";
+                    $where[] = "`{$table}`.`{$key}` in {$value}";
+                } else {
+                    $where[] = "`{$table}`.`{$key}`={$value}";
+                }
+            }
+        }
+        return join(" {$type} ", $where);
     }
 
     /**
@@ -175,13 +255,17 @@ class TXDoubleDAO extends TXDAO
                 }
                 foreach ($values as $ck => $vals){
                     if (!in_array(strtolower($ck), $this->calcs)){
-                        continue;
+                        throw new TXException(3011, array($ck));
                     }
                     foreach ($vals as $k => $value){
                         $value = $this->real_escape_string($value);
                         if (is_string($k)){
                             $k = $this->real_escape_string($k);
-                            $groups[] = "{$ck}(`{$table}`.`{$k}`) as '{$value}'";
+                            if ($ck == 'distinct'){
+                                $groups[] = "COUNT(DISTINCT `{$table}`.`{$k}`) as '{$value}'";
+                            } else {
+                                $groups[] = "{$ck}(`{$table}`.`{$k}`) as '{$value}'";
+                            }
                         } else {
                             $groups[] = "{$ck}(`{$table}`.`{$value}`) as '{$value}'";
                         }
@@ -190,7 +274,7 @@ class TXDoubleDAO extends TXDAO
             }
             return join(',', $groups);
         }
-        return $fields;
+        return $fields ?: '*';
     }
 
     /**

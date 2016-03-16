@@ -3,20 +3,7 @@
  * Router class
  */
 class TXRouter {
-    /**
-     * @var TXRequest
-     */
-    private $requests;
-
-    public static $rootPath = '';
-
-    /**
-     * @return TXRequest
-     */
-    public function getRequests()
-    {
-        return $this->requests;
-    }
+    private $rootPath = '';
 
     private $routerInfo;
 
@@ -29,11 +16,11 @@ class TXRouter {
      * 设置资源路径
      * @param $pathInfo
      */
-    private static function buildRootPath($pathInfo)
+    private function buildRootPath($pathInfo)
     {
         foreach ($pathInfo as $path){
             if ($path !== "index.php"){
-                self::$rootPath .= "/$path";
+                $this->rootPath .= "/$path";
             }
         }
     }
@@ -45,16 +32,16 @@ class TXRouter {
     private function getRouterInfo()
     {
         $scriptInfo = explode("/", trim($_SERVER['SCRIPT_NAME'], '/'));
-        self::buildRootPath($scriptInfo);
-        if (substr($_SERVER['REQUEST_URI'], 0, strlen(self::$rootPath."/static")) == self::$rootPath."/static"){
+        $this->buildRootPath($scriptInfo);
+        if (substr($_SERVER['REQUEST_URI'], 0, strlen($this->rootPath."/static")) == $this->rootPath."/static"){
             header('HTTP/1.1 404 Not Found');
             header("status: 404 Not Found");
             echo 'Source File Not Found';
             exit;
         }
-        TXConfig::setAlias('web', self::$rootPath);
+        TXConfig::setAlias('web', $this->rootPath);
         $pathRoot = strpos($_SERVER['REQUEST_URI'], '?') ? strstr($_SERVER['REQUEST_URI'], '?', true) : $_SERVER['REQUEST_URI'];
-        $pathRoot = explode(self::$rootPath, $pathRoot)[1];
+        $pathRoot = $this->rootPath ? explode($this->rootPath, $pathRoot)[1] : $pathRoot;
         $pathInfo = trim($pathRoot, '/') ? explode("/", trim($pathRoot, '/')) : false;
         if (!$pathInfo){
             return false;
@@ -77,10 +64,11 @@ class TXRouter {
         $isAjax = false;
         if ($pathInfo = $this->getRouterInfo()){
             List($module, $method, $isAjax) = $pathInfo;
+            $module = $module ?: $this->routerInfo['base_action'];
         } else {
             $module = $this->routerInfo['base_action'];
             $method = null;
         }
-        $this->requests = TXRequest::create($module, $_REQUEST, $isAjax, $method);
+        TXRequest::create($module, $isAjax, $method);
     }
 }

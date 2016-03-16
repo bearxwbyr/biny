@@ -20,16 +20,14 @@ class TXConfig
         if (!isset(self::$cfgCaches[$module])) {
             $path = TXApp::$base_root . DS . 'config' . DS . $module . '.php';
 
-            if (is_readable($path)) {
-                self::$cfgCaches[$module] = include($path);
+            $n_module = $module. (ENV_DEV ? '_dev' : (ENV_PRE ? '_pre' : (ENV_PUB ? '_pub' : '')));
+            $n_path = TXApp::$base_root . DS . 'config' . DS . $n_module . '.php';
+            if (is_readable($path) || is_readable($n_path)) {
+                $config = is_readable($path) ? require($path) : [];
+                $config = is_readable($n_path) ? array_merge($config, require($n_path)) : $config;
+                self::$cfgCaches[$module] = $config;
             } else {
-                $n_module = $module. (ENV_DEV ? '_dev' : (ENV_PRE ? '_pre' : (ENV_PUB ? '_pub' : '')));
-                $path = TXApp::$base_root . DS . 'config' . DS . $n_module . '.php';
-                if (is_readable($path)){
-                    self::$cfgCaches[$module] = include($path);
-                } else {
-                    throw new TXException(1001, array($path));
-                }
+                throw new TXException(1002, array($path));
             }
         }
 
@@ -46,16 +44,14 @@ class TXConfig
         if (!isset(self::$appcfgCaches[$module])) {
             $path = TXApp::$app_root . DS . 'config' . DS . $module . '.php';
 
-            if (is_readable($path)) {
-                self::$appcfgCaches[$module] = include($path);
+            $n_module = $module. (ENV_DEV ? '_dev' : (ENV_PRE ? '_pre' : (ENV_PUB ? '_pub' : '')));
+            $n_path = TXApp::$app_root . DS . 'config' . DS . $n_module . '.php';
+            if (is_readable($path) || is_readable($n_path)) {
+                $config = is_readable($path) ? require($path) : [];
+                $config = is_readable($n_path) ? array_merge($config, require($n_path)) : $config;
+                self::$appcfgCaches[$module] = $config;
             } else {
-                $n_module = $module. (ENV_DEV ? '_dev' : (ENV_PRE ? '_pre' : (ENV_PUB ? '_pub' : '')));
-                $path = TXApp::$app_root . DS . 'config' . DS . $n_module . '.php';
-                if (is_readable($path)){
-                    self::$appcfgCaches[$module] = include($path);
-                } else {
-                    throw new TXException(1001, array($path));
-                }
+                throw new TXException(1002, array($path));
             }
         }
 

@@ -28,11 +28,11 @@ class TXSocket {
     public function __construct($config)
     {
         if( ($this->handler = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) === false) {
-            throw new TXException(1007);
+            throw new TXException(4001);
         }
         socket_set_option($this->handler, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>$config['timeout'], "usec"=>0));
         if (@socket_connect($this->handler, $config['host'], $config['port']) === false) {
-            throw new TXException(1008, array($config['host'], $config['port']));
+            throw new TXException(4002, array($config['host'], $config['port']));
         }
     }
 
@@ -71,7 +71,7 @@ class TXSocket {
         $i = 0;
         while ($recvlen > 0) {
             if (++$i == 100){
-                throw new TXException(1010);
+                throw new TXException(4003);
             }
             $nCnt = @socket_recv($this->handler, $buf, $recvlen, 0);
             $data .= $buf;

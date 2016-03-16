@@ -16,7 +16,6 @@ class baseDAO extends TXSingleDAO
         parent::__construct();
         if ($this->_pkCache){
             $this->cacheKey = sprintf(TXConfig::getConfig('pkCache'), substr(get_called_class(), 0, -3));
-            $this->redis = TXRedis::instance();
         }
     }
 
@@ -46,7 +45,7 @@ class baseDAO extends TXSingleDAO
     /**
      * 获取主键
      * @param $pk
-     * @return TXObject
+     * @return array
      */
     public function getByPk($pk)
     {
@@ -72,7 +71,7 @@ class baseDAO extends TXSingleDAO
         $cond = $this->buildPK($pk);
         $flag = $this->filter($cond)->update($sets);
         if ($flag && $this->_pkCache && $cache = $this->getCache($pk)){
-            $cache = new TXObject(array_merge($cache->values(), $sets));
+            $cache = array_merge($cache, $sets);
             $this->setCache($pk, $cache);
         }
         return $flag;
@@ -128,14 +127,13 @@ class baseDAO extends TXSingleDAO
     /**
      * 获取cache
      * @param $pk
-     * @return bool|TXObject
+     * @return bool|array
      */
     private function getCache($pk)
     {
         if ($this->_pkCache){
             $hash = $this->getHash($pk);
-            $cache = unserialize($this->redis->hget($this->cacheKey, $hash));
-            return $cache ? new TXObject($cache) : false;
+            return TXApp::$base->memcache->get($this->cacheKey.$hash);
         } else {
             return false;
         }
@@ -150,9 +148,9 @@ class baseDAO extends TXSingleDAO
      */
     private function setCache($pk, $value)
     {
-        if ($this->_pkCache && $value instanceof TXObject){
+        if ($this->_pkCache){
             $hash = $this->getHash($pk);
-            return $this->redis->hset($this->cacheKey, $hash, $value->serialize());
+            return TXApp::$base->memcache->set($this->cacheKey.$hash, $value);
         }
     }
 
@@ -165,7 +163,7 @@ class baseDAO extends TXSingleDAO
     {
         if ($this->_pkCache){
             $hash = $this->getHash($pk);
-            return $this->redis->hdel($this->cacheKey, $hash);
+            return TXApp::$base->redis->hdel($this->cacheKey, $hash);
         }
     }
 
@@ -176,7 +174,7 @@ class baseDAO extends TXSingleDAO
     public function clearCache()
     {
         if ($this->_pkCache){
-            return $this->redis->del($this->cacheKey);
+            return TXApp::$base->redis->del($this->cacheKey);
         }
     }
 

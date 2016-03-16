@@ -1,32 +1,28 @@
 <?php
 class TXResponse {
     /**
-     * @var 视图名称
+     * @var string 视图名称
      */
     private $view;
 
     private $params;
 
-    private $ignores;
+    private $objects;
 
     public $title=null;
     public $keywords=null;
     public $descript=null;
 
-    public function __construct($view, $params = array(), $ignores=array())
+    /**
+     * @param $view
+     * @param array $params
+     * @param array $objects 直接引用对象
+     */
+    public function __construct($view, $params = array(), $objects=array())
     {
         $this->view = $view;
         $this->params = $params;
-        $this->ignores = $ignores;
-    }
-
-    /**
-     * 是否异步请求
-     * @return bool
-     */
-    public function isAjax()
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        $this->objects = $objects;
     }
 
     /**
@@ -35,7 +31,7 @@ class TXResponse {
      */
     private function getCsrfToken()
     {
-        return TXRequest::$csrfToken;
+        return TXApp::$base->request->getCsrfToken();
     }
 
     /**
@@ -55,14 +51,17 @@ class TXResponse {
     public function getContent()
     {
         //防XSS注入
-        foreach ($this->params as $key => &$param) {
-            if (is_string($param) && !in_array($key, $this->ignores)){
-                $param = $this->encode($param);
-            } 
+        foreach ($this->objects as &$object) {
+            if (is_string($object)){
+                $object = $this->encode($object);
+            } elseif (is_array($object)) {
+                $object = new TXArray($object);
+            }
         }
-        unset($param);
+        unset($object);
+        $this->objects['PRM'] = new TXArray($this->params);
 
-        extract($this->params);
+        extract($this->objects);
 
         ob_start();
         //include template

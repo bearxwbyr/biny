@@ -13,25 +13,23 @@ class TXException extends Exception
     public function __construct($code, $params=array(), $html="404")
     {
         TXEvent::trigger(onException, array($code));
+        $message = $this->fmt_code($code, $params);
+        TXLogger::addError($message."\n".$this->getTraceAsString());
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);
             }
             if (SYS_DEBUG){
-                $message = $this->fmt_code($code, $params);
-                $message = $this->escapeString(htmlspecialchars($message, ENT_QUOTES));
+                $message = TXString::encode($message);
                 echo "<pre>";
                 parent::__construct($message, $code);
 
             } else {
-                if (!TXRequest::getInstance()->isAjax){
-                    ob_clean();
+                if (!TXApp::$base->request->isAjax){
                     $params = [
-                        'rootPath' => TXConfig::getAppConfig('rootPath', 'dns')
+                        'webRoot' => TXConfig::getAppConfig('webRoot', 'dns')
                     ];
-                    extract($params);
-                    $file = sprintf('%s/template/%s.tpl.php', TXApp::$app_root, "Error/".$html);
-                    include $file;
+                    echo new TXResponse("error/$html", array(), $params);
                 } else {
                     $data = array("flag" => false, "error" => "系统数据异常：$html");
                     echo new TXJSONResponse($data);
@@ -48,18 +46,9 @@ class TXException extends Exception
 
     public function __destruct()
     {
-        if (SYS_DEBUG || !TXRequest::getInstance()->isAjax){
+        if (SYS_DEBUG || !TXApp::$base->request->isAjax){
             echo '</pre>';
         }
-    }
-
-    /**
-     * 引号转义
-     * @param $message
-     * @return mixed
-     */
-    private function escapeString($message){
-        return str_replace('`', '&#96;', $message);
     }
 
     /**

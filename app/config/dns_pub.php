@@ -25,5 +25,6 @@ return array(
         'port' => 6379
     ),
 
-    'rootPath' => ''
+    'CDN_ROOT' => '@web@/',
+    'webRoot' => '@web@'
 );

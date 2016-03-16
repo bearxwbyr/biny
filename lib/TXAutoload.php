@@ -43,7 +43,7 @@ class TXAutoload
         if (is_writeable(self::$autoPath)) {
             file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');
         } else {
-            throw new TXException(1020, array(self::$autoPath));
+            throw new TXException(1005, array(self::$autoPath));
         }
     }
 
@@ -82,10 +82,10 @@ class TXAutoload
             if (is_readable($path)) {
                 include $path;
             } else {
-                throw new TXException(1002, array($class));
+                throw new TXException(1003, array($class));
             }
-        } else if (substr($class, -6) == 'Action' || substr($class, -4) == 'Ajax') {
-            throw new TXException(1002, array($class));
+        } else if (substr($class, -6) == 'Action') {
+            throw new TXException(1003, array($class));
         }
     }
 }

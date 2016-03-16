@@ -4,19 +4,18 @@
  */
 class TXCache {
     /**
-     * @var TXCache
+     * @var array
      */
-    private static $instance = array();
+    private $cache= [];
 
     /**
      * 获取全局临时缓存
      * @param $key
-     * @param null $default
      * @return null
      */
-    public static function getCache($key, $default=null)
+    public function __get($key)
     {
-        return isset(self::$instance[$key]) ? self::$instance[$key] : $default;
+        return isset($this->cache[$key]) ? $this->cache[$key] : null;
     }
 
     /**
@@ -24,17 +23,36 @@ class TXCache {
      * @param $key
      * @param $value
      */
-    public static function setCache($key, $value)
+    public function __set($key, $value)
     {
-        self::$instance[$key] = $value;
+        $this->cache[$key] = $value;
+    }
+
+    /**
+     * 判断是否存在
+     * @param $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return isset($this->cache[$key]);
     }
 
     /**
      * 删除全局临时缓存
      * @param $key
      */
-    public static function delCache($key)
+    public function __unset($key)
     {
-        unset(self::$instance[$key]);
+        unset($this->cache[$key]);
+    }
+
+    /**
+     * 调试专用接口
+     * @return array
+     */
+    public function __toLogger()
+    {
+        return $this->cache;
     }
 }

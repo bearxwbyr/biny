@@ -66,7 +66,7 @@ class TXForm
     public function __get($name)
     {
         if (!array_key_exists($name, $this->_datas)){
-            throw new TXException(3000, array($name, get_class($this)));
+            throw new TXException(5001, array($name, get_class($this)));
         }
         return $this->_datas[$name];
     }
@@ -179,7 +179,7 @@ class TXForm
                 default:
                     $value = 'valid_'.$value;
                     if (!method_exists($this, $value)){
-                        throw new TXException(3001, array($value, get_class($this)));
+                        throw new TXException(5002, array($value, get_class($this)));
                     }
                     return $this->$value();
             }

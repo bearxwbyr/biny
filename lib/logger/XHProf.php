@@ -1,11 +1,9 @@
 <?php
 /**
  * 性能分析器
- * @author kelezyb
  */
 class XHProf {
 	private static $flag = XHPROF_FLAGS_NO_BUILTINS;
-	private static $xhprof_data = null;
 	
 	/**
 	 * 开始性能监视

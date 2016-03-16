@@ -7,11 +7,14 @@ class TXJSONResponse {
 
     /**
      * 构造函数
-     * @param array $data
+     * @param $data
+     * @param bool $encode
      */
-    public function __construct($data)
+    public function __construct($data, $encode=true)
     {
+        $data = TXString::recursionEncode($data, $encode);
         if (SYS_CONSOLE && TXLogger::$ConsoleOut){
+            TXLogger::format();
             $data['__logs'] = TXLogger::$ConsoleOut;
             TXLogger::$ConsoleOut = array();
         }
@@ -20,6 +23,7 @@ class TXJSONResponse {
 
     function __toString()
     {
+//        ob_clean();
         return json_encode($this->data, JSON_UNESCAPED_UNICODE) ?: json_last_error_msg();
     }
 }

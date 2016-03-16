@@ -21,7 +21,6 @@ class TXFactory {
         if (null === $alias) {
             $alias = $class;
         }
-
         if (!isset(self::$objects[$alias])) {
             self::$objects[$alias] = new $class();
         }

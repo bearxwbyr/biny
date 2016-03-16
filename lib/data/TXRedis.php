@@ -21,12 +21,15 @@ class TXRedis
     }
 
     /**
-     * @param array $config
+     * @param $config
+     * @throws TXException
      */
     private function __construct($config)
     {
         $this->handler = new Redis();
-        $this->handler->connect($config['host'], $config['port']);
+        if (!$this->handler->connect($config['host'], $config['port'])){
+            throw new TXException(4005, array($config['host'], $config['port']));
+        }
     }
 
     /**

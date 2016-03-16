@@ -30,7 +30,7 @@ class TXEvent
     public static function bind($method, $event, $times=null)
     {
         if (!is_array($method) || !method_exists($method[0], $method[1])){
-            throw new TXException(4000, isset($method[1]) ? $method[1] : 'null');
+            throw new TXException(5003, isset($method[1]) ? $method[1] : 'null');
         }
         $fh = ++self::$fh;
         self::$monitors[$event][$fh] = array('m'=>$method, 't'=>$times);
@@ -43,8 +43,9 @@ class TXEvent
      * @param $event
      * @return int
      */
-    public static function on($method, $event)
+    public static function on($event, $method=null)
     {
+        $method = $method ?: [TXLogger::instance(), 'event'];
         return self::bind($method, $event);
     }
 
@@ -54,8 +55,9 @@ class TXEvent
      * @param $event
      * @return int
      */
-    public static function one($method, $event)
+    public static function one($event, $method=null)
     {
+        $method = $method ?: [TXLogger::instance(), 'event'];
         return self::bind($method, $event, 1);
     }
 
