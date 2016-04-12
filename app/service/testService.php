@@ -11,7 +11,7 @@ class testService extends baseService
 {
     public function test()
     {
-        TXEvent::one('onSql');
+        TXEvent::one(onSql);
         $DAO = $this->userDAO;
         $result = $DAO
             ->addition(array('avg'=>array('cash'=>'a_c')))

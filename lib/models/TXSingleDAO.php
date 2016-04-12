@@ -419,7 +419,7 @@ class TXSingleDAO extends TXDAO
         $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $set = $this->buildSets($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
 
         return $this->execute($sql);
     }
@@ -434,7 +434,7 @@ class TXSingleDAO extends TXDAO
     {
         $fields = $this->buildInsert($sets);
         $sql = sprintf("INSERT INTO %s %s", $this->table, $fields);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
         return $this->execute($sql, $id);
     }
 
@@ -467,7 +467,7 @@ class TXSingleDAO extends TXDAO
         }
         $columns = join(',', $columns);
         $sql = sprintf("INSERT INTO %s %s VALUES  %s", $this->table, $fields, $columns);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
         return $this->execute($sql, false);
     }
 
@@ -480,7 +480,7 @@ class TXSingleDAO extends TXDAO
     {
         $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
 
         return $this->execute($sql);
     }
@@ -496,7 +496,7 @@ class TXSingleDAO extends TXDAO
         $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $set = $this->buildCount($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
         return $this->execute($sql);
     }
 
@@ -511,7 +511,7 @@ class TXSingleDAO extends TXDAO
         $set = $this->buildSets($sets);
         $fields = $this->buildInsert($inserts);
         $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
 
         return $this->execute($sql, true);
     }
@@ -527,7 +527,7 @@ class TXSingleDAO extends TXDAO
         $set = $this->buildCount($adds);
         $fields = $this->buildInsert($inserts);
         $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
         return $this->execute($sql, true);
     }
 

@@ -184,7 +184,7 @@ class TXDAO
         $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : array());
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->getTable(), $where);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
         $result = $this->sql($sql, null, self::FETCH_TYPE_ONE);
         return $result;
     }
@@ -204,7 +204,7 @@ class TXDAO
         $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : []);
         $groupBy = $this->buildGroupBy($cond ? $cond->get('groupby') : [], $cond ? $cond->get('having') : []);
         $sql = sprintf("SELECT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
 
         return $this->sql($sql, $key);
     }
@@ -220,7 +220,7 @@ class TXDAO
         $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $field = $field ? 'DISTINCT '.$this->buildFields($field) : '0';
         $sql = sprintf("SELECT COUNT(%s) as count FROM %s%s", $field, $this->getTable(), $where);
-        TXEvent::trigger('onSql', [$sql]);
+        TXEvent::trigger(onSql, [$sql]);
 
         $ret = $this->sql($sql);
         return $ret[0]['count'] ?: 0;
@@ -245,7 +245,7 @@ class TXDAO
         } else if (in_array($method, $this->calcs)){
             $where = $args[1] && $args[1]->where ? " WHERE ".$args[1]->where : "";
             $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
-            TXEvent::trigger('onSql', [$sql]);
+            TXEvent::trigger(onSql, [$sql]);
 
             $ret = $this->sql($sql, null, self::FETCH_TYPE_ONE);
             return $ret[$method] ?: $ret;
