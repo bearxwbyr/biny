@@ -96,7 +96,7 @@ class TXFilter
             } else {
                 $cond = new TXDoubleCond($this->DAO);
             }
-            $cond->where = $this->buildWhere($this->conds);
+            $cond->setWhere($this->buildWhere($this->conds));
             return call_user_func_array([$cond, $method], $args);
         } else {
             throw new TXException(3009, array($method, __CLASS__));

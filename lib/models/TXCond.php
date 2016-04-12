@@ -15,12 +15,12 @@
 class TXCond
 {
     private $DAO;
-    public $where;
-    public $limit=array();
-    public $orderby=array();
-    public $additions=array();
-    public $groupby=array();
-    public $having=array();
+    protected $where;
+    protected $limit=array();
+    protected $orderby=array();
+    protected $additions=array();
+    protected $groupby=array();
+    protected $having=array();
 
     protected $methods = ['distinct', 'find', 'count'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
@@ -32,6 +32,25 @@ class TXCond
     public function __construct($DAO)
     {
         $this->DAO = $DAO;
+    }
+
+    /**
+     * 设置wheres
+     * @param $where
+     */
+    public function setWhere($where)
+    {
+        $this->where = $where;
+    }
+
+    /**
+     * 获取字段
+     * @param $key
+     * @return mixed
+     */
+    public function get($key)
+    {
+        return $this->$key;
     }
 
     /**
@@ -67,106 +86,96 @@ class TXCond
      * 构建limit
      * @param $len
      * @param int $start
-     * @param bool $clone
      * @return $this
      */
-    public function limit($len, $start=0, $clone=true)
+    public function limit($len, $start=0)
     {
-        $cond = $clone ? clone $this : $this;
-        $cond->limit = array(intval($start), intval($len));
-        return $cond;
+        $this->limit = array(intval($start), intval($len));
+        return $this;
     }
 
     /**
      * 构建order
      * @param $orderby
-     * @param bool $clone
      * @return $this
      */
-    public function order($orderby, $clone=true)
+    public function order($orderby)
     {
-        $cond = $clone ? clone $this : $this;
         foreach ($orderby as $key => $val){
             if (is_array($val)){
-                if (!isset($cond->orderby[$key])){
-                    $cond->orderby[$key] = array();
+                if (!isset($this->orderby[$key])){
+                    $this->orderby[$key] = array();
                 }
-                if (is_string($cond->orderby[$key])){
-                    $cond->orderby[$key] = $val;
+                if (is_string($this->orderby[$key])){
+                    $this->orderby[$key] = $val;
                 } else {
                     foreach ($val as $k => $v){
-                        $cond->orderby[$key][$k] = $v;
+                        $this->orderby[$key][$k] = $v;
                     }
                 }
             } else {
-                $cond->orderby[$key] = $val;
+                $this->orderby[$key] = $val;
             }
         }
-        return $cond;
+        return $this;
     }
 
     /**
      * 构建group
      * @param $groupby
-     * @param bool $clone
      * @return $this
      */
-    public function group($groupby, $clone=true)
+    public function group($groupby)
     {
-        $cond = $clone ? clone $this : $this;
         foreach ($groupby as $key => $val){
             if (is_array($val)){
-                if (!isset($cond->groupby[$key])){
-                    $cond->groupby[$key] = array();
+                if (!isset($this->groupby[$key])){
+                    $this->groupby[$key] = array();
                 }
                 foreach ($val as $k => $v){
-                    $cond->groupby[$key][$k] = $v;
+                    $this->groupby[$key][$k] = $v;
                 }
             } else {
-                $cond->groupby[$key] = $val;
+                $this->groupby[$key] = $val;
             }
         }
-        return $cond;
+        return $this;
     }
 
     /**
      * 构建having
      * @param $having
-     * @param bool $clone
      * @return $this
      */
-    public function having($having, $clone=true)
+    public function having($having)
     {
-        $cond = $clone ? clone $this : $this;
         foreach ($having as $key => $val){
             foreach ($val as $k => $v){
-                $cond->having[$key][$k] = $v;
+                $this->having[$key][$k] = $v;
             }
         }
-        return $cond;
+        return $this;
     }
 
     /**
      * 构建additions
      * @param $additions
-     * @param bool $clone
      * @return $this
      */
-    public function addition($additions, $clone=true)
+    public function addition($additions)
     {
-        $cond = $clone ? clone $this : $this;
         foreach ($additions as $key => $val){
             if (is_array($val)){
-                if (!isset($cond->additions[$key])){
-                    $cond->additions[$key] = array();
+                if (!isset($this->additions[$key])){
+                    $this->additions[$key] = array();
                 }
                 foreach ($val as $k => $v){
-                    $cond->additions[$key][$k] = $v;
+                    $this->additions[$key][$k] = $v;
                 }
             } else {
-                $cond->additions[$key] = $val;
+                $this->additions[$key] = $val;
             }
         }
-        return $cond;
+        return $this;
     }
 }

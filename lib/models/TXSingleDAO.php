@@ -1,6 +1,7 @@
 <?php
 /**
  * 数据库
+ * @method TXSingleCond limit($len, $start=0)
  * @method TXSingleCond group($groupby)
  * @method TXSingleCond having($having)
  * @method TXSingleCond order($orderby)
@@ -415,7 +416,7 @@ class TXSingleDAO extends TXDAO
      */
     public function update($sets, $cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $set = $this->buildSets($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -477,7 +478,7 @@ class TXSingleDAO extends TXDAO
      */
     public function delete($cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
         TXEvent::trigger('onSql', [$sql]);
 
@@ -492,7 +493,7 @@ class TXSingleDAO extends TXDAO
      */
     public function addCount($sets, $cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $set = $this->buildCount($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -549,17 +550,5 @@ class TXSingleDAO extends TXDAO
     public function merge($cond=array())
     {
         return $cond ? new TXSingleFilter($this, $cond, "__or__") : $this;
-    }
-
-    /**
-     * 构建limit
-     * @param $len
-     * @param int $start
-     * @return TXSingleCond
-     */
-    public function limit($len, $start=0)
-    {
-        $cond = new TXSingleCond($this);
-        return $cond->limit($len, $start, false);
     }
 }

@@ -181,8 +181,8 @@ class TXDAO
      */
     public function find($fields='', $cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
-        $fields = $this->buildFields($fields, $cond ? $cond->additions : array());
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
+        $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : array());
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->getTable(), $where);
         TXEvent::trigger('onSql', [$sql]);
         $result = $this->sql($sql, null, self::FETCH_TYPE_ONE);
@@ -198,11 +198,11 @@ class TXDAO
      */
     public function query($fields='', $key=null, $cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
-        $limit = $this->buildLimit($cond ? $cond->limit : []);
-        $orderBy = $this->buildOrderBy($cond ? $cond->orderby : []);
-        $fields = $this->buildFields($fields, $cond ? $cond->additions : []);
-        $groupBy = $this->buildGroupBy($cond ? $cond->groupby : [], $cond ? $cond->having : []);
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
+        $limit = $this->buildLimit($cond ? $cond->get('limit') : []);
+        $orderBy = $this->buildOrderBy($cond ? $cond->get('orderby') : []);
+        $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : []);
+        $groupBy = $this->buildGroupBy($cond ? $cond->get('groupby') : [], $cond ? $cond->get('having') : []);
         $sql = sprintf("SELECT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
         TXEvent::trigger('onSql', [$sql]);
 
@@ -217,7 +217,7 @@ class TXDAO
      */
     public function count($field='', $cond=null)
     {
-        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
         $field = $field ? 'DISTINCT '.$this->buildFields($field) : '0';
         $sql = sprintf("SELECT COUNT(%s) as count FROM %s%s", $field, $this->getTable(), $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -241,7 +241,6 @@ class TXDAO
             } else {
                 $cond = new TXDoubleCond($this);
             }
-            $args[] = false;
             return call_user_func_array([$cond, $method], $args);
         } else if (in_array($method, $this->calcs)){
             $where = $args[1] && $args[1]->where ? " WHERE ".$args[1]->where : "";

@@ -1,6 +1,7 @@
 <?php
 /**
  * 多表数据库
+ * @method TXDoubleCond limit($len, $start=0)
  * @method TXDoubleCond group($groupby)
  * @method TXDoubleCond having($having)
  * @method TXDoubleCond order($orderby)
@@ -428,17 +429,5 @@ class TXDoubleDAO extends TXDAO
     public function merge($cond=array())
     {
         return $cond ? new TXDoubleFilter($this, $cond, "__or__") : $this;
-    }
-
-    /**
-     * 构建limit
-     * @param $len
-     * @param int $start
-     * @return TXDoubleCond
-     */
-    public function limit($len, $start=0)
-    {
-        $cond = new TXDoubleCond($this);
-        return $cond->limit($len, $start, false);
     }
 }
