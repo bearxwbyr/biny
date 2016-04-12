@@ -53,7 +53,7 @@ class TXSingleDAO extends TXDAO
      * 返回表名
      * @return string
      */
-    protected function getTable()
+    public function getTable()
     {
         return $this->table;
     }
@@ -234,7 +234,7 @@ class TXSingleDAO extends TXDAO
             }
             foreach ($group as $key => $values){
                 if (!in_array(strtolower($key), $this->calcs)){
-                    throw new TXException(3011, array($ck));
+                    throw new TXException(3011, array($key));
                 }
                 foreach ($values as $k => $value){
                     $value = $this->real_escape_string($value);
