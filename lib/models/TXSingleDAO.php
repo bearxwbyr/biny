@@ -1,6 +1,10 @@
 <?php
 /**
  * 数据库
+ * @method TXSingleCond group($groupby)
+ * @method TXSingleCond having($having)
+ * @method TXSingleCond order($orderby)
+ * @method TXSingleCond addition($additions)
  */
 class TXSingleDAO extends TXDAO
 {
@@ -217,6 +221,7 @@ class TXSingleDAO extends TXDAO
      * @param $fields
      * @param array $group
      * @return string
+     * @throws TXException
      */
     protected function buildFields($fields, $group=array()){
         if (is_array($fields)){
@@ -405,11 +410,12 @@ class TXSingleDAO extends TXDAO
     /**
      * 更新数据
      * @param array $sets
+     * @param TXSingleCond $cond
      * @return bool
      */
-    public function update($sets)
+    public function update($sets, $cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
         $set = $this->buildSets($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -466,11 +472,12 @@ class TXSingleDAO extends TXDAO
 
     /**
      * 删除数据
+     * @param TXSingleCond $cond
      * @return bool
      */
-    public function delete()
+    public function delete($cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
         TXEvent::trigger('onSql', [$sql]);
 
@@ -480,11 +487,12 @@ class TXSingleDAO extends TXDAO
     /**
      * 添加数量 count=count+1
      * @param $sets
+     * @param TXSingleCond $cond
      * @return bool|string
      */
-    public function addCount($sets)
+    public function addCount($sets, $cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
         $set = $this->buildCount($sets);
         $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -541,5 +549,17 @@ class TXSingleDAO extends TXDAO
     public function merge($cond=array())
     {
         return $cond ? new TXSingleFilter($this, $cond, "__or__") : $this;
+    }
+
+    /**
+     * 构建limit
+     * @param $len
+     * @param int $start
+     * @return TXSingleCond
+     */
+    public function limit($len, $start=0)
+    {
+        $cond = new TXSingleCond($this);
+        return $cond->limit($len, $start, false);
     }
 }

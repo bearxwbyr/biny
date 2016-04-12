@@ -13,15 +13,9 @@ class TXDAO
 
     protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count', 'distinct'];
+    protected $methods = ['group', 'limit', 'order', 'addition', 'having'];
 
     protected $dbConfig = 'database';
-
-    protected $where;
-    protected $limit=array();
-    protected $orderby=array();
-    protected $additions=array();
-    protected $groupby=array();
-    protected $having=array();
 
     /**
      * @return string
@@ -112,15 +106,6 @@ class TXDAO
     }
 
     /**
-     * Filter预设where (不建议直接调用)
-     * @param $where
-     */
-    public function setWhere($where)
-    {
-        $this->where = $where;
-    }
-
-    /**
      * 执行sql
      * @param $sql
      * @param bool $id
@@ -189,127 +174,15 @@ class TXDAO
     }
 
     /**
-     * 构建limit
-     * @param $start
-     * @param $len
-     * @return $this
-     */
-    public function limit($len, $start=0)
-    {
-        $this->limit = array(intval($start), intval($len));
-        return $this;
-    }
-
-    /**
-     * 构建order
-     * @param $orderby
-     * @return $this
-     */
-    public function order($orderby)
-    {
-        foreach ($orderby as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->orderby[$key])){
-                    $this->orderby[$key] = array();
-                }
-                if (is_string($this->orderby[$key])){
-                    $this->orderby[$key] = $val;
-                } else {
-                    foreach ($val as $k => $v){
-                        $this->orderby[$key][$k] = $v;
-                    }
-                }
-            } else {
-                $this->orderby[$key] = $val;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 构建group
-     * @param $groupby
-     * @return $this
-     */
-    public function group($groupby)
-    {
-        foreach ($groupby as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->groupby[$key])){
-                    $this->groupby[$key] = array();
-                }
-                foreach ($val as $k => $v){
-                    $this->groupby[$key][$k] = $v;
-                }
-            } else {
-                $this->groupby[$key] = $val;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 构建having
-     * @param $having
-     * @return $this
-     */
-    public function having($having)
-    {
-        foreach ($having as $key => $val){
-            foreach ($val as $k => $v){
-                $this->having[$key][$k] = $v;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 构建additions
-     * @param $additions
-     * @return $this
-     */
-    public function addition($additions)
-    {
-        foreach ($additions as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->additions[$key])){
-                    $this->additions[$key] = array();
-                }
-                foreach ($val as $k => $v){
-                    $this->additions[$key][$k] = $v;
-                }
-            } else {
-                $this->additions[$key] = $val;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 查找不重复的项
-     * @param $fields
-     * @return array
-     */
-    public function distinct($fields){
-        $where = $this->where ? " WHERE ".$this->where : "";
-        $limit = $this->buildLimit($this->limit);
-        $orderBy = $this->buildOrderBy($this->orderby);
-        $fields = $this->buildFields($fields);
-        $sql = sprintf("SELECT distinct %s FROM %s%s%s%s", $fields, $this->getTable(), $where, $orderBy, $limit);
-        TXEvent::trigger('onSql', [$sql]);
-
-        return $this->sql($sql);
-    }
-
-    /**
      * 找单条数据
      * @param string $fields
+     * @param TXCond $cond
      * @return array
      */
-    public function find($fields='')
+    public function find($fields='', $cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
-        $fields = $this->buildFields($fields, $this->additions);
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $fields = $this->buildFields($fields, $cond ? $cond->additions : array());
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->getTable(), $where);
         TXEvent::trigger('onSql', [$sql]);
         $result = $this->sql($sql, null, self::FETCH_TYPE_ONE);
@@ -320,15 +193,16 @@ class TXDAO
      * 查询数据
      * @param string $fields
      * @param null $key
+     * @param TXCond $cond
      * @return array
      */
-    public function query($fields='', $key=null)
+    public function query($fields='', $key=null, $cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
-        $limit = $this->buildLimit($this->limit);
-        $orderBy = $this->buildOrderBy($this->orderby);
-        $fields = $this->buildFields($fields, $this->additions);
-        $groupBy = $this->buildGroupBy($this->groupby, $this->having);
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
+        $limit = $this->buildLimit($cond ? $cond->limit : []);
+        $orderBy = $this->buildOrderBy($cond ? $cond->orderby : []);
+        $fields = $this->buildFields($fields, $cond ? $cond->additions : []);
+        $groupBy = $this->buildGroupBy($cond ? $cond->groupby : [], $cond ? $cond->having : []);
         $sql = sprintf("SELECT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
         TXEvent::trigger('onSql', [$sql]);
 
@@ -338,11 +212,12 @@ class TXDAO
     /**
      * 计算数量
      * @param string $field
+     * @param TXCond $cond
      * @return int
      */
-    public function count($field='')
+    public function count($field='', $cond=null)
     {
-        $where = $this->where ? " WHERE ".$this->where : "";
+        $where = $cond && $cond->where ? " WHERE ".$cond->where : "";
         $field = $field ? 'DISTINCT '.$this->buildFields($field) : '0';
         $sql = sprintf("SELECT COUNT(%s) as count FROM %s%s", $field, $this->getTable(), $where);
         TXEvent::trigger('onSql', [$sql]);
@@ -360,8 +235,16 @@ class TXDAO
      */
     public function __call($method, $args)
     {
-        if (in_array($method, $this->calcs)){
-            $where = $this->where ? " WHERE ".$this->where : "";
+        if (in_array($method, $this->methods)){
+            if ($this instanceof TXSingleDAO){
+                $cond = new TXSingleCond($this);
+            } else {
+                $cond = new TXDoubleCond($this);
+            }
+            $args[] = false;
+            return call_user_func_array([$cond, $method], $args);
+        } else if (in_array($method, $this->calcs)){
+            $where = $args[1] && $args[1]->where ? " WHERE ".$args[1]->where : "";
             $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
             TXEvent::trigger('onSql', [$sql]);
 

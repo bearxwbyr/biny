@@ -12,11 +12,6 @@
  * @method array find($field='')
  * @method array query($field='', $key=null)
  * @method array count($field='')
- * @method TXDAO group($groupby)
- * @method TXDAO having($having)
- * @method TXDAO limit($len, $start=0)
- * @method TXDAO order($orderby)
- * @method TXDAO addition($additions)
  */
 class TXFilter
 {
@@ -96,8 +91,13 @@ class TXFilter
     public function __call($method, $args)
     {
         if (in_array($method, $this->methods) || in_array($method, $this->calcs)){
-            $this->DAO->setWhere($this->buildWhere($this->conds));
-            return call_user_func_array([$this->DAO, $method], $args);
+            if ($this instanceof TXSingleFilter){
+                $cond = new TXSingleCond($this->DAO);
+            } else {
+                $cond = new TXDoubleCond($this->DAO);
+            }
+            $cond->where = $this->buildWhere($this->conds);
+            return call_user_func_array([$cond, $method], $args);
         } else {
             throw new TXException(3009, array($method, __CLASS__));
         }

@@ -1,6 +1,10 @@
 <?php
 /**
  * 多表数据库
+ * @method TXDoubleCond group($groupby)
+ * @method TXDoubleCond having($having)
+ * @method TXDoubleCond order($orderby)
+ * @method TXDoubleCond addition($additions)
  */
 class TXDoubleDAO extends TXDAO
 {
@@ -211,6 +215,7 @@ class TXDoubleDAO extends TXDAO
      * @param $fields
      * @param array $group
      * @return string
+     * @throws TXException
      */
     protected function buildFields($fields, $group=array()){
         if (is_array($fields)){
@@ -423,5 +428,17 @@ class TXDoubleDAO extends TXDAO
     public function merge($cond=array())
     {
         return $cond ? new TXDoubleFilter($this, $cond, "__or__") : $this;
+    }
+
+    /**
+     * 构建limit
+     * @param $len
+     * @param int $start
+     * @return TXDoubleCond
+     */
+    public function limit($len, $start=0)
+    {
+        $cond = new TXDoubleCond($this);
+        return $cond->limit($len, $start, false);
     }
 }

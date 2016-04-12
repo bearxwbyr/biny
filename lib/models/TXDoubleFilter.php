@@ -4,6 +4,11 @@
  * User: billge
  * Date: 15-8-3
  * Time: 上午11:50
+ * @method TXDoubleCond group($groupby)
+ * @method TXDoubleCond having($having)
+ * @method TXDoubleCond limit($len, $start=0)
+ * @method TXDoubleCond order($orderby)
+ * @method TXDoubleCond addition($additions)
  */
 class TXDoubleFilter extends TXFilter
 {

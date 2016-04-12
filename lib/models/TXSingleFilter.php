@@ -4,6 +4,11 @@
  * User: billge
  * Date: 15-8-3
  * Time: 上午11:50
+ * @method TXSingleCond group($groupby)
+ * @method TXSingleCond having($having)
+ * @method TXSingleCond limit($len, $start=0)
+ * @method TXSingleCond order($orderby)
+ * @method TXSingleCond addition($additions)
  */
 class TXSingleFilter extends TXFilter
 {
@@ -39,8 +44,9 @@ class TXSingleFilter extends TXFilter
      */
     public function delete()
     {
-        $this->DAO->setWhere($this->buildWhere($this->conds));
-        return $this->DAO->delete();
+        $cond = new TXSingleCond($this->DAO);
+        $cond->where = $this->buildWhere($this->conds);
+        return $cond->delete();
     }
 
     /**
@@ -50,8 +56,9 @@ class TXSingleFilter extends TXFilter
      */
     public function update($sets)
     {
-        $this->DAO->setWhere($this->buildWhere($this->conds));
-        return $this->DAO->update($sets);
+        $cond = new TXSingleCond($this->DAO);
+        $cond->where = $this->buildWhere($this->conds);
+        return $cond->update($sets);
     }
 
     /**
@@ -61,8 +68,9 @@ class TXSingleFilter extends TXFilter
      */
     public function addCount($sets)
     {
-        $this->DAO->setWhere($this->buildWhere($this->conds));
-        return $this->DAO->addCount($sets);
+        $cond = new TXSingleCond($this->DAO);
+        $cond->where = $this->buildWhere($this->conds);
+        return $cond->addCount($sets);
     }
 
 
