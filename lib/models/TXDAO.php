@@ -123,34 +123,87 @@ class TXDAO
      * @param int $mode
      * @return array
      */
-    public function sql($sql, $key=null, $mode=self::FETCH_TYPE_ALL) {
+    private function sql($sql, $key=null, $mode=self::FETCH_TYPE_ALL) {
         $dns = is_array($this->dbConfig) ? $this->dbConfig[1] : $this->dbConfig;
         return TXDatabase::instance($dns)->sql($sql, $key, $mode);
     }
 
     /**
-     * 防sql注入 #sprintf
-     * @params array/string
-     * @return mixed
+     * 语句执行
+     * @param $sql
+     * @param $querys
+     * @return array
      */
-    public function _sprintf(){
-        $args = func_get_args();
-        $datas = array();
-        $datas[] = array_shift($args);
-        foreach ($args as $arg){
-            if (is_string($arg)){
-                $datas[] = $this->real_escape_string($arg, false);
-            } elseif (is_array($arg)) {
+    public function select($sql, $querys)
+    {
+        $params = func_get_args();
+        $cond = isset($params[2]) ? $params[2] : null;
+
+        List($keys, $values) = $this->buildQuery($querys, $cond);
+        $sql = str_replace($keys, $values, $sql);
+        TXEvent::trigger(onSql, [$sql]);
+        return $this->sql($sql);
+    }
+
+    /**
+     * 语句执行
+     * @param $sql
+     * @param $querys
+     * @return bool|int|mysqli_result|string
+     */
+    public function command($sql, $querys)
+    {
+        $params = func_get_args();
+        $cond = isset($params[2]) ? $params[2] : null;
+
+        List($keys, $values) = $this->buildQuery($querys, $cond);
+        $sql = str_replace($keys, $values, $sql);
+        TXEvent::trigger(onSql, [$sql]);
+        return $this->execute($sql);
+    }
+
+    /**
+     * 组合sql
+     * @param $querys
+     * @param $cond TXCond
+     * @return array
+     */
+    private function buildQuery($querys, $cond)
+    {
+        $keys = $values = array();
+        foreach ($querys as $k => $arg){
+            $keys[] = ":$k";
+            if (is_array($arg)){
+                $karg = $arg;
                 foreach ($arg as &$value){
-                    $value = "'{$this->real_escape_string($value)}'";
+                    $value = is_int($value) ? $value : "'{$this->real_escape_string($value, false)}'";
                 }
                 unset($value);
-                $datas[] = join(",", $arg);
+                $values[] = join(",", $arg);
+                //keys
+                $keys[] = ";$k";
+                foreach ($karg as &$value){
+                    $value = "`{$this->real_escape_string($value)}`";
+                }
+                $values[] = join(",", $karg);
+            } else if (is_string($arg)){
+                $values[] = "'{$this->real_escape_string($arg, false)}'";
+                //keys
+                $keys[] = ";$k";
+                $values[] = "`{$this->real_escape_string($arg)}`";
             } else {
-                $datas[] = $arg;
+                $values[] = $arg;
             }
         }
-        return call_user_func_array('sprintf', $datas);
+        if (!in_array(":where", $keys) && $cond){
+            $keys[] = ":where";
+            $values[] = $cond->get('where');
+        }
+        if (!in_array(":table", $keys)){
+            $keys[] = ":table";
+            $values[] = $this->getTable();
+        }
+        return array($keys, $values);
     }
 
     /**
@@ -176,13 +229,13 @@ class TXDAO
     /**
      * 找单条数据
      * @param string $fields
-     * @param TXCond $cond
      * @return array
      */
-    public function find($fields='', $cond=null)
+    public function find($fields='')
     {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
-        $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : array());
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
+        $fields = $this->buildFields($fields, isset($params[1]) ? $params[1]->get('additions') : array());
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->getTable(), $where);
         TXEvent::trigger(onSql, [$sql]);
         $result = $this->sql($sql, null, self::FETCH_TYPE_ONE);
@@ -193,16 +246,16 @@ class TXDAO
      * 查询数据
      * @param string $fields
      * @param null $key
-     * @param TXCond $cond
      * @return array
      */
-    public function query($fields='', $key=null, $cond=null)
+    public function query($fields='', $key=null)
     {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
-        $limit = $this->buildLimit($cond ? $cond->get('limit') : []);
-        $orderBy = $this->buildOrderBy($cond ? $cond->get('orderby') : []);
-        $fields = $this->buildFields($fields, $cond ? $cond->get('additions') : []);
-        $groupBy = $this->buildGroupBy($cond ? $cond->get('groupby') : [], $cond ? $cond->get('having') : []);
+        $params = func_get_args();
+        $where = isset($params[2]) && $params[2]->get('where') ? " WHERE ".$params[2]->get('where') : "";
+        $limit = $this->buildLimit(isset($params[2]) ? $params[2]->get('limit') : []);
+        $orderBy = $this->buildOrderBy(isset($params[2]) ? $params[2]->get('orderby') : []);
+        $fields = $this->buildFields($fields, isset($params[2]) ? $params[2]->get('additions') : []);
+        $groupBy = $this->buildGroupBy(isset($params[2]) ? $params[2]->get('groupby') : [], isset($params[2]) ? $params[2]->get('having') : []);
         $sql = sprintf("SELECT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
         TXEvent::trigger(onSql, [$sql]);
 
@@ -212,18 +265,49 @@ class TXDAO
     /**
      * 计算数量
      * @param string $field
-     * @param TXCond $cond
      * @return int
      */
-    public function count($field='', $cond=null)
+    public function count($field='')
     {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
         $field = $field ? 'DISTINCT '.$this->buildFields($field) : '0';
         $sql = sprintf("SELECT COUNT(%s) as count FROM %s%s", $field, $this->getTable(), $where);
         TXEvent::trigger(onSql, [$sql]);
 
         $ret = $this->sql($sql);
         return $ret[0]['count'] ?: 0;
+    }
+
+    /**
+     * 更新数据
+     * @param array $sets
+     * @return bool
+     */
+    public function update($sets)
+    {
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
+        $set = $this->buildSets($sets);
+        $sql = sprintf("UPDATE %s SET %s%s", $this->getTable(), $set, $where);
+        TXEvent::trigger(onSql, [$sql]);
+
+        return $this->execute($sql);
+    }
+
+    /**
+     * 添加数量 count=count+1
+     * @param $sets
+     * @return bool|string
+     */
+    public function addCount($sets)
+    {
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
+        $set = $this->buildCount($sets);
+        $sql = sprintf("UPDATE %s SET %s%s", $this->getTable(), $set, $where);
+        TXEvent::trigger(onSql, [$sql]);
+        return $this->execute($sql);
     }
 
     /**
@@ -243,7 +327,7 @@ class TXDAO
             }
             return call_user_func_array([$cond, $method], $args);
         } else if (in_array($method, $this->calcs)){
-            $where = $args[1] && $args[1]->where ? " WHERE ".$args[1]->where : "";
+            $where = isset($args[1]) && $args[1]->get('where') ? " WHERE ".$args[1]->get('where') : "";
             $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
             TXEvent::trigger(onSql, [$sql]);
 

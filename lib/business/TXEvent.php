@@ -20,6 +20,19 @@ class TXEvent
     private static $monitors = array();
 
     /**
+     * 获取form字段
+     * @param $name
+     * @return mixed
+     * @throws TXException
+     */
+    public function __get($name)
+    {
+        if (substr($name, -7) == 'Service' || substr($name, -3) == 'DAO') {
+            return TXFactory::create($name);
+        }
+    }
+
+    /**
      * 绑定事件
      * @param $method
      * @param $event

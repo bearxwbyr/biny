@@ -11,10 +11,12 @@
  * @method array distinct($field)
  * @method array find($field='')
  * @method array count($field='')
+ * @method array update($sets)
+ * @method array addCount($sets)
  */
 class TXCond
 {
-    private $DAO;
+    protected $DAO;
     protected $where;
     protected $limit=array();
     protected $orderby=array();
@@ -22,7 +24,7 @@ class TXCond
     protected $groupby=array();
     protected $having=array();
 
-    protected $methods = ['distinct', 'find', 'count'];
+    protected $methods = ['distinct', 'find', 'count', 'update', 'addCount'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
     /**
@@ -83,99 +85,40 @@ class TXCond
     }
 
     /**
-     * 构建limit
-     * @param $len
-     * @param int $start
-     * @return $this
+     * select
+     * @param $sql
+     * @param $querys
+     * @return array
      */
-    public function limit($len, $start=0)
+    public function select($sql, $querys)
     {
-        $this->limit = array(intval($start), intval($len));
-        return $this;
+        return $this->DAO->select($sql, $querys, $this);
     }
 
     /**
-     * 构建order
-     * @param $orderby
-     * @return $this
+     * command
+     * @param $sql
+     * @param $querys
+     * @return array
      */
-    public function order($orderby)
+    public function command($sql, $querys)
     {
-        foreach ($orderby as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->orderby[$key])){
-                    $this->orderby[$key] = array();
-                }
-                if (is_string($this->orderby[$key])){
-                    $this->orderby[$key] = $val;
-                } else {
-                    foreach ($val as $k => $v){
-                        $this->orderby[$key][$k] = $v;
-                    }
-                }
-            } else {
-                $this->orderby[$key] = $val;
-            }
-        }
-        return $this;
+        return $this->DAO->command($sql, $querys, $this);
     }
 
     /**
-     * 构建group
-     * @param $groupby
-     * @return $this
+     * 调试专用
      */
-    public function group($groupby)
+    public function __toLogger()
     {
-        foreach ($groupby as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->groupby[$key])){
-                    $this->groupby[$key] = array();
-                }
-                foreach ($val as $k => $v){
-                    $this->groupby[$key][$k] = $v;
-                }
-            } else {
-                $this->groupby[$key] = $val;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 构建having
-     * @param $having
-     * @return $this
-     */
-    public function having($having)
-    {
-        foreach ($having as $key => $val){
-            foreach ($val as $k => $v){
-                $this->having[$key][$k] = $v;
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * 构建additions
-     * @param $additions
-     * @return $this
-     */
-    public function addition($additions)
-    {
-        foreach ($additions as $key => $val){
-            if (is_array($val)){
-                if (!isset($this->additions[$key])){
-                    $this->additions[$key] = array();
-                }
-                foreach ($val as $k => $v){
-                    $this->additions[$key][$k] = $v;
-                }
-            } else {
-                $this->additions[$key] = $val;
-            }
-        }
-        return $this;
+        return array(
+            'DAO' => $this->DAO->getDAO(),
+            'where' => $this->where,
+            'limit' => $this->limit,
+            'orderby' => $this->orderby,
+            'additions' => $this->additions,
+            'groupby' => $this->groupby,
+            'having' => $this->having,
+        );
     }
 }

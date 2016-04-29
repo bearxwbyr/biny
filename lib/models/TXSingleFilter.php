@@ -50,28 +50,21 @@ class TXSingleFilter extends TXFilter
     }
 
     /**
-     * 更新数据
-     * @param array $sets
-     * @return bool
+     * 查询条件
+     * @param $method
+     * @param $args
+     * @return TXSingleCond
+     * @throws TXException
      */
-    public function update($sets)
+    public function __call($method, $args)
     {
-        $cond = new TXSingleCond($this->DAO);
-        $cond->setWhere($this->buildWhere($this->conds));
-        return $cond->update($sets);
+        if (in_array($method, $this->methods) || in_array($method, $this->calcs)){
+            $cond = new TXSingleCond($this->DAO);
+            $cond->setWhere($this->buildWhere($this->conds));
+            return call_user_func_array([$cond, $method], $args);
+        } else {
+            throw new TXException(3009, array($method, __CLASS__));
+        }
     }
-
-    /**
-     * 添加数量 count=count+1
-     * @param $sets
-     * @return bool|string
-     */
-    public function addCount($sets)
-    {
-        $cond = new TXSingleCond($this->DAO);
-        $cond->setWhere($this->buildWhere($this->conds));
-        return $cond->addCount($sets);
-    }
-
 
 }

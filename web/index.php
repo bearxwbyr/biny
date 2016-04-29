@@ -14,7 +14,7 @@ if (SYS_DEBUG){
 
 include __DIR__.'/../lib/TXApp.php';
 
-//include 'lib/logger/XHProf.php';
+//include __DIR__.'/../lib/logger/XHProf.php';
 //XHProf::start();
 
 TXApp::registry(__DIR__. '/../app');

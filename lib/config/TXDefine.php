@@ -22,6 +22,6 @@ class TXDefine
         defined('afterAction') or define('afterAction', 2);
         defined('onException') or define('onException', 3);
         defined('onError') or define('onError', 4);
-        defined('onSql') or define('onSql', 5);
+        defined('onSql') or define('onSql', 'onSql');
     }
 }

@@ -37,4 +37,22 @@ class TXDoubleFilter extends TXFilter
     {
         return $cond ? new self($this->DAO, $cond, "__or__", $this->conds[0]) : $this;
     }
+
+    /**
+     * 查询条件
+     * @param $method
+     * @param $args
+     * @return TXDoubleCond
+     * @throws TXException
+     */
+    public function __call($method, $args)
+    {
+        if (in_array($method, $this->methods) || in_array($method, $this->calcs)){
+            $cond = new TXDoubleCond($this->DAO);
+            $cond->setWhere($this->buildWhere($this->conds));
+            return call_user_func_array([$cond, $method], $args);
+        } else {
+            throw new TXException(3009, array($method, __CLASS__));
+        }
+    }
 }

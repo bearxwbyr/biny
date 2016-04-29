@@ -103,7 +103,7 @@ class TXRequest {
         }
         $ips = TXConfig::getConfig('csrfWhiteIps');
         foreach ($ips as $ip){
-            if ($this->matchCIDR($this->getClientIp(), $ip)){
+            if ($this->matchCIDR($this->getUserIp(), $ip)){
                 return true;
             }
         }
@@ -121,15 +121,14 @@ class TXRequest {
      /**
      * 单例模式
      * @param $module
-     * @param $params
      * @param bool $isAjax
      * @param null $method
      * @return null|TXRequest
      */
-    public static function create($module, $params, $isAjax=false, $method=null)
+    public static function create($module, $isAjax=false, $method=null)
     {
         if (NULL === self::$_instance){
-            self::$_instance = new self($module, $params, $isAjax, $method);
+            self::$_instance = new self($module, $isAjax, $method);
         }
         return self::$_instance;
     }
@@ -139,6 +138,9 @@ class TXRequest {
      */
     public static function getInstance()
     {
+        if (NULL === self::$_instance){
+            self::$_instance = new self(null);
+        }
         return self::$_instance;
     }
 
@@ -170,11 +172,56 @@ class TXRequest {
     }
 
     /**
-     * 获取用户IP
-     * @return mixed
+     * Returns the server name.
+     * @return string server name
      */
-    public function getClientIp()
+    public function getServerName()
     {
-        return getenv('HTTP_CLIENT_IP') ?: getenv('HTTP_X_FORWARDED_FOR') ?: getenv('REMOTE_ADDR') ?: $_SERVER['REMOTE_ADDR'];
+        return $_SERVER['SERVER_NAME'];
+    }
+
+    /**
+     * Returns the server port number.
+     * @return integer server port number
+     */
+    public function getServerPort()
+    {
+        return (int) $_SERVER['SERVER_PORT'];
+    }
+
+    /**
+     * Returns the URL referrer, null if not present
+     * @return string URL referrer, null if not present
+     */
+    public function getReferrer()
+    {
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+    }
+
+    /**
+     * Returns the user agent, null if not present.
+     * @return string user agent, null if not present
+     */
+    public function getUserAgent()
+    {
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+    }
+
+    /**
+     * Returns the user IP address.
+     * @return string user IP address. Null is returned if the user IP address cannot be detected.
+     */
+    public function getUserIP()
+    {
+        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+    }
+
+    /**
+     * Returns the user host name, null if it cannot be determined.
+     * @return string user host name, null if cannot be determined
+     */
+    public function getUserHost()
+    {
+        return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
     }
 }

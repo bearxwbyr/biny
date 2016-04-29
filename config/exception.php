@@ -26,6 +26,7 @@ return array(
     3009 => 'method [%s] not exists in [%s]',
     3010 => 'group field can not be empty in [%s]',
     3011 => 'addition Key[%s] invalid',
+    3012 => 'filter(not in) must be Array, %s given',
 
     /* Connect error */
     4001 => 'socket Create Error: [%s]',
@@ -39,4 +40,6 @@ return array(
     5002 => 'check Method[%s] not exists in form[%s]',
     5003 => 'event class[%s] not exists',
 
+    /* custom error */
+    8000 => 'custom Error',
 );

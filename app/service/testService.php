@@ -11,16 +11,17 @@ class testService extends baseService
 {
     public function test()
     {
-        TXEvent::one(onSql);
-        $DAO = $this->userDAO;
-        $result = $DAO
-            ->addition(array('avg'=>array('cash'=>'a_c')))
-            ->group(array('projectId'))
-            ->having(array('>'=>array('a_c'=>10)))
-            ->order(array('name'=>array('desc', 'gbk')))->order(array('name'=>'asc'))
-            ->limit(10)->query(array('projectId'));
+        TXEvent::on(onSql);
+        $this->userDAO->filter(['id'=>1])->update(['name'=>'xx']);
+        $DAO = $this->userDAO->leftJoin($this->projectDAO, ['projectId'=>'id'])->leftJoin($this->testDAO, [['id'=>'id']]);
+        $result = $DAO->filter([[], ['id'=>[1,2,3]]])
+            ->addition([['avg'=>['cash'=>'a_c']]])
+            ->group([['projectId']])
+            ->having(['>'=>['a_c'=>10]])
+            ->order([['name'=>'asc']])
+            ->limit(10)->query([['projectId']]);
         TXLogger::info($result);
-        $test = $this->testDAO->query();
+        $test = $this->userDAO->query();
         return $test;
     }
 }

@@ -1,12 +1,18 @@
 <?php
 /**
  * 主页Action
+ * @property testDAO $testDAO
+ * @property userDAO $userDAO
+ * @property projectDAO $projectDAO
  * @property testService $testService
  */
 class mainAction extends baseAction
 {
+    protected $valueCheck = false;
+
     public function action_index($id=10, $type)
     {
+        TXLogger::info($this->getParam('ddd'));
         $arr = $this->testService->test();
         $params = [
             'testArr' => $arr,
@@ -20,12 +26,13 @@ class mainAction extends baseAction
 
     public function action_test($id, $type="ss")
     {
-        TXLogger::info($id, '$id');
-        TXLogger::info($type, '$type');
-        return $this->error('出大事了');
+        TXEvent::on(onSql);
+        $DAO = $this->userDAO->leftJoin($this->projectDAO, ['projectId'=>'id'])->leftJoin($this->testDAO, [['id'=>'id']]);
+        TXLogger::info($DAO->filter([[], ['id'=>[1,2,3]]])->select('SELECT ;ks from :table WHERE :where and projectid in (:aaa)', array('ks'=>['projectid', 'maxCount'], 'aaa'=>["2323", 'sss'])));
+        return $this->error('aaaa');
     }
 
-    public function ajax_xxx($aaa=10, $bbb)
+    public function ajax_index($aaa=10, $bbb)
     {
         TXLogger::info($aaa, 'aaa');
         TXLogger::info($bbb, 'bbb');

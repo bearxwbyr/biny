@@ -16,7 +16,6 @@
         <?}?>
     </table>
     <?}?>
-    <div id="xxx"><?=$PRM['testArr'][0]->array_key_exists('name') ? 1 : 0 ?></div>
     <div id="csrf"><?=$this->getCsrfToken()?></div>
 </div>
 
@@ -28,11 +27,12 @@
         src = parseInt('<?=$src?>');
         var string = <?=$PRM['testArr']->json_encode()?>;
         var xxx = '<?=$PRM['testArr'][4]['name']?>';
+        test();
     });
 
     function test(){
         $.ajax({
-            url: '/biny/ajax/test/',
+            url: '/biny/ajax/main/',
             type: "POST",
             dataType: "json",
             success: function(data){

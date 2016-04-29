@@ -1,7 +1,7 @@
 <?php
 return array(
     'router' => array(
-        'base_action' => 'main'
+        'base_action' => 'demo'
     ),
 
     'csrfWhiteIps' => [

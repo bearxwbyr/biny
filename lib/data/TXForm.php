@@ -65,6 +65,9 @@ class TXForm
      */
     public function __get($name)
     {
+        if (substr($name, -7) == 'Service' || substr($name, -3) == 'DAO') {
+            return TXFactory::create($name);
+        }
         if (!array_key_exists($name, $this->_datas)){
             throw new TXException(5001, array($name, get_class($this)));
         }

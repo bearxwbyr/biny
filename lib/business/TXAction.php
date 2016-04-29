@@ -17,10 +17,16 @@ class TXAction
     protected $posts;
 
     /**
+     * JSON参数
+     * @var array
+     */
+    protected $jsons = NULL;
+
+    /**
      * 字符串验证
      * @var bool
      */
-    protected $valueCheck = false;
+    protected $valueCheck = true;
 
     /**
      * csrf验证
@@ -36,8 +42,6 @@ class TXAction
         $this->posts = $_POST;
         $this->params = $_REQUEST;
         $this->gets = $_GET;
-        $this->setCharset();
-        $this->setContentType();
     }
 
     /**
@@ -100,6 +104,15 @@ class TXAction
     }
 
     /**
+     * 获取原始Post数据
+     * @return string
+     */
+    public function getRowPost()
+    {
+        return file_get_contents('php://input');
+    }
+
+    /**
      * 获取请求参数
      * @param $key
      * @param null $default
@@ -145,6 +158,25 @@ class TXAction
         if (isset($this->gets[$key])){
             //参数验证
             return $check ? $this->checkParam($key, $this->gets) : $this->gets[$key];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * 获取json数据
+     * @param $key
+     * @param null $default
+     * @param bool $check
+     * @return float|int|mixed|null
+     */
+    public function getJson($key, $default=null, $check=false){
+        if ($this->jsons === NULL){
+            $this->jsons = json_decode($this->getRowPost(), true) ?: [];
+        }
+        if (isset($this->jsons[$key])){
+            //参数验证
+            return $check ? $this->checkParam($key, $this->jsons) : $this->jsons[$key];
         } else {
             return $default;
         }

@@ -2,107 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/fonts/glyphicons-halflings-regular.eot" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/fonts/glyphicons-halflings-regular.ttf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/fonts/glyphicons-halflings-regular.woff" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/images/icon/favicon.ico" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/images/source/error.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/swf/WebSocket.swf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/swf/ZeroClipboard.swf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/controller/demoAction.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/data/TXArray.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/data/TXSession.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/README.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/index.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/css/bootstrap.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/css/demo.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/css/main.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/fonts/glyphicons-halflings-regular.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/js/bootstrap.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/js/demo.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/js/jquery.min.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/js/main.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/test.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/controller/animateAction.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/controller/testAjax.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/service/sessionService.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/template/Error/connect.tpl.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/template/Error/guest.tpl.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/template/Error/msg.tpl.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/template/animate/main.tpl.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/template/test/test.tpl.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/index.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/info.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/business/TXAjax.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/business/TXBase.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/data/TXObject.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/lib/data/TXSqlData.php" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/css/main.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/animate/backgroud.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/animate/bg.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/animate/girl.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/animate/gui.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/animate/pika.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/icon/favicon.ico" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/images/source/error.gif" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/js/createjs.min.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/js/jquery.min.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/static/js/main.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/test.php" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/dns_dev.php" afterPath="$PROJECT_DIR$/app/config/dns_dev.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/dns_pre.php" afterPath="$PROJECT_DIR$/app/config/dns_pre.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/dns_pub.php" afterPath="$PROJECT_DIR$/app/config/dns_pub.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/base/baseAction.php" afterPath="$PROJECT_DIR$/app/controller/base/baseAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/mainAction.php" afterPath="$PROJECT_DIR$/app/controller/mainAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/testAction.php" afterPath="$PROJECT_DIR$/app/controller/testAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/dao/baseDAO.php" afterPath="$PROJECT_DIR$/app/dao/baseDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/dao/testDAO.php" afterPath="$PROJECT_DIR$/app/dao/testDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/dao/userDAO.php" afterPath="$PROJECT_DIR$/app/dao/userDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/model/Person.php" afterPath="$PROJECT_DIR$/app/model/Person.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/service/testService.php" afterPath="$PROJECT_DIR$/app/service/testService.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/Error/404.tpl.php" afterPath="$PROJECT_DIR$/app/template/Error/404.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/base/common.tpl.php" afterPath="$PROJECT_DIR$/app/template/base/common.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/base/commonJs.tpl.php" afterPath="$PROJECT_DIR$/app/template/base/commonJs.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/base/header.tpl.php" afterPath="$PROJECT_DIR$/app/template/base/header.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/main/msg.tpl.php" afterPath="$PROJECT_DIR$/app/template/main/msg.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/main/test.tpl.php" afterPath="$PROJECT_DIR$/app/template/main/test.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/config.php" afterPath="$PROJECT_DIR$/config/config.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/exception.php" afterPath="$PROJECT_DIR$/config/exception.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXApp.php" afterPath="$PROJECT_DIR$/lib/TXApp.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXAutoload.php" afterPath="$PROJECT_DIR$/lib/TXAutoload.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXAction.php" afterPath="$PROJECT_DIR$/lib/business/TXAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXController.php" afterPath="$PROJECT_DIR$/lib/business/TXController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXEvent.php" afterPath="$PROJECT_DIR$/lib/business/TXEvent.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXFactory.php" afterPath="$PROJECT_DIR$/lib/business/TXFactory.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXJSONResponse.php" afterPath="$PROJECT_DIR$/lib/business/TXJSONResponse.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRequest.php" afterPath="$PROJECT_DIR$/lib/business/TXRequest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXResponse.php" afterPath="$PROJECT_DIR$/lib/business/TXResponse.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRouter.php" afterPath="$PROJECT_DIR$/lib/business/TXRouter.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/config/TXConfig.php" afterPath="$PROJECT_DIR$/lib/config/TXConfig.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXCache.php" afterPath="$PROJECT_DIR$/lib/data/TXCache.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXDatabase.php" afterPath="$PROJECT_DIR$/lib/data/TXDatabase.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXForm.php" afterPath="$PROJECT_DIR$/lib/data/TXForm.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXMemcache.php" afterPath="$PROJECT_DIR$/lib/data/TXMemcache.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXRedis.php" afterPath="$PROJECT_DIR$/lib/data/TXRedis.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXSocket.php" afterPath="$PROJECT_DIR$/lib/data/TXSocket.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXString.php" afterPath="$PROJECT_DIR$/lib/data/TXString.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/exception/TXException.php" afterPath="$PROJECT_DIR$/lib/exception/TXException.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/logger/TXLogger.php" afterPath="$PROJECT_DIR$/lib/logger/TXLogger.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/logger/XHProf.php" afterPath="$PROJECT_DIR$/lib/logger/XHProf.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXDoubleDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXDoubleDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXFilter.php" afterPath="$PROJECT_DIR$/lib/models/TXFilter.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXSingleDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXSingleDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXSingleFilter.php" afterPath="$PROJECT_DIR$/lib/models/TXSingleFilter.php" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
     <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -123,7 +28,7 @@
       <file leaf-file-name="footer.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/base/footer.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
+            <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -135,7 +40,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
+              <folding>
+                <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -163,30 +70,28 @@
       <file leaf-file-name="msg.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/main/msg.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state vertical-scroll-proportion="-10.857142">
+              <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="XHProf.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/logger/XHProf.php">
+      <file leaf-file-name="TXDefine.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/config/TXDefine.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.6785714">
-              <caret line="79" column="98" selection-start-line="79" selection-start-column="98" selection-end-line="79" selection-end-column="98" />
-              <folding>
-                <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-              </folding>
+            <state vertical-scroll-proportion="-12.678572">
+              <caret line="22" column="59" selection-start-line="22" selection-start-column="59" selection-end-line="22" selection-end-column="59" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <file leaf-file-name="exception.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/config/exception.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.13555291">
-              <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.55779815">
+              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -268,6 +173,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -287,9 +193,90 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="config" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="biny" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -299,6 +286,126 @@
     <property name="options.searchVisible" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="FullScreen" value="false" />
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/app/service/testService.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/config/TXDefine.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXDAO.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXDoubleDAO.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXDoubleFilter.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXFilter.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXSingleDAO.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXSingleFilter.php</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXCond.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXDoubleCond.php</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/lib/models/TXSingleCond.php</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunManager">
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -319,6 +426,11 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
@@ -429,7 +541,19 @@
       <option name="project" value="LOCAL" />
       <updated>1442313152333</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="v2.1 整体优化">
+      <created>1458114188354</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1458114188354</updated>
+    </task>
+    <task id="LOCAL-00017" summary="v2.1 整体优化">
+      <created>1458115054050</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1458115054050</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -454,14 +578,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1932" height="1034" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992035" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -493,18 +617,120 @@
     <MESSAGE value="clear" />
     <MESSAGE value="readme" />
     <MESSAGE value="TXSqlDATA / TXObject" />
-    <option name="LAST_COMMIT_MESSAGE" value="TXSqlDATA / TXObject" />
+    <MESSAGE value="v2.1 整体优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="v2.1 整体优化" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/template/error/404.tpl.php">
+    <entry file="file://$PROJECT_DIR$/app/template/main/index.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/maintenance.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/msg.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/test.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/base/footer.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/error/404.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/index.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/maintenance.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/msg.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/logger/XHProf.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="79" column="98" selection-start-line="79" selection-start-column="98" selection-end-line="79" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/test.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/error/404.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -536,9 +762,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="98" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -561,7 +784,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -593,9 +818,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="98" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -618,7 +840,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -650,9 +874,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="98" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -675,7 +896,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -707,9 +930,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="98" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -746,7 +966,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1453886710000" expanded="true" signature="148:194" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -766,14 +988,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/template/main/msg.tpl.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/template/main/test.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -782,20 +996,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/logger/XHProf.php">
+    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.6785714">
-          <caret line="79" column="98" selection-start-line="79" selection-start-column="98" selection-end-line="79" selection-end-column="98" />
-          <folding>
-            <marker date="1451295518000" expanded="false" signature="3935:3953" placeholder="..." />
-          </folding>
+        <state vertical-scroll-proportion="0.18116806">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ReadMe.md">
+    <entry file="file://$PROJECT_DIR$/lib/logger/XHProf.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13555291">
-          <caret line="6" column="30" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.40665874">
+          <caret line="96" column="23" selection-start-line="96" selection-start-column="23" selection-end-line="96" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/main/msg.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.857142">
+          <caret line="16" column="24" selection-start-line="16" selection-start-column="24" selection-end-line="16" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/config/TXDefine.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.678572">
+          <caret line="22" column="59" selection-start-line="22" selection-start-column="59" selection-end-line="22" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/exception.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55779815">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
           <folding />
         </state>
       </provider>

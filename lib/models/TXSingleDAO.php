@@ -297,11 +297,11 @@ class TXSingleDAO extends TXDAO
     {
         $sets = array();
         foreach($set as $key => $value) {
-            if (!is_int($value) || $value <= 0 ) {
+            if (!is_int($value) || $value == 0 ) {
                 continue;
             }
             $key = $this->real_escape_string($key);
-            $sets[] = "`{$key}`=`{$key}`+{$value}";
+            $sets[] = "`{$key}`=`{$key}`+ {$value}";
         }
         return join(', ', $sets);
     }
@@ -409,22 +409,6 @@ class TXSingleDAO extends TXDAO
     }
 
     /**
-     * 更新数据
-     * @param array $sets
-     * @param TXSingleCond $cond
-     * @return bool
-     */
-    public function update($sets, $cond=null)
-    {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
-        $set = $this->buildSets($sets);
-        $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-        TXEvent::trigger(onSql, [$sql]);
-
-        return $this->execute($sql);
-    }
-
-    /**
      * 添加数据
      * @param $sets
      * @param bool $id
@@ -440,19 +424,22 @@ class TXSingleDAO extends TXDAO
 
     /**
      * 批量添加
-     * @param $fields
      * @param $values
      * @return bool|string
      */
-    public function addList($fields, $values)
+    public function addList($values)
     {
-        if (is_array($fields)){
-            foreach ($fields as &$field){
-                $field = $this->real_escape_string($field);
-            }
-            unset($field);
+        if (count($values) == 0){
+            return true;
         }
-        $fields = $fields ? '(`'.join('`,`', $fields).'`)' : "";
+        $value = $values[0];
+        $fields = array_keys($value);
+        foreach ($fields as &$field){
+            $field = $this->real_escape_string($field);
+        }
+        unset($field);
+        $fields = '(`'.join('`,`', $fields).'`)';
+
         $columns = array();
         foreach ($values as $value){
             foreach ($value as &$val){
@@ -473,12 +460,12 @@ class TXSingleDAO extends TXDAO
 
     /**
      * 删除数据
-     * @param TXSingleCond $cond
      * @return bool
      */
-    public function delete($cond=null)
+    public function delete()
     {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
+        $params = func_get_args();
+        $where = isset($params[0]) && $params[0]->get('where') ? " WHERE ".$params[0]->get('where') : "";
         $sql = sprintf("DELETE FROM %s%s", $this->table, $where);
         TXEvent::trigger(onSql, [$sql]);
 
@@ -486,48 +473,18 @@ class TXSingleDAO extends TXDAO
     }
 
     /**
-     * 添加数量 count=count+1
-     * @param $sets
-     * @param TXSingleCond $cond
-     * @return bool|string
-     */
-    public function addCount($sets, $cond=null)
-    {
-        $where = $cond && $cond->get('where') ? " WHERE ".$cond->get('where') : "";
-        $set = $this->buildCount($sets);
-        $sql = sprintf("UPDATE %s SET %s%s", $this->table, $set, $where);
-        TXEvent::trigger(onSql, [$sql]);
-        return $this->execute($sql);
-    }
-
-    /**
      * 更新数据或者插入数据
      * @param $inserts
      * @param $sets
      * @return bool|int|mysqli_result|string
      */
-    public function createOrUpdate($inserts, $sets)
+    public function createOrUpdate($inserts, $sets=array())
     {
-        $set = $this->buildSets($sets);
+        $set = $this->buildSets($sets ?: $inserts);
         $fields = $this->buildInsert($inserts);
         $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
         TXEvent::trigger(onSql, [$sql]);
 
-        return $this->execute($sql, true);
-    }
-
-    /**
-     * 更新数据或者插入数据
-     * @param $inserts
-     * @param $adds
-     * @return bool|int|mysqli_result|string
-     */
-    public function createOrAdd($inserts, $adds)
-    {
-        $set = $this->buildCount($adds);
-        $fields = $this->buildInsert($inserts);
-        $sql = sprintf("INSERT INTO %s %s ON DUPLICATE KEY UPDATE %s", $this->table, $fields, $set);
-        TXEvent::trigger(onSql, [$sql]);
         return $this->execute($sql, true);
     }
 

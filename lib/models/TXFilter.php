@@ -11,7 +11,11 @@
  * @method array distinct($field)
  * @method array find($field='')
  * @method array query($field='', $key=null)
+ * @method array select($sql, $querys)
+ * @method array command($sql, $querys)
  * @method array count($field='')
+ * @method array update($sets)
+ * @method array addCount($sets)
  */
 class TXFilter
 {
@@ -22,7 +26,7 @@ class TXFilter
      */
     protected $DAO;
     protected $conds = [];
-    protected $methods = ['distinct', 'find', 'query', 'count', 'group', 'limit', 'order', 'addition', 'having'];
+    protected $methods = ['distinct', 'find', 'query', 'count', 'group', 'limit', 'order', 'addition', 'having', 'select', 'command', 'update', 'addCount'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count'];
 
     /**
@@ -79,28 +83,6 @@ class TXFilter
         }
         $this->DAO = $DAO;
 
-    }
-
-    /**
-     * 查询条件
-     * @param $method
-     * @param $args
-     * @return mixed
-     * @throws TXException
-     */
-    public function __call($method, $args)
-    {
-        if (in_array($method, $this->methods) || in_array($method, $this->calcs)){
-            if ($this instanceof TXSingleFilter){
-                $cond = new TXSingleCond($this->DAO);
-            } else {
-                $cond = new TXDoubleCond($this->DAO);
-            }
-            $cond->setWhere($this->buildWhere($this->conds));
-            return call_user_func_array([$cond, $method], $args);
-        } else {
-            throw new TXException(3009, array($method, __CLASS__));
-        }
     }
 
     /**

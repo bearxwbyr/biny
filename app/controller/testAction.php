@@ -6,11 +6,12 @@ class testAction extends baseAction
 {
     public function action_index()
     {
+        TXConfig::getConfig('config');
         $params = array(
 
         );
-
-        return $this->display('test/test', $params);
+//        TXLogger::display("dfsfasdf");
+//        return $this->display('test/test', $params);
 
     }
 

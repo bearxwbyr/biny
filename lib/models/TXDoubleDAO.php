@@ -412,6 +412,67 @@ class TXDoubleDAO extends TXDAO
     }
 
     /**
+     * 拼装Sets
+     * @param $set
+     * @return string
+     */
+    protected function buildSets($set)
+    {
+        $doubles = $this->doubles;
+        $sets = array();
+        foreach ($set as $k => $val){
+            if (is_string($k) && in_array($k, $doubles)){
+                $table = $k;
+            } else if (isset($doubles[$k])){
+                $table = $doubles[$k];
+            } else {
+                continue;
+            }
+            foreach($val as $key => $value) {
+                $key = $this->real_escape_string($key);
+                if ($value === null) {
+                    $sets[] = "`{$table}`.`{$key}`=NULL";
+                }
+                elseif (is_string($value)) {
+                    $value = $this->real_escape_string($value);
+                    $sets[] = "`{$table}`.`{$key}`='{$value}'";
+                } else {
+                    $sets[] = "`{$table}`.`{$key}`={$value}";
+                }
+            }
+        }
+        return join(', ', $sets);
+    }
+
+    /**
+     * count=count+1
+     * @param $set
+     * @return string
+     */
+    protected function buildCount($set)
+    {
+        $doubles = $this->doubles;
+        $sets = array();
+        foreach ($set as $k => $val){
+            if (is_string($k) && in_array($k, $doubles)){
+                $table = $k;
+            } else if (isset($doubles[$k])){
+                $table = $doubles[$k];
+            } else {
+                continue;
+            }
+            foreach($val as $key => $value) {
+                if (!is_int($value) || $value == 0) {
+                    continue;
+                }
+                $key = $this->real_escape_string($key);
+                $sets[] = "`{$table}`.`{$key}`=`{$table}`.`{$key}`+ {$value}";
+            }
+        }
+        return join(', ', $sets);
+    }
+
+    /**
      * and 操作
      * @param $cond
      * @return TXDoubleFilter
