@@ -17,7 +17,7 @@ class testAction extends baseAction
 
     public function action_form()
     {
-        $form = $this->getForm('test', 'get_user');
+        $form = $this->getForm('test');
         TXLogger::info($form->values());
         TXLogger::info($form->check());
         TXLogger::info($form->status);

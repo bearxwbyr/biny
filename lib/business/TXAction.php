@@ -42,13 +42,7 @@ class TXAction
         $this->posts = $_POST;
         $this->params = $_REQUEST;
         $this->gets = $_GET;
-    }
-
-    /**
-     * 构造函数
-     */
-    public function init()
-    {
+        //判断是否维护中
         if (isMaintenance){
             return $this->display('Main/maintenance');
         }
@@ -293,5 +287,15 @@ class TXAction
     {
         header("Location:$url");
         exit();
+    }
+
+    /**
+     * beforeAction事件
+     * @param $event
+     * @param TXRequest $request
+     */
+    public static function beforeAction($event, $request)
+    {
+        TXLogger::addLog('router: '.$request->getServerName().$request->getUrl());
     }
 }

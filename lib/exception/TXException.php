@@ -12,9 +12,8 @@ class TXException extends Exception
      */
     public function __construct($code, $params=array(), $html="404")
     {
-        TXEvent::trigger(onException, array($code));
         $message = $this->fmt_code($code, $params);
-        TXLogger::addError($message."\n".$this->getTraceAsString());
+        TXEvent::trigger(onException, array($code, array($message, $this->getTraceAsString())));
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);
@@ -65,5 +64,15 @@ class TXException extends Exception
             $msgtpl = $ex->getMessage();
         }
         return vsprintf($msgtpl, $params);
+    }
+
+    /**
+     * @param $event
+     * @param $code
+     * @param $params
+     */
+    public static function event($event, $code, $params)
+    {
+        TXLogger::addError("ERROR CODE: $code\n".join("\n", $params));
     }
 }

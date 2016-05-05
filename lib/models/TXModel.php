@@ -9,6 +9,9 @@ class TXModel
 {
     protected $_data;
     protected $_dirty = false;
+    /**
+     * @var baseDAO
+     */
     protected $DAO = null;
     protected $_pk;
 

@@ -49,12 +49,13 @@ class TXController {
 
     /**
      * @param $module
+     * @param $request
      * @return mixed
      */
-    private function getAction($module)
+    private function getAction($module, $request)
     {
         $object = new $module();
-        TXEvent::trigger(beforeAction);
+        TXEvent::trigger(beforeAction, array($request));
         if (method_exists($object, 'init')){
             $result = $object->init();
             if ($result instanceof TXResponse || $result instanceof TXJSONResponse){
@@ -75,16 +76,16 @@ class TXController {
         $module = $request->getModule() . 'Action';
         $method = $request->getMethod();
 
-        $object = $this->getAction($module);
+        $object = $this->getAction($module, $request);
         if ($object instanceof TXResponse || $object instanceof TXJSONResponse){
-            TXEvent::trigger(afterAction);
+            TXEvent::trigger(afterAction, array($request));
             return $object;
         }
 
         if ($object instanceof TXAction) {
             $args = $this->getArgs($object, $method);
             $result = call_user_func_array([$object, $method], $args);
-            TXEvent::trigger(afterAction);
+            TXEvent::trigger(afterAction, array($request));
             return $result;
         } else {
             throw new TXException(2001, $request->getModule());

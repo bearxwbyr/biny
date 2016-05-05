@@ -81,6 +81,8 @@ class TXApp
     {
         TXDefine::init();
         TXAutoload::init();
+        TXEvent::on(onException, ['TXException', 'event']);
+        TXEvent::on(beforeAction, ['TXAction', 'beforeAction']);
         self::$controller = TXFactory::create('TXController');
     }
 

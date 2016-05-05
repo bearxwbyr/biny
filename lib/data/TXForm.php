@@ -117,25 +117,25 @@ class TXForm
             switch ($value){
                 case self::typeInt:
                     if (!is_numeric($this->__get($key))){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
                 case self::typeBool:
                     if ($this->__get($key) !== "true" && $this->__get($key) !== "false"){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
                 case self::typeArray:
                     if (!is_array($this->__get($key))){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
                 case self::typeObject:
                     if (!is_object($this->__get($key))){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
@@ -143,7 +143,7 @@ class TXForm
                     $str = $this->__get($key);
                     $time = strtotime($this->__get($key));
                     if (!$time){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     $match = false;
                     foreach ($this->_dateFormats as $format){
@@ -152,7 +152,7 @@ class TXForm
                         }
                     }
                     if (!$match){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
@@ -160,7 +160,7 @@ class TXForm
                     $str = $this->__get($key);
                     $time = strtotime($this->__get($key));
                     if (!$time){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     $match = false;
                     foreach ($this->_datetimeFormats as $format){
@@ -169,13 +169,13 @@ class TXForm
                         }
                     }
                     if (!$match){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 
                 case self::typeNonEmpty:
                     if (!$this->__get($key)){
-                        return $this->error(array($key=>"type Error"));
+                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
                     }
                     break;
 

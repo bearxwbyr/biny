@@ -7,7 +7,7 @@
  */
 class testForm extends TXForm
 {
-    protected $_values = ['id'=>null, 'name'=>null, 'status'=>1];
+    protected $_values = ['id'=>null, 'name'=>null, 'status'];
     protected $_rules = [
         'id'=>self::typeInt,
         'name'=>self::typeNonEmpty,
@@ -22,7 +22,7 @@ class testForm extends TXForm
 
     public function valid_testCmp()
     {
-        if ($this->status == "2"){
+        if ($this->status == "1"){
             return $this->correct();
         } else {
             return $this->error();

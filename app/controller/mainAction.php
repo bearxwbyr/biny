@@ -10,6 +10,15 @@ class mainAction extends baseAction
 {
     protected $valueCheck = false;
 
+    public function init()
+    {
+        TXLogger::time('start-time');
+        TXLogger::memory('start-memory');
+        TXLogger::log('do something');
+        TXLogger::time('end-time');
+        TXLogger::memory('end-memory');
+    }
+
     public function action_index($id=10, $type)
     {
         TXLogger::info($this->getParam('ddd'));
@@ -34,6 +43,7 @@ class mainAction extends baseAction
 
     public function ajax_index($aaa=10, $bbb)
     {
+        get_class($this);
         TXLogger::info($aaa, 'aaa');
         TXLogger::info($bbb, 'bbb');
         return $this->error("errrrrrror!!!");

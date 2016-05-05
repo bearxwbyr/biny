@@ -12,6 +12,40 @@ class TXRequest {
     private static $_instance = null;
 
     /**
+     * 单例模式
+     * @param $module
+     * @param bool $isAjax
+     * @param null $method
+     * @return null|TXRequest
+     */
+    public static function create($module, $isAjax=false, $method=null)
+    {
+        if (NULL === self::$_instance){
+            self::$_instance = new self($module, $isAjax, $method);
+        }
+        return self::$_instance;
+    }
+
+    /**
+     * @return null|TXRequest
+     */
+    public static function getInstance()
+    {
+        if (NULL === self::$_instance){
+            self::$_instance = new self(null);
+        }
+        return self::$_instance;
+    }
+
+    private function __construct($module, $isAjax=false, $method=null)
+    {
+        $this->id = crc32(microtime(true));
+        $this->module = $module;
+        $this->isAjax = $isAjax;
+        $this->method = $method ?: 'index';
+    }
+
+    /**
      * @param null $key
      * @return mixed
      */
@@ -118,40 +152,6 @@ class TXRequest {
 
     }
 
-     /**
-     * 单例模式
-     * @param $module
-     * @param bool $isAjax
-     * @param null $method
-     * @return null|TXRequest
-     */
-    public static function create($module, $isAjax=false, $method=null)
-    {
-        if (NULL === self::$_instance){
-            self::$_instance = new self($module, $isAjax, $method);
-        }
-        return self::$_instance;
-    }
-
-    /**
-     * @return null|TXRequest
-     */
-    public static function getInstance()
-    {
-        if (NULL === self::$_instance){
-            self::$_instance = new self(null);
-        }
-        return self::$_instance;
-    }
-
-    private function __construct($module, $isAjax=false, $method=null)
-    {
-        $this->id = crc32(microtime(true));
-        $this->module = $module;
-        $this->isAjax = $isAjax;
-        $this->method = $method ?: 'index';
-    }
-
     public function getModule()
     {
         return $this->module;
@@ -169,6 +169,11 @@ class TXRequest {
     public function isAjax()
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+    }
+
+    public function getUrl()
+    {
+        return $_SERVER['REQUEST_URI'];
     }
 
     /**

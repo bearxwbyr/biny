@@ -69,7 +69,7 @@
         <p>程序全局可调用lib库下系统方法，例如：<code>TXLogger</code>（调试组件），<code>TXConfig</code>（配置类），<code>TXConst</code>（常量类）等</p>
         <p><code>TXApp::$base</code>为全局单例类，可全局调用</p>
         <p><code>TXApp::$base->person</code> 为当前用户，可在<code>/app/model/Person.php</code>中定义</p>
-        <p><code>TXApp::$base->request</code> 为当前请求，可获取当前类型，数据验证等</p>
+        <p><code>TXApp::$base->request</code> 为当前请求，可获取当前地址，客户端ip等</p>
         <p><code>TXApp::$base->session</code> 为系统session，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->memcache</code> 为系统memcache，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->redis</code> 为系统redis，可直接获取和复制，设置过期时间</p>
@@ -82,6 +82,15 @@
 */  </span>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
+    <note>// init方法会在action执行前被执行</note>
+    <sys>public function</sys> <act>action_index</act>()
+    {
+        <note>// 未登录时调整登录页面</note>
+        <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>get</func>()){
+            <sys>return</sys> <prm>$this</prm>-><func>redirect</func>(<str>'/auth/login/'</str>);
+        }
+    }
+
     <note>//默认路由index</note>
     <sys>public function</sys> <act>action_index</act>()
     {
@@ -177,6 +186,28 @@
     <note>//返回 json {"flag": true, "ret": {"result": 1}}</note>
     <sys>return</sys> <prm>$this</prm>-><func>correct</func>(<prm>$ret</prm>);
 }</pre>
+        <p>框架提供了一整套<code>csrf验证</code>机制，默认<code>开启</code>，可通过在Action中将<code>$csrfValidate = false</code>关闭。</p>
+        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/</note>
+<sys>class</sys> testAction <sys>extends</sys> baseAction
+{
+    <note>//关闭csrf验证</note>
+    <sys>protected</sys> <prm>$csrfValidate</prm> = <sys>false</sys>;
+
+    <note>//默认路由index</note>
+    <sys>public function</sys> <act>ajax_index</act>()
+    {
+        <note>//返回 test/test.tpl.php</note>
+        <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
+    }
+}</pre>
+
+        <p>当csrf验证开启时，前端ajax请求需要预先加载引用<code>/static/js/main.js</code>文件，ajax提交时，系统会自动加上验证字段。</p>
+        <p>POST请求同样也会触发csrf验证，需要在form中添加如下数据字段：</p>
+        <pre class="code"><note>// 加在form中提交</note>
+<act>&lt;input</act> type="<str>text</str>" name="<str>_csrf</str>" hidden value="<sys>&lt;?=</sys><prm>$this</prm>-><func>getCsrfToken</func>()<sys>?&gt;</sys>"<act>/></act></pre>
+
+        <p>同样也可以在js中获取（前提是引用<code>/static/js/main.js</code>JS文件），加在POST参数中即可。</p>
+        <pre class="code"><sys>var</sys> <prm>_csrf</prm> = <func>getCookie</func>(<str>'csrf-token'</str>);</pre>
 
         <h2 id="router-param">参数传递</h2>
         <p>方法可以直接接收 GET 参数，并可以赋默认值，空则返回null</p>
@@ -765,33 +796,249 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
     <div class="bs-docs-section">
         <h1 id="event" class="page-header">事件</h1>
-        <p>事件</p>
+        <p>框架中提供了事件机制，可以方便全局调用。其中系统默认已提供的有<code>beforeAction</code>，<code>afterAction</code>，<code>onException</code>，<code>onError</code>，<code>onSql</code>这几个</p>
+        <p><code>beforeAction</code>为Action执行前执行的事件（比<code>init()</code>方法还要早被触发）</p>
+        <p><code>afterAction</code>为Action执行后执行的事件（会在渲染页面之前触发）</p>
+        <p><code>onException</code>系统抛出异常时被触发，会传递错误code，在<code>/config/exception.php</code>中定义code</p>
+        <p><code>onError</code>程序调用<code>$this->error($data)</code>方法时被触发，传递<code>$data</code>参数</p>
+        <p><code>onSql</code>执行语句时被触发，上述例子中的<code>TXEvent::on(onSql)</code>就是使用了该事件</p>
 
         <h2 id="event-init">定义事件</h2>
+        <p>系统提供了两种定义事件的方式，一种是定义长期事件<code>$fd = TXEvent::on($event, [$class, $method])</code>，直到被off之前都会生效。</p>
+        <p>参数分别为<code>事件名</code>，<code>方法[类，方法名]</code> 方法可以不传，默认为<code>TXLogger::event()</code>方法，会在console中打印</p>
+        <p><code>$fd</code>返回的是该事件的操作符。在调用off方法时，可以通过传递该操作符解绑该事件。</p>
+
+        <pre class="code"><note>/**
+* 主页Action
+* @property testService $testService
+*/  </note>
+<sys>class</sys> testAction <sys>extends</sys> baseAction
+{
+    <note>//构造函数</note>
+    <sys>public function</sys> <act>__construct</act>()
+    {
+        <note>// 构造函数记得要调用一下父级的构造函数</note>
+        <sys>parent</sys>::<func>__construct</func>();
+        <note>// 要触发beforeAction事件，必须在init被调用前定义</note>
+        TXEvent::<func>on</func>(<const>beforeAction</const>, <sys>array</sys>(<prm>$this</prm>, <str>'test_event'</str>));
+    }
+
+    <note>//默认路由index</note>
+    <sys>public function</sys> <act>action_index</act>()
+    {
+        <note>// 绑定testService里的my_event1方法 和 my_event2方法 到 myEvent事件中，两个方法都会被执行，按绑定先后顺序执行</note>
+        <prm>$fd1</prm> = TXEvent::<func>on</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>-><prm>testService</prm>, <str>'my_event1'</str>));
+        <prm>$fd2</prm> = TXEvent::<func>on</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>-><prm>testService</prm>, <str>'my_event2'</str>));
+
+        <note>// do something ..... </note>
+
+        <note>// 解绑myEvent事件的 my_event1方法</note>
+        TXEvent::<func>off</func>(<str>'myEvent'</str>, <prm>$fd1</prm>);
+
+        <note>// 解绑myEvent事件，所有绑定在该事件上的方法都不会再被执行</note>
+        TXEvent::<func>off</func>(<str>'myEvent'</str>);
+
+        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'测试一下'</str>);
+    }
+
+    <note>// 自定义的事件类</note>
+    <sys>public function</sys> <act>test_event</act>(<prm>$event</prm>)
+    {
+        <note>// addLog为写日志的方法</note>
+        TXLogger::<func>addLog</func>(<str>'触发beforeAction事件'</str>);
+    }
+}</pre>
+
+        <p>另一种绑定则为一次绑定事件<code>TXEvent::one()</code>，调用参数相同，返回<code>$fd</code>操作符，当该事件被触发一次后会自动解绑</p>
+        <pre><prm>$fd</prm> = TXEvent::<func>one</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>, <str>'my_event'</str>));</pre>
+
+        <p>当然如果想要绑定多次但非长期绑定时，系统也提供了<code>bind</code>方法，参数用法类似。</p>
+        <pre><note>// 第一个参数绑定方法，第二个为事件名，第三个为绑定次数，触发次数满后自动释放</note>
+<prm>$fd</prm> = TXEvent::<func>bind</func>(<sys>array</sys>(<prm>$this</prm>, <str>'my_event'</str>), <str>'myEvent'</str>, <prm>$times</prm>);</pre>
 
         <h2 id="event-trigger">触发事件</h2>
-        <p>触发事件</p>
+        <p>用户可以自定义事件，同时也可以选择性的触发，可以直接使用<code>TXEvent::trigger($event, $params)</code>方法</p>
+        <p>参数有两个，第一个为触发的事件名，第二个为触发传递的参数，会传递到触发方法中执行</p>
+        <pre class="code"><note>// 触发myEvent事件</note>
+TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_class</func>(<prm>$this</prm>), <str>'test'</str>))
 
-        <div style="height: 200px"></div>
+<note>// 定义事件时绑定的方法</note>
+<sys>public function</sys> my_event(<prm>$event</prm>, <prm>$params</prm>)
+{
+    <note>// array('testService', 'test')</note>
+    <sys>var_dump</sys>(<prm>$params</prm>);
+}</pre>
 
     </div>
 
     <div class="bs-docs-section">
         <h1 id="forms" class="page-header">表单验证</h1>
-        <p>表单验证</p>
+        <p>框架提供了一套完整的表单验证解决方案，适用于绝大多数场景。</p>
+        <p>表单验证支持所有类型的验证以及自定义方法</p>
+        <p>简单示例：</p>
+        <pre class="code"><note>/**
+ * @property testService $testService
+ * 自定义一个表单验证类型类 继承TXForm
+ */</note>
+<sys>class</sys> testForm <sys>extends</sys> TXForm
+{
+    <note>// 定义表单参数以及其默认值（不写默认值自动为null）</note>
+    <sys>protected</sys> <prm>$_values</prm> = [<str>'id'</str>, <str>'name'</str>=><sys>null</sys>, <str>'status'</str>=>1];
+    <note>// 定义参数规则，不写则无规则</note>
+    <sys>protected</sys> <prm>$_rules</prm> = [
+        <note>// id必须为整型</note>
+        <str>'id'</str>=><sys>self</sys>::<prm>typeInt</prm>,
+        <note>// name必须非空（包括null, 空字符串）</note>
+        <str>'name'</str>=><sys>self</sys>::<prm>typeNonEmpty</prm>,
+        <note>// 自定义验证方法(valid_testCmp)</note>
+        <str>'status'</str>=><str>'testCmp'</str>
+    ];
+
+    <note>// 自定义验证方法</note>
+    <sys>public function</sys> <act>valid_testCmp</act>()
+    {
+        <note>// 和Action一样可以调用Service和DAO作为私有方法</note>
+        <sys>if</sys> (<prm>$this</prm>-><prm>testService</prm>-><func>checkStatus</func>(<prm>$this</prm>-><prm>status</prm>)){
+            <note>// 验证通过</note>
+            <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
+        } <sys>else</sys> {
+            <note>// 验证失败，参数可以通过getError方法获取</note>
+            <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'非法类型'</str>);
+        }
+    }
+}</pre>
+        <p>定义完验证类，然后就可以在Action中使用了，可以通过<code>getForm</code>方法加载表单</p>
+        <pre class="code"><note>// 加载testForm</note>
+<prm>$form</prm> = <prm>$this</prm>-><func>getForm</func>(<str>'test'</str>);
+<note>// 验证表单字段，true/false</note>
+<sys>if</sys> (!<prm>$form</prm>-><func>check</func>()){
+    <note>// 获取错误信息</note>
+    <prm>$error</prm> = <prm>$form</prm>-><func>getError</func>();
+    <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'参数错误'</str>);
+}
+<note>// 获取对应字段</note>
+<prm>$status</prm> = <prm>$form</prm>-><prm>status</prm>;
+<note>// 获取全部字段 返回数组类型 ['id'=>1, 'name'=>'billge', 'status'=>2]</note>
+<prm>$datas</prm> = <prm>$form</prm>-><func>values</func>();
+        </pre>
+
+        <p>在很多情况下，表单参数并不是都完全相同的，系统支持<code>Form复用</code>，即可以在通用的Form类中自定义一些内容</p>
+        <p>比如，还是上述例子的testForm，有个类似的表单，但是多了一个字段type，而且对于status的验证方式也需要变化</p>
+        <p>可以在testForm中添加一个方法</p>
+        <pre class="code"><note>// 在testForm中添加</note>
+<sys>public function</sys> <act>addType</act>()
+{
+    <note>// 添加type字段， 默认'default', 规则为非空</note>
+    <prm>$this</prm>-><prm>_values</prm>[<str>'type'</str>] = <str>'default'</str>;
+    <prm>$this</prm>-><prm>_rules</prm>[<str>'type'</str>] = <sys>self</sys>::<prm>typeNonEmpty</prm>;
+    <note>// 修改status的判断条件，改为valid_typeCmp()方法验证，记得要写这个方法哦</note>
+    <prm>$this</prm>-><prm>_rules</prm>[<str>'status'</str>] = <str>'typeCmp'</str>;
+}</pre>
+
+        <p>然后在Action中加载表单也需要添加<code>'addType'</code>作为参数，其他使用方法一致</p>
+        <pre class="code"><prm>$form</prm> = <prm>$this</prm>-><func>getForm</func>(<str>'test'</str>, <str>'addType'</str>);</pre>
+
+        <p>一个表单验证类里可以写多个附加方法，相互直接并不会有任何影响</p>
 
         <h2 id="forms-type">验证类型</h2>
-        <p>验证类型</p>
+        <p>系统提供了7种默认验证方式，验证失败时都会记录错误信息，用户可以通过<code>getError</code>方法获取</p>
+        <p><code>self::typeInt</code> 数字类型，包括整型浮点型，负数</p>
+        <p><code>self::typeBool</code> 判断是否为true/false</p>
+        <p><code>self::typeArray</code> 判断是否为数组类型</p>
+        <p><code>self::typeObject</code> 判断是否为对象数据</p>
+        <p><code>self::typeDate</code> 判断是否为一个合法的日期</p>
+        <p><code>self::typeDatetime</code> 判断是否为一个合法的日期时间</p>
+        <p><code>self::typeNonEmpty</code> 判断是否非空（包括null, 空字符串）</p>
 
-        <div style="height: 200px"></div>
+        <p>验证类型几乎涵盖了所有情况，如果有不能满足的类型，用户可以自定义验证方法，上述例子中已有，不再过多阐述</p>
     </div>
 
     <div class="bs-docs-section">
-        <h1 id="debug" class="page-header">逻辑调试</h1>
-        <p>逻辑调试</p>
+        <h1 id="debug" class="page-header">调试</h1>
+        <p>框架中有两种调试方式，一种是在页面控制台中输出的调试，方便用户对应网页调试。</p>
+        <p>另一种则是和其他框架一样，在日志中调试</p>
 
-        <h2 id="debug-log">基本调试</h2>
-        <p>基本调试</p>
+        <h2 id="debug-console">控制台调试</h2>
+        <p>Biny的一大特色既是这控制台调试方式，用户可以调试自己想要的数据，同时也不会对当前的页面结构产生影响。</p>
+        <p>调试的开关在<code>/web/index.php</code>里</p>
+        <pre class="code"><note>// console调试开关，关闭后控制台不会输出内容</note>
+<sys>defined</sys>(<str>'SYS_CONSOLE'</str>) <sys>or define</sys>(<str>'SYS_CONSOLE'</str>, <sys>true</sys>);</pre>
+        <p>控制台调试的方式，同步异步都可以调试，但异步的调试是需要引用<code>/static/js/main.js</code>文件，这样异步ajax的请求也会把调试信息输出在控制台里了。</p>
+
+        <p>调试方式很简单，全局可以调用<code>TXLogger::info($message, $key)</code>，另外还有warn，error，log等</p>
+        <p>第一个参数为想要调试的内容，同时也支持数组，Object类的输出。第二个参数为调试key，不传默认为<code>phpLogs</code></p>
+        <p><code>TXLogger::info()</code>消息 输出</p>
+        <p><code>TXLogger::warn()</code>警告 输出</p>
+        <p><code>TXLogger::error()</code>异常 输出</p>
+        <p><code>TXLogger::log()</code>日志 输出</p>
+        <p>下面是一个简单例子，和控制台的输出结果。结果会因为浏览器不一样而样式不同，效果上是一样的。</p>
+
+        <pre class="code"><note>// 以下代码全局都可以使用</note>
+TXLogger::<func>log</func>(<sys>array</sys>(<str>'cc'</str>=><str>'dd'</str>));
+TXLogger::<func>error</func>(<str>'this is a error'</str>);
+TXLogger::<func>info</func>(<sys>array</sys>(1,2,3,4,5));
+TXLogger::<func>warn</func>(<str>"ss"</str>, <str>"warnKey"</str>);</pre>
+
+        <p><img src="http://km.oa.com/files/photos/captures/201505/1432003538_35_w219_h87.png"></p>
+
+        <p>另外<code>TXLogger</code>调试类中还支持time，memory的输出，可以使用其对代码性能做优化。</p>
+        <pre class="code"><note>// 开始结尾处加上时间 和 memory 就可以获取中间程序消耗的性能了</note>
+TXLogger::<func>time</func>(<str>'start-time'</str>);
+TXLogger::<func>memory</func>(<str>'start-memory'</str>);
+TXLogger::<func>log</func>(<str>'do something'</str>);
+TXLogger::<func>time</func>(<str>'end-time'</str>);
+TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
+
+        <p><img src="http://shp.qpic.cn/gqop/20000/LabImage_2ee327c680046dc1d14d7dce5c7bcb45.png/0"></p>
+
+        <p>这块调试的内容在KM中也有<a href="http://km.oa.com/group/1746/articles/show/226484" target="_blank">相关的文章</a>。文章中作为demo的框架代码已经比较老了，仅作参考。</p>
+
+        <h2 id="debug-log">日志调试</h2>
+
+        <p>平台的日志目录在<code>/logs/</code>，请确保该目录有<code>写权限</code></p>
+        <p>异常记录会生成在<code>error_{日期}.log</code>文件中，如：<code>error_2016-05-05.log</code></p>
+        <p>调试记录会生成在<code>log_{日期}.log</code>文件中，如：<code>log_2016-05-05.log</code></p>
+
+        <p>程序中可以通过调用<code>TXLogger::addLog($log)</code>方法添加日志，<code>TXLogger::addError($log)</code>方法添加异常</p>
+        <p><code>$log</code>参数支持传递数组</p>
+
+    </div>
+
+    <div class="bs-docs-section">
+        <h1 id="other" class="page-header">其他</h1>
+        <p>系统有很多单例都可以直接通过<code>TXApp::$base</code>直接获取</p>
+        <p><code>TXApp::$base->person</code> 为当前用户，可在<code>/app/model/Person.php</code>中定义</p>
+        <p><code>TXApp::$base->request</code> 为当前请求，可获取当前地址，客户端ip等</p>
+        <p><code>TXApp::$base->session</code> 为系统session，可直接获取和复制，设置过期时间</p>
+        <p><code>TXApp::$base->memcache</code> 为系统memcache，可直接获取和复制，设置过期时间</p>
+        <p><code>TXApp::$base->redis</code> 为系统redis，可直接获取和复制，设置过期时间</p>
+
+        <h2 id="other-session">Session</h2>
+        <p>session的设置和获取都比较简单，在未调用session时，对象不会被创建，避免性能损耗。</p>
+        <pre class="code"><note>// 只需要赋值就可以实现session的设置了</note>
+TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm> = <str>'test'</str>;
+<note>// 获取则是直接去元素，不存在则返回null</note>
+<prm>$testKey</prm> = TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm>;</pre>
+
+        <p>同时也可以通过方法<code>close()</code>来关闭session，避免session死锁的问题</p>
+        <pre class="code"><note>// close之后再获取数据时会重新开启session</note>
+TXApp::<prm>$base</prm>-><prm>session</prm>-><func>close</func>();</pre>
+        <p>而<code>clear()</code>方法则会清空当前session中的内容</p>
+        <pre class="code"><note>// clear之后再获取则为null</note>
+TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
+
+        <p>同时session也是支持<code>isset</code>判断的</p>
+        <pre class="code"><note>// isset 相当于先get 后isset 返回 true/false</note>
+<prm>$bool</prm> = <sys>isset</sys>(TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testKey</prm>);</pre>
+
+        <h2 id="other-cookie">Cookie</h2>
+        <p>cookie的获取和设置都是在<code>TXApp::$base->request</code>中完成的，分别提供了<code>getCookie</code>和<code>setCookie</code>方法</p>
+
+        <p><code>getCookie</code>参数为需要的cookie键值，如果不传，则返回全部cookie，以数组结构返回</p>
+        <pre class="code"><prm>$param</prm> = TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getCookie</func>(<str>'param'</str>);</pre>
+        <p><code>setCookie</code>参数有4个，分别为键值，值，过期时间(单位秒)，cookie所属路径，过期时间不传默认1天，路径默认<code>'/'</code></p>
+        <pre class="code">TXApp::<prm>$base</prm>-><prm>request</prm>-><func>setCookie</func>(<str>'param'</str>, <str>'test'</str>, 86400, <str>'/'</str>);</pre>
+
 
         <div style="height: 200px"></div>
     </div>
@@ -866,9 +1113,17 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
                 </ul>
             </li>
             <li>
-                <a href="#debug">逻辑调试</a>
+                <a href="#debug">调试</a>
                 <ul class="nav">
-                    <li><a href="#debug-log">基本调试</a></li>
+                    <li><a href="#debug-console">控制台调试</a></li>
+                    <li><a href="#debug-console">日志调试</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#other">其他</a>
+                <ul class="nav">
+                    <li><a href="#other-session">Session</a></li>
+                    <li><a href="#other-cookie">Cookie</a></li>
                 </ul>
             </li>
 
