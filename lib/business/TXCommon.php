@@ -18,7 +18,7 @@ class TXCommon
      * @param bool $proxy
      * @return bool|mixed
      */
-    public static function UrlRequest($url, $data = array(), $method = 'GET', $contentType = 'application/json', $refererUrl = '', $timeout = 10, $proxy = false) {
+    public static function UrlRequest($url, $data = array(), $method = 'GET', $refererUrl = '', $timeout = 10, $proxy = false) {
         $ch = null;
         if('POST' === strtoupper($method)) {
             $ch = curl_init($url);
@@ -30,9 +30,6 @@ class TXCommon
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             if ($refererUrl) {
                 curl_setopt($ch, CURLOPT_REFERER, $refererUrl);
-            }
-            if($contentType) {
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:'.$contentType));
             }
             if(is_string($data)){
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
@@ -47,7 +44,6 @@ class TXCommon
             }
             $ch = curl_init($real_url);
             curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:'.$contentType));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             if ($refererUrl) {

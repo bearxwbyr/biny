@@ -26,7 +26,7 @@ class TXAction
      * 字符串验证
      * @var bool
      */
-    protected $valueCheck = true;
+    protected $valueCheck = false;
 
     /**
      * csrf验证

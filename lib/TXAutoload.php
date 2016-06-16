@@ -31,19 +31,23 @@ class TXAutoload
      */
     private static function loading()
     {
-        self::$loaders = array();
-        self::getLoads(__DIR__);
-        self::getLoads(TXApp::$app_root. DS . "controller");
-        self::getLoads(TXApp::$app_root. DS . "service");
-        self::getLoads(TXApp::$app_root. DS . "dao");
-        self::getLoads(TXApp::$app_root. DS . "form");
-        self::getLoads(TXApp::$app_root. DS . "event");
-        self::getLoads(TXApp::$app_root. DS . "model");
-        //写入文件
-        if (is_writeable(self::$autoPath)) {
-            file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');
-        } else {
-            throw new TXException(1005, array(self::$autoPath));
+        // 5秒缓存不更新
+        if (!isset(self::$loaders['__last__']) || time()-self::$loaders['__last__'] > 5){
+            self::$loaders = array();
+            self::getLoads(__DIR__);
+            self::getLoads(TXApp::$app_root. DS . "controller");
+            self::getLoads(TXApp::$app_root. DS . "service");
+            self::getLoads(TXApp::$app_root. DS . "dao");
+            self::getLoads(TXApp::$app_root. DS . "form");
+            self::getLoads(TXApp::$app_root. DS . "event");
+            self::getLoads(TXApp::$app_root. DS . "model");
+            self::$loaders['__last__'] = time();
+            //写入文件
+            if (is_writeable(self::$autoPath)) {
+                file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');
+            } else {
+                throw new TXException(1005, array(self::$autoPath));
+            }
         }
     }
 
@@ -73,7 +77,6 @@ class TXAutoload
     public static function load($class)
     {
         if ((!isset(self::$loaders[$class]) || !is_readable(self::$loaders[$class])) && !self::$isReload){
-            self::$loaders = array();
             self::loading();
         }
 

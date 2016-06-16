@@ -43,7 +43,6 @@ class mainAction extends baseAction
 
     public function ajax_index($aaa=10, $bbb)
     {
-        get_class($this);
         TXLogger::info($aaa, 'aaa');
         TXLogger::info($bbb, 'bbb');
         return $this->error("errrrrrror!!!");

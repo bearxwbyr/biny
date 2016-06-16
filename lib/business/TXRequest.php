@@ -229,4 +229,14 @@ class TXRequest {
     {
         return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
     }
+
+    /**
+     * Return if the request is sent via secure channel (https).
+     * @return boolean if the request is sent via secure channel (https)
+     */
+    public function getIsHttps()
+    {
+        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+        || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+    }
 }

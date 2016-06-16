@@ -34,7 +34,7 @@ class TXEvent
 
     /**
      * 绑定事件
-     * @param $method
+     * @param callable $method
      * @param $event
      * @param null $times
      * @return int
@@ -52,7 +52,7 @@ class TXEvent
 
     /**
      * 绑定永久事件
-     * @param $method
+     * @param callable $method
      * @param $event
      * @return int
      */
@@ -64,7 +64,7 @@ class TXEvent
 
     /**
      * 绑定一次事件
-     * @param $method
+     * @param callable $method
      * @param $event
      * @return int
      */

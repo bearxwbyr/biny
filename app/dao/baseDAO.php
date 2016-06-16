@@ -133,7 +133,7 @@ class baseDAO extends TXSingleDAO
     {
         if ($this->_pkCache){
             $hash = $this->getHash($pk);
-            return TXApp::$base->memcache->get($this->cacheKey.$hash);
+            return unserialize(TXApp::$base->redis->hget($this->cacheKey, $hash));
         } else {
             return false;
         }
@@ -150,7 +150,7 @@ class baseDAO extends TXSingleDAO
     {
         if ($this->_pkCache){
             $hash = $this->getHash($pk);
-            return TXApp::$base->memcache->set($this->cacheKey.$hash, $value);
+            return TXApp::$base->redis->hset($this->cacheKey, $hash, serialize($value));
         }
     }
 

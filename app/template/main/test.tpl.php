@@ -20,7 +20,7 @@
 </div>
 
 <? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
-
+<script type="text/javascript" src="//logger.oa.com/sdk/Logger.sdk.js"></script>
 <script type="text/javascript">
     var src;
     $(function(){

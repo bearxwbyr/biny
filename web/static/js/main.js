@@ -178,3 +178,76 @@ function getCheckBoxByName(name, isInt){
     });
     return ids;
 }
+
+//Jquery Coffee
+(function($){
+    $.fn.Coffee = function (options) {
+        for (var obj in options){
+            var events = options[obj];
+            for (evt in events){
+                var func = events[evt];
+                $(this).on(evt, obj, func);
+            }
+        }
+    };
+})(jQuery);
+
+$(function(){
+    $(document).Coffee({
+        "input[type=text][maxLen],textarea[type=text][maxLen]": {
+            input: function(){
+                var max = parseInt($(this).attr('maxLen'));
+                if (this.value.gblen() > max){
+                    this.value = this.value.cutString(max);
+                }
+            }
+        },
+        "[tips]": {
+            mousemove: function(e){
+                if (!$(this).attr("tips")){
+                    return;
+                }
+                if (this.nodeName == 'SELECT' && $(this).is(':focus')){
+                    return;
+                }
+                if ($('#tooltipdiv').length == 0) {
+                    var content = htmlEncode($(this).attr("tips")).replace(/[\n\r]/g, '<br />');
+                    var tooltipdi = '<div id="tooltipdiv" class="txDivTips">'+content+'</div>';
+                    $("body").append(tooltipdi);
+                    $("#tooltipdiv").show();
+                }
+                $("#tooltipdiv").css({
+                    "top": e.pageY + "px",
+                    "left": e.pageX + "px"
+                });
+            },
+            mouseleave: function(){
+                $("#tooltipdiv").remove();
+            },
+            focus: function(){
+                if (this.nodeName == 'SELECT' && $('#tooltipdiv').length > 0){
+                    $("#tooltipdiv").remove();
+                }
+            }
+        },
+        "input[preg],textarea[preg],select[preg]": {
+            "blur change": function(){
+                var preg = new RegExp($(this).attr('preg'));
+                if (!preg.test($(this).val())){
+                    $(this).removeClass('correct');
+                    $(this).addClass('error');
+                } else {
+                    $(this).removeClass('error');
+                    $(this).addClass('correct');
+                }
+            }
+        },
+        "input[onEnter]": {
+            keypress: function(e){
+                if(e.which == 13) {
+                    eval($(this).attr('onEnter'));
+                }
+            }
+        }
+    });
+});

@@ -12,11 +12,11 @@ class demoAction extends baseAction
     {
         //UV统计
         $date = date('Y-m-d', time());
-        $code_id = TXApp::$base->request->getCookie('code_user_name');
+        $code_id = TXApp::$base->request->getCookie('code_user_name') ?: '';
         $rtx = TXApp::$base->request->getCookie('tof_login_username') ?: TXApp::$base->request->getCookie('t_uid');
         $pk = [$date, $code_id];
         if ($data = $this->demoDAO->getByPk($pk)){
-            if ($code_id && !$data['rtx'] && $rtx){
+            if ($code_id && !isset($data['rtx']) && $rtx){
                 $this->demoDAO->updateByPk($pk, ['rtx'=>$rtx, 'count'=>$data['count']+1]);
             } else {
                 $this->demoDAO->addCountByPk($pk, ['count'=>1]);

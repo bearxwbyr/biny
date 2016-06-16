@@ -83,7 +83,7 @@
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>// init方法会在action执行前被执行</note>
-    <sys>public function</sys> <act>action_index</act>()
+    <sys>public function</sys> <act>init</act>()
     {
         <note>// 未登录时调整登录页面</note>
         <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>get</func>()){
@@ -149,9 +149,9 @@
         <h1 id="router">路由</h1>
         <p>基本MVC架构路由模式，第一层对应<code>action</code>，第二层对应<code>method</code>（默认<code>index</code>）</p>
         <h2 id="router-rule">规则</h2>
-        <p>在/app/controller 目录下，文件可以放在任意子目录或孙目录中。但必须确保文件名与类名一直，且不重复</p>
+        <p>在<code>/app/controller</code>目录下，文件可以放在任意子目录或孙目录中。但必须确保文件名与类名一致，且不重复</p>
         <p>示例：/app/controller/Main/testAction.php</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/</note>
+        <pre class="code"><note>// http://biny.oa.com/test/</note>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//默认路由index</note>
@@ -163,14 +163,14 @@
 }</pre>
         <p>同时也能在同一文件内配置多个子路由</p>
         <pre class="code"><note>//子路由查找action_{$router}</note>
-<note>// http://user.openqa.qq.com/biny/test/demo1</note>
+<note>// http://biny.oa.com/test/demo1</note>
 <sys>public function</sys> <act>action_demo1</act>()
 {
     <note>//返回 test/demo1.tpl.php</note>
     <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/demo1'</str>);
 }
 
-<note>// http://user.openqa.qq.com/biny/test/demo2</note>
+<note>// http://biny.oa.com/test/demo2</note>
 <sys>public function</sys> <act>action_demo2</act>()
 {
     <note>//返回 test/demo2.tpl.php</note>
@@ -178,8 +178,8 @@
 }</pre>
 
         <h2 id="router-ajax">异步请求</h2>
-        <p>异步请求需要在路由中添加/ajax/，系统会自动进行异步验证（csrf）及处理，程序中响应方法则为ajax_{$router}</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/ajax/test/demo3</note>
+        <p>异步请求需要在路由中添加<code>/ajax/</code>，系统会自动进行异步验证（csrf）及处理，程序中响应方法则为<code>ajax_{$router}</code></p>
+        <pre class="code"><note>// http://biny.oa.com/ajax/test/demo3</note>
 <sys>public function</sys> <act>ajax_demo3</act>()
 {
     <prm>$ret</prm> = <sys>array</sys>(<str>'result'</str>=>1);
@@ -187,7 +187,7 @@
     <sys>return</sys> <prm>$this</prm>-><func>correct</func>(<prm>$ret</prm>);
 }</pre>
         <p>框架提供了一整套<code>csrf验证</code>机制，默认<code>开启</code>，可通过在Action中将<code>$csrfValidate = false</code>关闭。</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/</note>
+        <pre class="code"><note>// http://biny.oa.com/test/</note>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//关闭csrf验证</note>
@@ -211,7 +211,7 @@
 
         <h2 id="router-param">参数传递</h2>
         <p>方法可以直接接收 GET 参数，并可以赋默认值，空则返回null</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/demo4/?id=33</note>
+        <pre class="code"><note>// http://biny.oa.com/test/demo4/?id=33</note>
 <sys>public function</sys> <act>action_demo4</act>(<prm>$id</prm>=10, <prm>$type</prm>, <prm>$name</prm>=<str>'biny'</str>)
 {
     <note>// 33</note>
@@ -226,7 +226,7 @@
         <p><code>getParam($key, $default)</code> 获取GET/POST参数{$key}, 默认值为{$default}</p>
         <p><code>getGet($key, $default)</code> 获取GET参数{$key}, 默认值为{$default}</p>
         <p><code>getPost($key, $default)</code> 获取POST参数{$key}, 默认值为{$default}</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/demo5/?id=33</note>
+        <pre class="code"><note>// http://biny.oa.com/test/demo5/?id=33</note>
 <sys>public function</sys> <act>action_demo5</act>()
 {
     <note>// NULL</note>
@@ -248,7 +248,7 @@
         <p>以<code>d</code>开头的参数 必须为日期时间格式（H:i:s）</p>
         <p>当参数不合法时，系统会抛出异常 <code>Uncaught exception 'TXException' with message 'param Key [itest] checkType Error; string given'</code></p>
         <p>但同时也会阻碍程序继续执行，如果需要关闭单个接口的保护，可以在action中覆写<code>$valueCheck</code>变量</p>
-        <pre class="code"><note>// http://user.openqa.qq.com/biny/test/?iId=test</note>
+        <pre class="code"><note>// http://biny.oa.com/test/?iId=test</note>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//关闭参数验证</note>
@@ -485,7 +485,7 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 <prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>addList</func>(<prm>$sets</prm>);</pre>
 
         <h2 id="dao-join">多联表</h2>
-        <p>框架支持多连表模型，DAO类都有<code>join</code>（全联接），<code>join</code>（左联接），<code>join</code>（右联接）方法</p>
+        <p>框架支持多连表模型，DAO类都有<code>join</code>（全联接），<code>leftJoin</code>（左联接），<code>rightJoin</code>（右联接）方法</p>
         <p>参数为联接关系</p>
         <pre class="code"><note>// on `user`.`projectId` = `project`.`id` and `user`.`type` = `project`.`type`</note>
 <prm>$DAO</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>, <str>'type'</str>=><str>'type'</str>));</pre>
@@ -521,8 +521,7 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
     -><func>query</func>(<sys>array</sys>(
       <sys>array</sys>(<str>'id'</str>=><str>'uId'</str>, <str>'cash'</str>),
       <str>'project'</str> => <sys>array</sys>(<str>'createTime'</str>),
-    )
-);</pre>
+    ));</pre>
 
         <p>多联表的查询和修改（<code>update</code>，<code>addCount</code>），和单表操作基本一致，需要注意的是单表参数为<code>一维数组</code>，多表则为<code>二维数组</code>，写错会导致执行失败。</p>
 
@@ -544,8 +543,7 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
     -><func>filter</func>(<sys>array</sys>(
         <sys>array</sys>(<str>'id'</str>=><str>1</str>),
         <sys>array</sys>(<str>'type'</str>=><str>'outer'</str>),
-    )
-);</pre>
+    ));</pre>
 
         <p><code>$filter</code>条件可以继续调用<code>filter</code>/<code>merge</code>方法，条件会在原来的基础上继续筛选</p>
         <pre class="code"><note>// ... WHERE (...) OR (`user`.`name` = 'test')</note>
@@ -578,7 +576,6 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
     -><func>filter</func>(<sys>array</sys>(<sys>array</sys>(),<sys>array</sys>(<str>'type'</str>=><str>'admin'</str>)))
     -><func>query</func>();</pre>
 
-
         <p>无论是<code>filter</code>还是<code>merge</code>，在执行SQL语句前都<code>不会被执行</code>，不会增加sql负担，可以放心使用。</p>
 
         <h2 id="dao-extracts">复杂选择</h2>
@@ -602,6 +599,23 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 ));</pre>
 
         <p><code>not in</code>语法暂时并未支持，可以暂时使用多个<code>!=</code>或者<code><></code>替代</p>
+
+        <p>同时<code>filter/merge</code>也可以被迭代调用，以应对不确定筛选条件的复杂查询</p>
+        <pre class="code"><note>// 某一个返回筛选数据的Action</note>
+<prm>$DAO</prm> = <prm>$this</prm>-><prm>userDAO</prm>;
+<sys>if </sys>(<prm>$status</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'status'</str>)){
+    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'status'</str>=><prm>$status</prm>));
+}
+<sys>if </sys>(<prm>$startTime</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'start'</str>, 0)){
+    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'>='</str>=><sys>array</sys>(<str>'start'</str>=><prm>$startTime</prm>)));
+}
+<sys>if </sys>(<prm>$endTime</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'end'</str>, <func>time</func>())){
+    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'<'</str>=><sys>array</sys>(<str>'end'</str>=><prm>$endTime</prm>)));
+}
+<note>// 获取复合条件数量</note>
+<prm>$count</prm> = <prm>$DAO</prm>-><func>count</func>();
+<note>// 获取复合条件前10条数据</note>
+<prm>$data</prm> = <prm>$DAO</prm>-><func>limit</func>(10)-><func>query</func>();</pre>
 
         <h2 id="dao-group">其他条件</h2>
         <p>在<code>DAO</code>或者<code>选择器</code>里都可以调用条件方法，方法可传递式调用，相同方法内的条件会自动合并</p>

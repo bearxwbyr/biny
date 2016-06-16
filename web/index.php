@@ -9,10 +9,11 @@ defined('isMaintenance') or define('isMaintenance', false);
 
 if (SYS_DEBUG){
     ini_set('display_errors','On');
-    error_reporting(E_ALL ^ E_NOTICE);
 }
+error_reporting(E_ALL ^ E_NOTICE);
 
 include __DIR__.'/../lib/TXApp.php';
+//include __DIR__.'/../lib/vendor/Logger.sdk.php';
 
 //include __DIR__.'/../lib/logger/XHProf.php';
 //XHProf::start();

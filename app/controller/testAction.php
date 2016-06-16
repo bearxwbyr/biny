@@ -4,20 +4,21 @@
  */
 class testAction extends baseAction
 {
+    protected $csrfValidate = false;
+
     public function action_index()
     {
-        TXConfig::getConfig('config');
+
         $params = array(
 
         );
-//        TXLogger::display("dfsfasdf");
-//        return $this->display('test/test', $params);
+        return $this->display('main/test', $params);
 
     }
 
     public function action_form()
     {
-        $form = $this->getForm('test');
+        $form = $this->getForm('test', 'get_user');
         TXLogger::info($form->values());
         TXLogger::info($form->check());
         TXLogger::info($form->status);

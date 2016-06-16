@@ -134,7 +134,7 @@ class TXDAO
      * @param $querys
      * @return array
      */
-    public function select($sql, $querys)
+    public function select($sql, $querys=array())
     {
         $params = func_get_args();
         $cond = isset($params[2]) ? $params[2] : null;
@@ -151,7 +151,7 @@ class TXDAO
      * @param $querys
      * @return bool|int|mysqli_result|string
      */
-    public function command($sql, $querys)
+    public function command($sql, $querys=array())
     {
         $params = func_get_args();
         $cond = isset($params[2]) ? $params[2] : null;
