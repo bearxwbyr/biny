@@ -3,23 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/demoAction.php" afterPath="$PROJECT_DIR$/app/controller/demoAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/mainAction.php" afterPath="$PROJECT_DIR$/app/controller/mainAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/testAction.php" afterPath="$PROJECT_DIR$/app/controller/testAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/dao/baseDAO.php" afterPath="$PROJECT_DIR$/app/dao/baseDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/service/testService.php" afterPath="$PROJECT_DIR$/app/service/testService.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" afterPath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/main/test.tpl.php" afterPath="$PROJECT_DIR$/app/template/main/test.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXAutoload.php" afterPath="$PROJECT_DIR$/lib/TXAutoload.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXAction.php" afterPath="$PROJECT_DIR$/lib/business/TXAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXCommon.php" afterPath="$PROJECT_DIR$/lib/business/TXCommon.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXEvent.php" afterPath="$PROJECT_DIR$/lib/business/TXEvent.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRequest.php" afterPath="$PROJECT_DIR$/lib/business/TXRequest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXDAO.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/index.php" afterPath="$PROJECT_DIR$/web/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/css/demo.css" afterPath="$PROJECT_DIR$/web/static/css/demo.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/js/main.js" afterPath="$PROJECT_DIR$/web/static/js/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/test.php" afterPath="$PROJECT_DIR$/web/test.php" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -465,7 +448,13 @@
       <option name="project" value="LOCAL" />
       <updated>1462438067123</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="v2.1.4 fix bug">
+      <created>1466063535509</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1466063535509</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -490,11 +479,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1932" height="1034" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992035" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -503,7 +493,6 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -531,7 +520,8 @@
     <MESSAGE value="TXSqlDATA / TXObject" />
     <MESSAGE value="v2.1 整体优化" />
     <MESSAGE value="v2.1.3 优化" />
-    <option name="LAST_COMMIT_MESSAGE" value="v2.1.3 优化" />
+    <MESSAGE value="v2.1.4 fix bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="v2.1.4 fix bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
