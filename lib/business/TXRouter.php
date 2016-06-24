@@ -7,9 +7,12 @@ class TXRouter {
 
     private $routerInfo;
 
+    public static $ARGS;
+
     function __construct()
     {
         $this->routerInfo = TXConfig::getConfig('router');
+        self::$ARGS = $_GET;
     }
 
     /**
@@ -42,6 +45,11 @@ class TXRouter {
         TXConfig::setAlias('web', $this->rootPath);
         $pathRoot = strpos($_SERVER['REQUEST_URI'], '?') ? strstr($_SERVER['REQUEST_URI'], '?', true) : $_SERVER['REQUEST_URI'];
         $pathRoot = $this->rootPath ? explode($this->rootPath, $pathRoot)[1] : $pathRoot;
+
+        $path = $this->getReRoute($pathRoot);
+        if ($path !== NULL){
+            $pathRoot = $path;
+        }
         $pathInfo = trim($pathRoot, '/') ? explode("/", trim($pathRoot, '/')) : false;
         if (!$pathInfo){
             return false;
@@ -51,9 +59,40 @@ class TXRouter {
             $isAjax = array_shift($pathInfo) == "ajax";
         }
         List($module, $method) = $pathInfo;
-
         return array($module, $method, $isAjax);
+    }
 
+    /**
+     * 路由重定向
+     * @param $url
+     * @return array
+     */
+    private function getReRoute($url)
+    {
+        $path = NULL;
+        $rules = TXConfig::getConfig('routeRule');
+        foreach ($rules as $key => $value){
+            $args = array();
+            if (preg_match_all("/<(\w+):([^>]+)>/", $key, $matchs)){
+                foreach ($matchs[2] as &$val){
+                    $val = '('.$val.')';
+                }
+                unset($val);
+                $matchs[0][] = '/';
+                $matchs[0][] = '.';
+                $matchs[2][] = '\/';
+                $matchs[2][] = '\.';
+                $key = str_replace($matchs[0], $matchs[2], $key);
+                if (preg_match('/'.$key.'$/', $url, $args)){
+                    foreach ($matchs[1] as $key => $val){
+                        self::$ARGS[$val] = $args[$key+1];
+                    }
+                    $path = str_replace($args[0], $value, $url);
+                    break;
+                }
+            }
+        }
+        return $path;
     }
 
     /**

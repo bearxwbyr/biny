@@ -101,7 +101,7 @@ class TXController {
      */
     private function getArgs($obj, $method)
     {
-        $params = $_GET;
+        $params = TXRouter::$ARGS;
         $args = [];
         if (!method_exists($obj, $method)){
             throw new TXException(2002, array($method, get_class($obj)));

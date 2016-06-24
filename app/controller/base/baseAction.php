@@ -4,6 +4,20 @@
  */
 class baseAction extends TXAction
 {
+    protected $needLogin = true;
+
+    public function __construct()
+    {
+        parent::__construct();
+        if (!$this->checkUser()){
+            if ($this->needLogin){
+                TXApp::$base->session->lastUrl = $_SERVER['REQUEST_URI'];
+                echo $this->display('main/login');
+                exit;
+            }
+        }
+    }
+
     /**
      * 验证用户登录
      * @return bool

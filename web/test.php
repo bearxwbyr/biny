@@ -1,2 +1,2 @@
 <?php
-var_dump(sprintf('%%d %d', 111));
+var_dump(doubleval('2.34'));

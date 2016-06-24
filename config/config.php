@@ -8,6 +8,10 @@ return array(
         '10.24.196.0/24'
     ],
 
+    'routeRule' => array(
+        'test/<id:\d+>.html' => 'test/view'
+    ),
+
     'unable_modules' => array(
 
     ),

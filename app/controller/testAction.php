@@ -24,4 +24,9 @@ class testAction extends baseAction
         TXLogger::info($form->status);
         return $this->display('main/index', []);
     }
+
+    public function action_view($id)
+    {
+        TXLogger::display($id);
+    }
 }

@@ -10,6 +10,9 @@ class Person extends TXModel
     private static $_cache = [];
 
     protected $_data;
+    /**
+     * @var baseDAO
+     */
     protected $DAO;
     protected $_pk;
 
@@ -20,9 +23,6 @@ class Person extends TXModel
     public static function get($id=null)
     {
         $id = $id ?: TXApp::$base->session->userId;
-        if (!$id){
-            return null;
-        }
         if (!isset(self::$_cache[$id])){
             self::$_cache[$id] = new self($id);
         }
@@ -32,8 +32,10 @@ class Person extends TXModel
     private function __construct($id)
     {
         $this->DAO = TXFactory::create('userDAO');
-        $this->_data = $this->DAO->getByPk($id);
-        $this->_pk = $id;
+        if ($id !== NULL){
+            $this->_data = $this->DAO->getByPk($id);
+            $this->_pk = $id;
+        }
     }
 
     /**
@@ -59,6 +61,7 @@ class Person extends TXModel
      */
     public function login()
     {
+        $this->DAO->updateByPk($this->_pk, ['loginTime'=>time()]);
         TXApp::$base->session->userId = $this->_pk;
     }
 

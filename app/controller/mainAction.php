@@ -21,7 +21,6 @@ class mainAction extends baseAction
 
     public function action_index($id=10, $type)
     {
-        TXLogger::info($this->getParam('ddd'));
         $arr = $this->testService->test();
         $params = [
             'testArr' => $arr,

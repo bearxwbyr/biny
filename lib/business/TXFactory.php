@@ -14,7 +14,7 @@ class TXFactory {
      * dynamic create object
      * @param string $class
      * @param string $alias
-     * @return mixed
+     * @return baseDAO
      */
     public static function create($class, $alias=null)
     {

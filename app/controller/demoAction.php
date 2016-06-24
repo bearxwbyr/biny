@@ -5,6 +5,8 @@
  */
 class demoAction extends baseAction
 {
+    protected $needLogin = false;
+
     /**
      * demo首页
      */

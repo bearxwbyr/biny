@@ -185,15 +185,18 @@ class TXAction
      */
     private function checkParam($key, $params=null)
     {
+        if (!$this->valueCheck){
+            return $params[$key];
+        }
         $params = ($params === null) ? $this->params : $params;
         $t = substr($key, 0, 1);
         switch ($t){
             //数字
             case 'i':
-                if (!is_numeric($params[$key]) && $this->valueCheck){
+                if (!is_numeric($params[$key])){
                     throw new TXException(2003, array($key, gettype($params[$key])));
                 }
-                if (strstr($params[$key], '.')){
+                if (!strstr($params[$key], '.')){
                     return intval($params[$key]);
                 } else {
                     return doubleval($params[$key]);
@@ -201,7 +204,7 @@ class TXAction
 
             //字符串
             case 's':
-                if (!is_string($params[$key]) && $this->valueCheck){
+                if (!is_string($params[$key])){
                     throw new TXException(2003, array($key, gettype($params[$key])));
                 } else {
                     return $params[$key];
@@ -209,21 +212,21 @@ class TXAction
 
             //数组
             case 'o':
-                if (!is_array($params[$key]) && $this->valueCheck){
+                if (!is_array($params[$key])){
                     throw new TXException(2003, array($key, gettype($params[$key])));
                 }
                 return $params[$key];
 
             //bool
             case 'b':
-                if ($params[$key] !== "true" && $params[$key] !== "false" && $this->valueCheck){
+                if ($params[$key] !== "true" && $params[$key] !== "false"){
                     throw new TXException(2003, array($key, gettype($params[$key])));
                 }
                 return json_decode($params[$key], true);
 
             //日期格式
             case 'd':
-                if (!strtotime($params[$key]) && $this->valueCheck){
+                if (!strtotime($params[$key])){
                     throw new TXException(2003, array($key, gettype($params[$key])));
                 }
                 return $params[$key];
