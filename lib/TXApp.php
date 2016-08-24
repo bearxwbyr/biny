@@ -70,8 +70,26 @@ class TXApp
         } else {
             throw new TXException(1001, array($apppath));
         }
+        if (!is_writable(self::$log_root) && !mkdir(self::$log_root)){
+            throw new TXException(1007, array(self::$log_root));
+        }
 
         self::init();
+    }
+
+    /**
+     * 异常捕获类
+     * @param $code
+     * @param $message
+     * @return bool
+     * @throws TXException
+     */
+    public static function handleError($code, $message)
+    {
+        if (error_reporting() & $code) {
+            throw new TXException(1000, $message);
+        }
+        return false;
     }
 
     /**
@@ -81,8 +99,8 @@ class TXApp
     {
         TXDefine::init();
         TXAutoload::init();
-        TXEvent::on(onException, ['TXException', 'event']);
-        TXEvent::on(beforeAction, ['TXAction', 'beforeAction']);
+        set_error_handler(['TXApp', 'handleError']);
+        TXEvent::init();
         self::$controller = TXFactory::create('TXController');
     }
 

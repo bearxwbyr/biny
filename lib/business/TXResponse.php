@@ -47,6 +47,7 @@ class TXResponse {
     /**
      * 获得模板渲染后的内容
      * @return string
+     * @throws TXException
      */
     public function getContent()
     {
@@ -65,7 +66,14 @@ class TXResponse {
 
         ob_start();
         //include template
-        $file = sprintf('%s/template/%s.tpl.php', TXApp::$app_root, $this->view);
+        $lang = TXLanguage::getLanguage();
+        $file = sprintf('%s/template/%s%s.tpl.php', TXApp::$app_root, $this->view, $lang ?: '.'.$lang);
+        if (!is_readable($file)){
+            $file = sprintf('%s/template/%s.tpl.php', TXApp::$app_root, $this->view);
+        }
+        if (!is_readable($file)){
+            throw new TXException(2005, $this->view);
+        }
         include $file;
         TXLogger::showLogs();
 
@@ -80,4 +88,13 @@ class TXResponse {
     {
         return $this->getContent();
     }
+}
+
+/**
+ * 获取多语言
+ * @param $content
+ * @return mixed
+ */
+function lang($content){
+    return TXLanguage::getLanguage() ? TXLanguage::getContent($content) : $content;
 }

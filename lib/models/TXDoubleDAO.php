@@ -68,13 +68,19 @@ class TXDoubleDAO extends TXDAO
                     $dbtbs[] = "{$table} `$name`";
                 } else {
                     $relate = $this->relates[$i++];
-                    $join = array_keys($relate);
-                    $on = array_values($relate);
-                    $dbtbs[] = $join[0];
+                    $join = $relate[0];
+                    $on = $relate[1];
+                    $dbtbs[] = $join;
                     $dbtbs[] = "{$table} `$name`";
                     $ons = [];
-                    foreach ($on[0] as $key=>$value){
-                        $ons[] = "{$key}={$value}";
+                    foreach ($on as $val){
+                        $key = $val[0];
+                        $value = $val[1];
+                        if (is_array($value)){
+                            $ons[] = "{$key} {$value[0]} {$value[1]}";
+                        } else {
+                            $ons[] = "{$key}={$value}";
+                        }
                     }
                     $dbtbs[] = "on ".join(' and ', $ons);
                 }
@@ -86,7 +92,7 @@ class TXDoubleDAO extends TXDAO
 
     /**
      * 链接表
-     * @param $dao TXSingleDAO
+     * @param $dao
      * @param $relateD
      * @param string $type
      * @return $this|TXDoubleDAO
@@ -94,7 +100,7 @@ class TXDoubleDAO extends TXDAO
      */
     protected function _join($dao, $relateD, $type='join')
     {
-        $daoClass = substr(get_class($dao), 0, -3);
+        $daoClass = substr($dao->getCalledClass() ?: get_class($dao), 0, -3);
         if (isset($this->doubles[$daoClass])){
             return $this;
         }
@@ -115,10 +121,15 @@ class TXDoubleDAO extends TXDAO
                 continue;
             }
             foreach ($relate as $key => $value){
-                $join[$table.".".$key] = $daoClass.".".$value;
+                $key = "`{$this->real_escape_string($table)}`.`{$this->real_escape_string($key)}`";
+                if (is_array($value) && count($value)>=2 && in_array($value[0], $this->extracts)){
+                    $join[] = [$key, [$value[0], "`{$this->real_escape_string($daoClass)}`.`{$this->real_escape_string($value[1])}`"]];
+                } else {
+                    $join[] = [$key, "`{$this->real_escape_string($daoClass)}`.`{$this->real_escape_string($value)}`"];
+                }
             }
         }
-        $relates[] = [$type => $join];
+        $relates[] = [$type, $join];
         return new TXDoubleDAO($DAOs, $relates, $this->dbConfig);
     }
 
@@ -236,7 +247,7 @@ class TXDoubleDAO extends TXDAO
                         $column = $this->real_escape_string($column);
                         if (is_string($key)){
                             $key = $this->real_escape_string($key);
-                            $temps[] = "`{$table}`.`".$key."` $column";
+                            $temps[] = "`{$table}`.`".$key."` AS `$column`";
                         } else {
                             $temps[] = "`{$table}`.`".$column."`";
                         }
@@ -273,7 +284,11 @@ class TXDoubleDAO extends TXDAO
                                 $groups[] = "{$ck}(`{$table}`.`{$k}`) as '{$value}'";
                             }
                         } else {
-                            $groups[] = "{$ck}(`{$table}`.`{$value}`) as '{$value}'";
+                            if ($ck == 'distinct'){
+                                $groups[] = "COUNT(DISTINCT `{$table}`.`{$value}`) as '{$value}'";
+                            } else {
+                                $groups[] = "{$ck}(`{$table}`.`{$value}`) as '{$value}'";
+                            }
                         }
                     }
                 }
@@ -365,9 +380,13 @@ class TXDoubleDAO extends TXDAO
                 } else {
                     continue;
                 }
-                foreach ($group as $column){
-                    $column = $this->real_escape_string($column);
-                    $temps[] = $table.".`".$column."`";
+                if (is_array($group)){
+                    foreach ($group as $column){
+                        $column = $this->real_escape_string($column);
+                        $temps[] = $table.".`".$column."`";
+                    }
+                } else {
+                    $temps[] = $group;
                 }
             }
             $groupBy = join(',', $temps);
@@ -470,6 +489,35 @@ class TXDoubleDAO extends TXDAO
             }
         }
         return join(', ', $sets);
+    }
+
+    /**
+     * 附加on条件
+     * @param $conds
+     * @return $this
+     */
+    public function on($conds=array())
+    {
+        $tmp = &$this->relates[count($this->relates)-1][1];
+        foreach ($conds as $k => $relate){
+            if (is_string($k) && in_array($k, $this->doubles)){
+                $table = $k;
+            } else if (isset($this->doubles[$k])){
+                $table = $this->doubles[$k];
+            } else {
+                continue;
+            }
+            foreach ($relate as $key => $value){
+                $key = "`{$this->real_escape_string($table)}`.`{$this->real_escape_string($key)}`";
+                if (is_array($value) && count($value)>=2 && in_array($value[0], $this->extracts)){
+                    $tmp[] = [$key, [$value[0], "'{$this->real_escape_string($value[1])}'"]];
+                } else {
+                    $tmp[] = [$key, "'{$this->real_escape_string($value)}'"];
+                }
+            }
+        }
+        unset($tmp);
+        return $this;
     }
 
     /**

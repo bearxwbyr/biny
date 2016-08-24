@@ -14,24 +14,31 @@ class TXForm
     const typeDate = 5;
     const typeDatetime = 6;
     const typeNonEmpty = 7;
+    const Required = 8;
 
     protected $_params = array();
-    protected $_values = array();
     protected $_rules = array();
+    protected $_method;
     protected $_dateFormats = array("Y-m-d", "Y/m/d");
     protected $_datetimeFormats = array("Y-m-d H:i", "Y/m/d H:i", "Y-m-d H:i:s", "Y/m/d H:i:s");
 
     protected $_datas = array();
 
     private $_errorMsg = array();
+    private $checkMethods = array();
 
     /**
      * 构造函数
      * @param array $params
+     * @param null $method
      */
-    public function __construct($params=array())
+    public function __construct($params=array(), $method=null)
     {
-        $this->_params = $params;
+        $this->_params = array_merge($params, TXRouter::$ARGS);
+        $this->_method = $method;
+        if ($method && method_exists($this, $method)){
+            $this->$method();
+        }
     }
 
     /**
@@ -39,12 +46,8 @@ class TXForm
      */
     public function init()
     {
-        foreach ($this->_values as $key => $default){
-            if (is_int($key)){
-                $this->_datas[$default] = isset($this->_params[$default]) ? $this->_params[$default] : null;
-            } else {
-                $this->_datas[$key] = isset($this->_params[$key]) ? $this->_params[$key] : $default;
-            }
+        foreach ($this->_rules as $key => $default){
+            $this->_datas[$key] = isset($this->_params[$key]) ? $this->_params[$key] : (isset($default[1]) ? $default[1] : null);
         }
     }
 
@@ -111,31 +114,31 @@ class TXForm
     public function check()
     {
         foreach ($this->_rules as $key => $value){
-            if (is_int($key)){
+            if (!isset($value[0]) || !$value[0]){
                 continue;
             }
-            switch ($value){
+            switch ($value[0]){
                 case self::typeInt:
                     if (!is_numeric($this->__get($key))){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
                 case self::typeBool:
                     if ($this->__get($key) !== "true" && $this->__get($key) !== "false"){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
                 case self::typeArray:
                     if (!is_array($this->__get($key))){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
                 case self::typeObject:
                     if (!is_object($this->__get($key))){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
@@ -143,7 +146,7 @@ class TXForm
                     $str = $this->__get($key);
                     $time = strtotime($this->__get($key));
                     if (!$time){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     $match = false;
                     foreach ($this->_dateFormats as $format){
@@ -152,7 +155,7 @@ class TXForm
                         }
                     }
                     if (!$match){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
@@ -160,7 +163,7 @@ class TXForm
                     $str = $this->__get($key);
                     $time = strtotime($this->__get($key));
                     if (!$time){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     $match = false;
                     foreach ($this->_datetimeFormats as $format){
@@ -169,22 +172,31 @@ class TXForm
                         }
                     }
                     if (!$match){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
                     }
                     break;
 
                 case self::typeNonEmpty:
-                    if (!$this->__get($key)){
-                        return $this->error(array($key=>sprintf("type Error %s given", gettype($key))));
+                    if ($this->__get($key) === NULL || $this->__get($key) === ""){
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
+                    }
+                    break;
+
+                case self::Required:
+                    if (!isset($this->_params[$key])){
+                        return $this->error(array($key=>"type Error [NULL] given"));
                     }
                     break;
 
                 default:
-                    $value = 'valid_'.$value;
-                    if (!method_exists($this, $value)){
-                        throw new TXException(5002, array($value, get_class($this)));
+                    $value = 'valid_'.$value[1];
+                    if (!isset($this->checkMethods[$value])){
+                        if (!method_exists($this, $value)){
+                            throw new TXException(5002, array($value, get_class($this)));
+                        }
+                        $this->checkMethods[$value] = $this->$value();
                     }
-                    return $this->$value();
+                    return $this->checkMethods[$value];
             }
         }
         return true;

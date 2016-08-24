@@ -1,6 +1,7 @@
 <?php
 /**
  * Action config class
+ * @property privilegeService $privilegeService
  */
 class TXAction
 {
@@ -8,31 +9,37 @@ class TXAction
      * 请求参数
      * @var array
      */
-    protected $params;
+    private $params;
 
     /**
      * POST参数
      * @var array
      */
-    protected $posts;
+    private $posts;
+
+    /**
+     * GET参数
+     * @var array
+     */
+    private $gets;
 
     /**
      * JSON参数
      * @var array
      */
-    protected $jsons = NULL;
-
-    /**
-     * 字符串验证
-     * @var bool
-     */
-    protected $valueCheck = false;
+    private $jsons = NULL;
 
     /**
      * csrf验证
      * @var bool
      */
     protected $csrfValidate = true;
+
+    /**
+     * 校验对象
+     * @var array
+     */
+    protected $privilege = array();
 
     /**
      * 构造函数
@@ -48,8 +55,10 @@ class TXAction
         }
         if ($this->csrfValidate && !TXApp::$base->request->validateCsrfToken()){
             header(TXConfig::getConfig(401, 'http'));
-            return $this->error("Unauthorized");
+            echo $this->error("Unauthorized");
+            exit;
         }
+        $this->privilege();
         TXApp::$base->request->createCsrfToken();
         $this->setCharset();
         $this->setContentType();
@@ -64,6 +73,31 @@ class TXAction
     {
         if (substr($obj, -7) == 'Service' || substr($obj, -3) == 'DAO') {
             return TXFactory::create($obj);
+        }
+    }
+
+    /**
+     * 路由验证
+     */
+    private function privilege()
+    {
+        if ($this->privilege){
+            $request = TXApp::$base->request;
+            foreach ($this->privilege as $method => $privilege){
+                if (is_callable([$this->privilegeService, $method])){
+                    $actions = $privilege['actions'];
+                    if ($actions === '*' || in_array($request->getMethod(true), $actions)){
+                        $params = isset($privilege['params']) ? $privilege['params'] : [];
+                        array_unshift($params, $this);
+                        if (!call_user_func_array([$this->privilegeService, $method], $params)){
+                            if (isset($privilege['callBack']) && is_callable($privilege['callBack'])){
+                                call_user_func_array($privilege['callBack'], [$this]);
+                            }
+                            throw new TXException(6001, $method);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -89,10 +123,7 @@ class TXAction
     public function getForm($name, $method=null)
     {
         $name .= 'Form';
-        $form = new $name($this->params);
-        if ($method && method_exists($form, $method)){
-            $form->$method();
-        }
+        $form = new $name($this->params, $method);
         $form->init();
         return $form;
     }
@@ -110,131 +141,46 @@ class TXAction
      * 获取请求参数
      * @param $key
      * @param null $default
-     * @param bool $check
      * @return float|int|mixed|null
      */
-    public function getParam($key, $default=null, $check=true)
+    public function getParam($key, $default=null)
     {
-        if (isset($this->params[$key])){
-            //参数验证
-            return $check ? $this->checkParam($key, $this->params) : $this->params[$key];
-        } else {
-            return $default;
-        }
+        return isset($this->params[$key]) ? $this->params[$key] : $default;
     }
 
     /**
      * 获取POST参数
      * @param $key
      * @param null $default
-     * @param bool $check
      * @return float|int|mixed|null
      */
-    public function getPost($key, $default=null, $check=true)
+    public function getPost($key, $default=null)
     {
-        if (isset($this->posts[$key])){
-            //参数验证
-            return $check ? $this->checkParam($key, $this->posts) : $this->posts[$key];
-        } else {
-            return $default;
-        }
+        return isset($this->posts[$key]) ? $this->posts[$key] : $default;
     }
 
     /**
      * 获取GET参数
      * @param $key
      * @param null $default
-     * @param bool $check
      * @return float|int|mixed|null
      */
-    public function getGet($key, $default=null, $check=true)
+    public function getGet($key, $default=null)
     {
-        if (isset($this->gets[$key])){
-            //参数验证
-            return $check ? $this->checkParam($key, $this->gets) : $this->gets[$key];
-        } else {
-            return $default;
-        }
+        return isset($this->gets[$key]) ? $this->gets[$key] : $default;
     }
 
     /**
      * 获取json数据
      * @param $key
      * @param null $default
-     * @param bool $check
      * @return float|int|mixed|null
      */
-    public function getJson($key, $default=null, $check=false){
+    public function getJson($key, $default=null){
         if ($this->jsons === NULL){
             $this->jsons = json_decode($this->getRowPost(), true) ?: [];
         }
-        if (isset($this->jsons[$key])){
-            //参数验证
-            return $check ? $this->checkParam($key, $this->jsons) : $this->jsons[$key];
-        } else {
-            return $default;
-        }
-    }
-
-    /**
-     * 参数名验证法
-     * @param $key
-     * @param $params
-     * @return float|int|mixed
-     * @throws TXException
-     */
-    private function checkParam($key, $params=null)
-    {
-        if (!$this->valueCheck){
-            return $params[$key];
-        }
-        $params = ($params === null) ? $this->params : $params;
-        $t = substr($key, 0, 1);
-        switch ($t){
-            //数字
-            case 'i':
-                if (!is_numeric($params[$key])){
-                    throw new TXException(2003, array($key, gettype($params[$key])));
-                }
-                if (!strstr($params[$key], '.')){
-                    return intval($params[$key]);
-                } else {
-                    return doubleval($params[$key]);
-                }
-
-            //字符串
-            case 's':
-                if (!is_string($params[$key])){
-                    throw new TXException(2003, array($key, gettype($params[$key])));
-                } else {
-                    return $params[$key];
-                }
-
-            //数组
-            case 'o':
-                if (!is_array($params[$key])){
-                    throw new TXException(2003, array($key, gettype($params[$key])));
-                }
-                return $params[$key];
-
-            //bool
-            case 'b':
-                if ($params[$key] !== "true" && $params[$key] !== "false"){
-                    throw new TXException(2003, array($key, gettype($params[$key])));
-                }
-                return json_decode($params[$key], true);
-
-            //日期格式
-            case 'd':
-                if (!strtotime($params[$key])){
-                    throw new TXException(2003, array($key, gettype($params[$key])));
-                }
-                return $params[$key];
-
-            default:
-
-                return $params[$key];
-        }
+        return isset($this->jsons[$key]) ? $this->jsons[$key] : $default;
     }
 
     /**
@@ -290,15 +236,5 @@ class TXAction
     {
         header("Location:$url");
         exit();
-    }
-
-    /**
-     * beforeAction事件
-     * @param $event
-     * @param TXRequest $request
-     */
-    public static function beforeAction($event, $request)
-    {
-        TXLogger::addLog('router: '.$request->getServerName().$request->getUrl());
     }
 }

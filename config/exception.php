@@ -1,18 +1,21 @@
 <?php
 return array(
     /* core error */
+    1000 => 'System Error [%s]',
     1001 => 'App path[%s] is not readable.',
     1002 => 'Config file[%s] is not exists.',
     1003 => 'Autoload file[%s] is fails',
     1004 => 'Autoload registry handler is fail',
     1005 => 'Permission Error: AutoLoad File[%s] can not write',
     1006 => 'TXAPP has no property [%s]',
+    1007 => 'logs list [%s] not exist or has no permission to write',
 
     /* controller error */
     2001 => 'Action[%s] is not exists.',
     2002 => 'Method [%s] not exists in [%s]',
     2003 => 'param Key [%s] checkType Error; %s given',
     2004 => 'access error',
+    2005 => 'template [%s] is not Exist',
 
     /* DAO error */
     3001 => 'Connect mysql[%s] is fail',
@@ -39,6 +42,10 @@ return array(
     5001 => '[%s] not in form[%s] values',
     5002 => 'check Method[%s] not exists in form[%s]',
     5003 => 'event class[%s] not exists',
+
+    /* web error */
+    6000 => 'cannot read request uri',
+    6001 => 'privilege [%s] is not access',
 
     /* custom error */
     8000 => 'custom Error',

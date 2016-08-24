@@ -2,7 +2,7 @@
 /**
  * Core Exception
  */
-class TXException extends Exception
+class TXException extends ErrorException
 {
     /**
      * 构造函数
@@ -10,16 +10,17 @@ class TXException extends Exception
      * @param array $params
      * @param string $html
      */
-    public function __construct($code, $params=array(), $html="404")
+    public function __construct($code, $params=array(), $html="500")
     {
         $message = $this->fmt_code($code, $params);
-        TXEvent::trigger(onException, array($code, array($message, $this->getTraceAsString())));
+        if (class_exists('TXEvent')){
+            TXEvent::trigger(onException, array($code, array($message, $this->getTraceAsString())));
+        }
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);
             }
             if (SYS_DEBUG){
-                $message = TXString::encode($message);
                 echo "<pre>";
                 parent::__construct($message, $code);
 
@@ -64,15 +65,5 @@ class TXException extends Exception
             $msgtpl = $ex->getMessage();
         }
         return vsprintf($msgtpl, $params);
-    }
-
-    /**
-     * @param $event
-     * @param $code
-     * @param $params
-     */
-    public static function event($event, $code, $params)
-    {
-        TXLogger::addError("ERROR CODE: $code\n".join("\n", $params));
     }
 }

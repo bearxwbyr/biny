@@ -179,6 +179,22 @@ function getCheckBoxByName(name, isInt){
     return ids;
 }
 
+function htmlEncode(str){
+    if (typeof str == "string"){
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, "&#039;").replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    } else {
+        return str;
+    }
+}
+
+function htmlDecode(str){
+    if (typeof str == "string"){
+        return str.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    } else {
+        return str;
+    }
+}
+
 //Jquery Coffee
 (function($){
     $.fn.Coffee = function (options) {

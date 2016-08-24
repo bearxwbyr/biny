@@ -27,8 +27,8 @@
 <div class="row">
 <div class="col-md-9" role="main">
     <div class="bs-docs-section">
-        <h1 id="overview" class="page-header">概览</h1>
-        <p>Biny是一个轻量级易用性强的web Server框架</p>
+        <h1 id="overview" class="page-header"><?=lang('概览')?></h1>
+        <p><?=lang('Biny是一个轻量级易用性强的web Server框架')?></p>
 
         <h2 id="overview-introduce">介绍</h2>
         <p>支持跨库连表，条件复合筛选，PK缓存查询等</p>
@@ -99,8 +99,8 @@
         <prm>$members</prm> = TXApp::<prm>$base</prm>-><prm>memcache</prm>-><func>get</func>(<str>'cache_'</str><sys>.</sys><prm>$person</prm>-><prm>project_id</prm>);
         <sys>if</sys> (!<prm>$members</prm>){
             <note>// 获取用户所在项目成员</note>
-            <prm>$project</prm> = <prm>$this</prm>-><prm>$projectDAO</prm>-><func>find</func>(<sys>array</sys>(<str>'id'</str>=><prm>$person</prm>-><prm>project_id</prm>));
-            <prm>$members</prm> = <prm>$this</prm>-><prm>$projectService</prm>-><func>getMembers</func>(<prm>$project</prm>[<str>'id'</str>]);
+            <prm>$project</prm> = <prm>$this</prm>-><prm>projectDAO</prm>-><func>find</func>(<sys>array</sys>(<str>'id'</str>=><prm>$person</prm>-><prm>project_id</prm>));
+            <prm>$members</prm> = <prm>$this</prm>-><prm>projectService</prm>-><func>getMembers</func>(<prm>$project</prm>[<str>'id'</str>]);
             TXApp::<prm>$base</prm>-><prm>memcache</prm>-><func>set</func>(<str>'cache_'</str><sys>.</sys><prm>$person</prm>-><prm>project_id</prm>, <prm>$members</prm>);
         }
         <note>//返回 project/members.tpl.php</note>
@@ -584,12 +584,12 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
         <pre class="code"><note>// WHERE `user`.`type` IN (1,2,3,'test')</note>
 <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=><sys>array</sys>(1,2,3,<str>'test'</str>)));</pre>
 
-        <p>其他还包括 <code>></code>，<code><</code>，<code>>=</code>，<code><=</code>，<code>!=</code>，<code><></code>，<code>is</code>，<code>not is</code>
+        <p>其他还包括 <code>></code>，<code><</code>，<code>>=</code>，<code><=</code>，<code>!=</code>，<code><></code>，<code>is</code>，<code>is not</code>
             ，同样，多表的情况下需要用<code>二维数组</code>去封装</p>
-        <pre class="code"><note>// WHERE `user`.`id` >= 10 AND `user`.`time` >= 1461584562 AND `user`.`type` not is null</note>
+        <pre class="code"><note>// WHERE `user`.`id` >= 10 AND `user`.`time` >= 1461584562 AND `user`.`type` is not null</note>
 <prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(
     <str>'>='</str>=><sys>array</sys>(<str>'id'</str>=>10, <str>'time'</str>=>1461584562),
-    <str>'not is'</str>=><sys>array</sys>(<str>'type'</str>=><sys>NULL</sys>),
+    <str>'is not'</str>=><sys>array</sys>(<str>'type'</str>=><sys>NULL</sys>),
 ));</pre>
 
         <p>另外，<code>like语句</code>也是支持的，可匹配正则符的开始结尾符，具体写法如下：</p>

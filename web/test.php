@@ -1,2 +1,3 @@
 <?php
-var_dump(doubleval('2.34'));
+$a = 'false';
+var_dump(!$a);

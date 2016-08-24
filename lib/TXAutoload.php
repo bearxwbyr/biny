@@ -31,8 +31,9 @@ class TXAutoload
      */
     private static function loading()
     {
+        $lastTime = filemtime(self::$autoPath);
         // 5秒缓存不更新
-        if (!isset(self::$loaders['__last__']) || time()-self::$loaders['__last__'] > 5){
+        if (!$lastTime || time()-$lastTime > TXConfig::getConfig('autoSkipLoad')){
             self::$loaders = array();
             self::getLoads(__DIR__);
             self::getLoads(TXApp::$app_root. DS . "controller");
@@ -41,7 +42,6 @@ class TXAutoload
             self::getLoads(TXApp::$app_root. DS . "form");
             self::getLoads(TXApp::$app_root. DS . "event");
             self::getLoads(TXApp::$app_root. DS . "model");
-            self::$loaders['__last__'] = time();
             //写入文件
             if (is_writeable(self::$autoPath)) {
                 file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');

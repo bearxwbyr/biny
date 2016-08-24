@@ -5,6 +5,10 @@ class TXRequest {
     public $isAjax=false;
     private $id;
     private $csrfToken = null;
+    private $_hostInfo = null;
+    private $_securePort = null;
+    private $_port = null;
+    private $_isSecure = null;
 
     /**
      * @var null|TXRequest
@@ -157,9 +161,9 @@ class TXRequest {
         return $this->module;
     }
 
-    public function getMethod()
+    public function getMethod($row=false)
     {
-        return ($this->isAjax ? 'ajax' : 'action') . '_' . $this->method;
+        return $row ? $this->method : ($this->isAjax ? 'ajax' : 'action') . '_' . $this->method;
     }
 
     /**
@@ -171,9 +175,111 @@ class TXRequest {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
 
+    /**
+     * @return mixed|string
+     * @throws TXException
+     */
     public function getUrl()
     {
-        return $_SERVER['REQUEST_URI'];
+        if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // IIS
+            $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+        } elseif (isset($_SERVER['REQUEST_URI'])) {
+            $requestUri = $_SERVER['REQUEST_URI'];
+            if ($requestUri !== '' && $requestUri[0] !== '/') {
+                $requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
+            }
+        } elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
+            $requestUri = $_SERVER['ORIG_PATH_INFO'];
+            if (!empty($_SERVER['QUERY_STRING'])) {
+                $requestUri .= '?' . $_SERVER['QUERY_STRING'];
+            }
+        } else {
+            throw new TXException(6000);
+        }
+
+        return $requestUri;
+    }
+
+    /**
+     * 获取根URL
+     * @param bool $host
+     * @return string
+     */
+    public function getBaseUrl($host=false)
+    {
+        return $host ? $this->getHostInfo().TXApp::$base->router->rootPath : TXApp::$base->router->rootPath;
+    }
+
+    /**
+     * Returns the schema and host part of the current request URL.
+     * The returned URL does not have an ending slash.
+     * By default this is determined based on the user request information.
+     * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
+     * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
+     * @see setHostInfo()
+     */
+    public function getHostInfo()
+    {
+        if ($this->_hostInfo === null) {
+            $secure = $this->getIsSecureConnection();
+            $http = $secure ? 'https' : 'http';
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
+            } else {
+                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+                $port = $secure ? $this->getSecurePort() : $this->getPort();
+                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
+                    $this->_hostInfo .= ':' . $port;
+                }
+            }
+        }
+
+        return $this->_hostInfo;
+    }
+
+    /**
+     * Returns the port to use for insecure requests.
+     * Defaults to 80, or the port specified by the server if the current
+     * request is insecure.
+     * @return integer port number for insecure requests.
+     * @see setPort()
+     */
+    public function getPort()
+    {
+        if ($this->_port === null) {
+            $this->_port = !$this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 80;
+        }
+
+        return $this->_port;
+    }
+
+    /**
+     * Returns the port to use for secure requests.
+     * Defaults to 443, or the port specified by the server if the current
+     * request is secure.
+     * @return integer port number for secure requests.
+     * @see setSecurePort()
+     */
+    public function getSecurePort()
+    {
+        if ($this->_securePort === null) {
+            $this->_securePort = $this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 443;
+        }
+
+        return $this->_securePort;
+    }
+
+    /**
+     * Return if the request is sent via secure channel (https).
+     * @return boolean if the request is sent via secure channel (https)
+     */
+    public function getIsSecureConnection()
+    {
+        if ($this->_isSecure === null){
+            $this->_isSecure = isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+        }
+        return $this->_isSecure;
     }
 
     /**
@@ -219,24 +325,5 @@ class TXRequest {
     public function getUserIP()
     {
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
-    }
-
-    /**
-     * Returns the user host name, null if it cannot be determined.
-     * @return string user host name, null if cannot be determined
-     */
-    public function getUserHost()
-    {
-        return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
-    }
-
-    /**
-     * Return if the request is sent via secure channel (https).
-     * @return boolean if the request is sent via secure channel (https)
-     */
-    public function getIsHttps()
-    {
-        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-        || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
     }
 }

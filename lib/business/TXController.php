@@ -29,21 +29,8 @@ class TXController {
     private function execute()
     {
         $requests = TXApp::$base->request;
-//        $Module = $requests->getModule();
-//        $unable_module = TXConfig::getConfig('unable_modules');
-//        if ($unable_module && in_array($Module, $unable_module)) {
-//            echo "Url Forbidden!";
-//            throw new TXException(2004);
-//        }
-        $result = array();
-        if ($requests instanceof TXRequest) {   //web view
-            $result = $this->call($requests);
-        } else {    //flash mulit request
-            foreach ($requests as $request) {
-                $result[] = $this->call($request);
-            }
-        }
-
+        TXEvent::trigger(onRequest, array($requests));
+        $result = $this->call($requests);
         return $result;
     }
 
@@ -51,6 +38,7 @@ class TXController {
      * @param $module
      * @param $request
      * @return mixed
+     * @throws TXException
      */
     private function getAction($module, $request)
     {
@@ -75,6 +63,7 @@ class TXController {
     {
         $module = $request->getModule() . 'Action';
         $method = $request->getMethod();
+        $args = $this->getArgs($module, $method);
 
         $object = $this->getAction($module, $request);
         if ($object instanceof TXResponse || $object instanceof TXJSONResponse){
@@ -83,7 +72,6 @@ class TXController {
         }
 
         if ($object instanceof TXAction) {
-            $args = $this->getArgs($object, $method);
             $result = call_user_func_array([$object, $method], $args);
             TXEvent::trigger(afterAction, array($request));
             return $result;
@@ -104,9 +92,12 @@ class TXController {
         $params = TXRouter::$ARGS;
         $args = [];
         if (!method_exists($obj, $method)){
-            throw new TXException(2002, array($method, get_class($obj)));
+            throw new TXException(2002, array($method, $obj));
         }
         $action = new ReflectionMethod($obj, $method);
+        if ($action->getName() !== $method){
+            throw new TXException(2002, array($method, $obj));
+        }
         foreach ($action->getParameters() as $param) {
             $name = $param->getName();
             $args[] = isset($params[$name]) ? $params[$name] : ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : null);

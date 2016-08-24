@@ -7,25 +7,19 @@
  */
 class testForm extends TXForm
 {
-    protected $_values = ['id'=>null, 'name'=>null, 'status'];
     protected $_rules = [
-        'id'=>self::typeInt,
-        'name'=>self::typeNonEmpty,
-        'status'=>'testCmp'
+        'id'=>[self::typeInt],
+        'name'=>[self::typeNonEmpty],
+        'status'=>['testCmp']
     ];
 
     public function get_user()
     {
-        $this->_values['id'] = 2;
-        $this->_rules['id'] = self::typeDate;
+        $this->_rules['id'] = [self::typeDate, 2];
     }
 
     public function valid_testCmp()
     {
-        if ($this->status == "1"){
-            return $this->correct();
-        } else {
-            return $this->error();
-        }
+        return $this->correct();
     }
 }

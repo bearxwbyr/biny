@@ -1,4 +1,8 @@
 <?php
+/**
+ * @method bool delete($key)
+ * @method mixed get($key)
+ */
 class TXMemcache
 {
     /**
@@ -26,7 +30,12 @@ class TXMemcache
     public function __construct($config)
     {
         $this->handler = new Memcache();
-        if (!$this->handler->addserver($config['host'], $config['port'])){
+        if ($config['keep-alive']){
+            $fd = $this->handler->pconnect($config['host'], $config['port'], TXConst::minute);
+        } else {
+            $fd = $this->handler->connect($config['host'], $config['port']);
+        }
+        if (!$fd){
             throw new TXException(4004, array($config['host'], $config['port']));
         }
     }
@@ -36,13 +45,14 @@ class TXMemcache
         return $this->handler->set($key, $value, MEMCACHE_COMPRESSED, $expire);
     }
 
-    public function get($key)
+    /**
+     * 调用redis
+     * @param $method
+     * @param $arguments
+     * @return mixed
+     */
+    public function __call($method, $arguments)
     {
-        return $this->handler->get($key);
-    }
-
-    public function delete($key)
-    {
-        return $this->handler->delete($key);
+        return call_user_func_array(array($this->handler, $method), $arguments);
     }
 }

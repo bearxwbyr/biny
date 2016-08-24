@@ -3,8 +3,7 @@
  * Router class
  */
 class TXRouter {
-    private $rootPath = '';
-
+    public $rootPath = '';
     private $routerInfo;
 
     public static $ARGS;
@@ -44,9 +43,12 @@ class TXRouter {
         }
         TXConfig::setAlias('web', $this->rootPath);
         $pathRoot = strpos($_SERVER['REQUEST_URI'], '?') ? strstr($_SERVER['REQUEST_URI'], '?', true) : $_SERVER['REQUEST_URI'];
-        $pathRoot = $this->rootPath ? explode($this->rootPath, $pathRoot)[1] : $pathRoot;
+        if ($this->rootPath){
+            $len = strpos($pathRoot, $this->rootPath) + strlen($this->rootPath);
+            $pathRoot = substr($pathRoot, $len);
+        }
 
-        $path = $this->getReRoute($pathRoot);
+        $path = $this->reRouter($pathRoot);
         if ($path !== NULL){
             $pathRoot = $path;
         }
@@ -58,7 +60,8 @@ class TXRouter {
         if ($pathInfo[0] == "action" || $pathInfo[0] == "ajax"){
             $isAjax = array_shift($pathInfo) == "ajax";
         }
-        List($module, $method) = $pathInfo;
+        $module = isset($pathInfo[0]) ? $pathInfo[0] : null;
+        $method = isset($pathInfo[1]) ? $pathInfo[1] : null;
         return array($module, $method, $isAjax);
     }
 
@@ -67,12 +70,11 @@ class TXRouter {
      * @param $url
      * @return array
      */
-    private function getReRoute($url)
+    private function reRouter($url)
     {
         $path = NULL;
         $rules = TXConfig::getConfig('routeRule');
         foreach ($rules as $key => $value){
-            $args = array();
             if (preg_match_all("/<(\w+):([^>]+)>/", $key, $matchs)){
                 foreach ($matchs[2] as &$val){
                     $val = '('.$val.')';
@@ -86,6 +88,13 @@ class TXRouter {
                 if (preg_match('/'.$key.'$/', $url, $args)){
                     foreach ($matchs[1] as $key => $val){
                         self::$ARGS[$val] = $args[$key+1];
+                    }
+                    if (preg_match_all("/<(\w+)>/", $value, $matchs)){
+                        $replaces = [];
+                        foreach ($matchs[1] as &$val){
+                            $replaces[] = isset(self::$ARGS[$val]) ? self::$ARGS[$val] : $val;
+                        }
+                        $value = str_replace($matchs[0], $replaces, $value);
                     }
                     $path = str_replace($args[0], $value, $url);
                     break;

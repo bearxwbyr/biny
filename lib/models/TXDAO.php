@@ -11,7 +11,7 @@ class TXDAO
     const FETCH_TYPE_ALL = 0;
     const FETCH_TYPE_ONE = 1;
 
-    protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'not is'];
+    protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'is not'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count', 'distinct'];
     protected $methods = ['group', 'limit', 'order', 'addition', 'having'];
 
@@ -68,7 +68,7 @@ class TXDAO
      */
     public function leftJoin($dao, $relate)
     {
-        return $this->_join($dao, $relate, 'left join');
+        return $this->_join($dao, $relate, 'LEFT JOIN');
     }
 
     /**
@@ -79,7 +79,7 @@ class TXDAO
      */
     public function rightJoin($dao, $relate)
     {
-        return $this->_join($dao, $relate, 'right join');
+        return $this->_join($dao, $relate, 'RIGHT JOIN');
     }
 
     /**
@@ -90,7 +90,7 @@ class TXDAO
      */
     public function join($dao, $relate)
     {
-        return $this->_join($dao, $relate, 'join');
+        return $this->_join($dao, $relate, 'JOIN');
     }
 
     /**
@@ -263,6 +263,25 @@ class TXDAO
     }
 
     /**
+     * 查询不重复项
+     * @param string $fields
+     * @return array
+     */
+    public function distinct($fields='')
+    {
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
+        $limit = $this->buildLimit(isset($params[1]) ? $params[1]->get('limit') : []);
+        $orderBy = $this->buildOrderBy(isset($params[1]) ? $params[1]->get('orderby') : []);
+        $fields = $this->buildFields($fields, isset($params[1]) ? $params[1]->get('additions') : []);
+        $groupBy = $this->buildGroupBy(isset($params[1]) ? $params[1]->get('groupby') : [], isset($params[1]) ? $params[1]->get('having') : []);
+        $sql = sprintf("SELECT DISTINCT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
+        TXEvent::trigger(onSql, [$sql]);
+
+        return $this->sql($sql);
+    }
+
+    /**
      * 计算数量
      * @param string $field
      * @return int
@@ -328,7 +347,7 @@ class TXDAO
             return call_user_func_array([$cond, $method], $args);
         } else if (in_array($method, $this->calcs)){
             $where = isset($args[1]) && $args[1]->get('where') ? " WHERE ".$args[1]->get('where') : "";
-            $sql = sprintf("SELECT %s(%s) as %s FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
+            $sql = sprintf("SELECT %s(`%s`) as `%s` FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
             TXEvent::trigger(onSql, [$sql]);
 
             $ret = $this->sql($sql, null, self::FETCH_TYPE_ONE);

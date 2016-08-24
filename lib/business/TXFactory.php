@@ -22,7 +22,18 @@ class TXFactory {
             $alias = $class;
         }
         if (!isset(self::$objects[$alias])) {
-            self::$objects[$alias] = new $class();
+            //可以不写DAO文件自动建立对象
+            if (substr($alias, -3) == 'DAO') {
+                $dbConfig = TXConfig::getConfig('dbConfig', 'database');
+                if (isset($dbConfig[$class])){
+                    $dao = new TXSingleDAO($dbConfig[$class], $class);
+                    self::$objects[$alias] = $dao;
+                } else {
+                    self::$objects[$alias] = new $class();
+                }
+            } else {
+                self::$objects[$alias] = new $class();
+            }
         }
 
         return self::$objects[$alias];

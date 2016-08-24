@@ -17,28 +17,46 @@
     </table>
     <?}?>
     <div id="csrf"><?=$this->getCsrfToken()?></div>
+    <br />
+
+    <div style="height: 100px;width: 100px; background-color: #aaaaaa"
+         onclick="test('<?=$PRM['test']?>')"></div>
+    <br />
+
+    <div style="height: 100px;width: 100px; background-color: #aaaaaa" data-test="<?=$PRM['test']?>" tips="<?=$PRM['test']?>"
+         onclick="test2(this)"></div>
+    <br />
+
+    <select onchange="test(this.value, '<?=$PRM['test']?>')">
+        <option></option>
+        <option>1</option>
+        <option>2</option>
+    </select>
 </div>
 
 <? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
 <script type="text/javascript" src="//logger.oa.com/sdk/Logger.sdk.js"></script>
 <script type="text/javascript">
+
     var src;
     $(function(){
         src = parseInt('<?=$src?>');
-        var string = <?=$PRM['testArr']->json_encode()?>;
-        var xxx = '<?=$PRM['testArr'][4]['name']?>';
         test();
     });
 
     function test(){
         $.ajax({
-            url: '/biny/ajax/main/',
+            url: '/ajax/test/form',
             type: "POST",
-            dataType: "json",
+            data: {id: 10},
             success: function(data){
-                console.log(data);
+
             }
-        });
+        })
+    }
+
+    function test2(obj){
+        console.log($(obj).data('test'))
     }
 </script>
 

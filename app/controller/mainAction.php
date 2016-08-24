@@ -8,8 +8,6 @@
  */
 class mainAction extends baseAction
 {
-    protected $valueCheck = false;
-
     public function init()
     {
         TXLogger::time('start-time');

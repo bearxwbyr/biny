@@ -82,7 +82,7 @@ class TXLogger
     {
         echo '<pre>';
         $message = (is_object($message) && method_exists($message, '__toLogger')) ? $message->__toLogger() : $message;
-        print_r($message);
+        print_r($message !== NULL && $message !== '' ? $message : "NULL");
         echo '</pre>';
     }
 
@@ -171,8 +171,7 @@ class TXLogger
             $message = var_export($message, true);
         }
         $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
-        $user = TXApp::$base->person ? TXApp::$base->person->getPk() : "guest";
-        $message = $header."\n".$message."\nuser: $user\n";
+        $message = "$header $message\n";
         $filename = sprintf("%s/error_%s.log", TXApp::$log_root, date('Y-m-d'));
         file_put_contents($filename, $message, FILE_APPEND);
     }
@@ -186,8 +185,7 @@ class TXLogger
             $message = var_export($message, true);
         }
         $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
-        $user = TXApp::$base->person ? TXApp::$base->person->getPk() : "guest";
-        $message = $header."\n".$message."\nuser: $user\n";
+        $message = "$header $message\n";
         $filename = sprintf("%s/log_%s.log", TXApp::$log_root, date('Y-m-d'));
         file_put_contents($filename, $message, FILE_APPEND);
     }

@@ -1,5 +1,6 @@
 <?php
 return array(
+    'autoSkipLoad' => 5,
     'router' => array(
         'base_action' => 'demo'
     ),
@@ -9,11 +10,8 @@ return array(
     ],
 
     'routeRule' => array(
-        'test/<id:\d+>.html' => 'test/view'
-    ),
-
-    'unable_modules' => array(
-
+        '<method:\w+>/test/<id:\d+>.html' => 'test/<method>',
+        'test/<id:[\w_%]+>.html' => 'test/view',
     ),
     'autoPath' => 'config/autoload.php',
     'pkCache' => 'tb:%s',

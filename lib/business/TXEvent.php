@@ -42,7 +42,7 @@ class TXEvent
      */
     public static function bind($method, $event, $times=null)
     {
-        if (!is_array($method) || !method_exists($method[0], $method[1])){
+        if (!is_callable($method)){
             throw new TXException(5003, isset($method[1]) ? $method[1] : 'null');
         }
         $fh = ++self::$fh;
@@ -116,5 +116,35 @@ class TXEvent
         }
         unset($value);
         return true;
+    }
+
+    /**
+     * 启动类
+     */
+    public static function init()
+    {
+        TXEvent::on(onException, ['TXEvent', 'onException']);
+        TXEvent::on(onRequest, ['TXEvent', 'onRequest']);
+    }
+
+    /**
+     * 异常错误
+     * @param $event
+     * @param $code
+     * @param $params
+     */
+    public static function onException($event, $code, $params)
+    {
+        TXLogger::addError("ERROR CODE: $code\n".join("\n", $params));
+    }
+
+    /**
+     * 请求入口
+     * @param $event
+     * @param $request TXRequest
+     */
+    public static function onRequest($event, $request)
+    {
+        TXLogger::addLog('request: '.$request->getHostInfo().$request->getUrl());
     }
 }

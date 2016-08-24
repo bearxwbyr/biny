@@ -90,7 +90,7 @@ class TXCond
      * @param $querys
      * @return array
      */
-    public function select($sql, $querys)
+    public function select($sql, $querys=array())
     {
         return $this->DAO->select($sql, $querys, $this);
     }
@@ -101,7 +101,7 @@ class TXCond
      * @param $querys
      * @return array
      */
-    public function command($sql, $querys)
+    public function command($sql, $querys=array())
     {
         return $this->DAO->command($sql, $querys, $this);
     }

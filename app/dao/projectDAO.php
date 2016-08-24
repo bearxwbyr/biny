@@ -14,7 +14,7 @@ class projectDAO extends baseDAO
      */
     public function choose($id)
     {
-        $this->setDbTable('Biny_Project'.$id);
+        $this->setDbTable($this->table.'_'.$id);
         return $this;
     }
 }
