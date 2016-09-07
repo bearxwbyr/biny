@@ -35,29 +35,5 @@
 </div>
 
 <? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
-<script type="text/javascript" src="//logger.oa.com/sdk/Logger.sdk.js"></script>
-<script type="text/javascript">
-
-    var src;
-    $(function(){
-        src = parseInt('<?=$src?>');
-        test();
-    });
-
-    function test(){
-        $.ajax({
-            url: '/ajax/test/form',
-            type: "POST",
-            data: {id: 10},
-            success: function(data){
-
-            }
-        })
-    }
-
-    function test2(obj){
-        console.log($(obj).data('test'))
-    }
-</script>
 
 

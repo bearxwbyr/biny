@@ -1,7 +1,7 @@
 <?php
 /**
  * 主页Action
- * @property testDAO $testDAO
+ * @property TXSingleDAO $testDAO
  * @property userDAO $userDAO
  * @property projectDAO $projectDAO
  * @property testService $testService
@@ -38,11 +38,12 @@ class mainAction extends baseAction
         return $this->error('aaaa');
     }
 
-    public function ajax_index($aaa=10, $bbb)
+    public function action_demo()
     {
-        TXLogger::info($aaa, 'aaa');
-        TXLogger::info($bbb, 'bbb');
-        return $this->error("errrrrrror!!!");
+        // 对外包同学开放 无权限限制
+        $view = $this->display('demo/demo');
+        $view->title = "Biny演示页面";
+        return $view;
     }
 
     /**

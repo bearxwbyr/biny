@@ -36,12 +36,6 @@ class TXAction
     protected $csrfValidate = true;
 
     /**
-     * 校验对象
-     * @var array
-     */
-    protected $privilege = array();
-
-    /**
      * 构造函数
      */
     public function __construct()
@@ -58,7 +52,8 @@ class TXAction
             echo $this->error("Unauthorized");
             exit;
         }
-        $this->privilege();
+        // 权限验证
+        $this->valid_privilege();
         TXApp::$base->request->createCsrfToken();
         $this->setCharset();
         $this->setContentType();
@@ -79,11 +74,11 @@ class TXAction
     /**
      * 路由验证
      */
-    private function privilege()
+    private function valid_privilege()
     {
-        if ($this->privilege){
+        if (method_exists($this, 'privilege') && $privileges = $this->privilege()){
             $request = TXApp::$base->request;
-            foreach ($this->privilege as $method => $privilege){
+            foreach ($privileges as $method => $privilege){
                 if (is_callable([$this->privilegeService, $method])){
                     $actions = $privilege['actions'];
                     if ($actions === '*' || in_array($request->getMethod(true), $actions)){
@@ -93,7 +88,7 @@ class TXAction
                             if (isset($privilege['callBack']) && is_callable($privilege['callBack'])){
                                 call_user_func_array($privilege['callBack'], [$this]);
                             }
-                            throw new TXException(6001, $method);
+                            throw new TXException(6001, $method, $this->privilegeService->getError());
                         }
                     }
                 }
@@ -213,11 +208,11 @@ class TXAction
     public function error($msg="数据异常", $encode=true)
     {
         TXEvent::trigger(onError, array($msg));
-        if (TXApp::$base->request->isAjax){
+        if (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax()){
+            return $this->display('error/msg', ['message'=> $msg]);
+        } else {
             $data = array("flag" => false, "error" => $msg);
             return $this->json($data, $encode);
-        } else {
-            return $this->display('error/msg', ['message'=> $msg]);
         }
     }
 

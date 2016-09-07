@@ -111,7 +111,6 @@ class TXController {
     public function dispatcher()
     {
         $this->router();    //router
-
         $result = $this->execute(); //execute
         if ($result instanceof TXResponse) {    //view
             echo $result;

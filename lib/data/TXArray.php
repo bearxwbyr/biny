@@ -153,6 +153,6 @@ class TXArray extends ArrayObject
 
     public function json_encode($encode=true)
     {
-        return $encode ? json_encode($this->values()) : json_encode($this->storage);
+        return $encode ? json_encode($this->values(), JSON_UNESCAPED_UNICODE) : json_encode($this->storage, JSON_UNESCAPED_UNICODE);
     }
 }

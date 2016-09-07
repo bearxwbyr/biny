@@ -86,7 +86,7 @@
     <sys>public function</sys> <act>init</act>()
     {
         <note>// 未登录时调整登录页面</note>
-        <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>get</func>()){
+        <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>exist</func>()){
             <sys>return</sys> <prm>$this</prm>-><func>redirect</func>(<str>'/auth/login/'</str>);
         }
     }
@@ -148,7 +148,7 @@
     <div class="bs-docs-section">
         <h1 id="router">路由</h1>
         <p>基本MVC架构路由模式，第一层对应<code>action</code>，第二层对应<code>method</code>（默认<code>index</code>）</p>
-        <h2 id="router-rule">规则</h2>
+        <h2 id="router-rule">默认路由</h2>
         <p>在<code>/app/controller</code>目录下，文件可以放在任意子目录或孙目录中。但必须确保文件名与类名一致，且不重复</p>
         <p>示例：/app/controller/Main/testAction.php</p>
         <pre class="code"><note>// http://biny.oa.com/test/</note>
@@ -177,14 +177,44 @@
     <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/demo2'</str>);
 }</pre>
 
+        <h2 id="router-custom">自定义路由</h2>
+        <p>除了上述默认路由方式外还可以自定义路由规则，可在<code>/config/config.php</code>中配置</p>
+        <p>自定义路由规则会先被执行，匹配失败后走默认规则，参数冒号后面的字符串会自动转化为<code>正则匹配符</code></p>
+<pre class="code"><note>/config/config.php</note>
+<str>'routeRule'</str> => <sys>array</sys>(
+    <note>// test/(\d+).html 的路由会自动转发到testAction中的 action_view方法</note>
+    <str>'<prm>test</prm>/&lt;<prm>id</prm>:\d+&gt;.html'</str> => <str>'test/view'</str>,
+    <note>// 匹配的参数可在转发路由中动态使用</note>
+    <str>'<prm>test</prm>/&lt;<prm>method</prm>:[\w_]+&gt;/&lt;<prm>id</prm>:\d+&gt;.html'</str> => <str>'test/&lt;<prm>method</prm>&gt;'</str>,
+),
+
+<note>/app/controller/testAction.php</note>
+<note>// test/272.html 正则匹配的内容会传入方法</note>
+<sys>public function</sys> <act>action_view</act>(<prm>$id</prm>)
+{
+    <sys>echo</sys> <prm>$id</prm>; <note>// 272</note>
+}
+
+<note>// test/my_router/123.html</note>
+<sys>public function</sys> <act>action_my_router</act>(<prm>$id</prm>)
+{
+    <sys>echo</sys> <prm>$id</prm>; <note>// 123</note>
+}
+</pre>
+
+
         <h2 id="router-ajax">异步请求</h2>
-        <p>异步请求需要在路由中添加<code>/ajax/</code>，系统会自动进行异步验证（csrf）及处理，程序中响应方法则为<code>ajax_{$router}</code></p>
-        <pre class="code"><note>// http://biny.oa.com/ajax/test/demo3</note>
-<sys>public function</sys> <act>ajax_demo3</act>()
+        <p>异步请求包含POST，ajax等多种请求方式，系统会自动进行<code>异步验证（csrf）</code>及处理</p>
+        <p>程序中响应方法和同步请求保持一致，返回<code>$this->error()</code>会自动和同步请求作区分，返回<code>json数据</code></p>
+        <pre class="code"><note>// http://biny.oa.com/test/demo3</note>
+<sys>public function</sys> <act>action_demo3</act>()
 {
     <prm>$ret</prm> = <sys>array</sys>(<str>'result'</str>=>1);
     <note>//返回 json {"flag": true, "ret": {"result": 1}}</note>
     <sys>return</sys> <prm>$this</prm>-><func>correct</func>(<prm>$ret</prm>);
+
+    <note>//返回 json {"flag": false, "error": {"result": 1}}</note>
+    <sys>return</sys> <prm>$this</prm>-><func>error</func>(<prm>$ret</prm>);
 }</pre>
         <p>框架提供了一整套<code>csrf验证</code>机制，默认<code>开启</code>，可通过在Action中将<code>$csrfValidate = false</code>关闭。</p>
         <pre class="code"><note>// http://biny.oa.com/test/</note>
@@ -194,7 +224,7 @@
     <sys>protected</sys> <prm>$csrfValidate</prm> = <sys>false</sys>;
 
     <note>//默认路由index</note>
-    <sys>public function</sys> <act>ajax_index</act>()
+    <sys>public function</sys> <act>action_index</act>()
     {
         <note>//返回 test/test.tpl.php</note>
         <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
@@ -226,6 +256,7 @@
         <p><code>getParam($key, $default)</code> 获取GET/POST参数{$key}, 默认值为{$default}</p>
         <p><code>getGet($key, $default)</code> 获取GET参数{$key}, 默认值为{$default}</p>
         <p><code>getPost($key, $default)</code> 获取POST参数{$key}, 默认值为{$default}</p>
+        <p><code>getJson($key, $default)</code> 如果传递过来的参数为完整json流可使用该方法获取</p>
         <pre class="code"><note>// http://biny.oa.com/test/demo5/?id=33</note>
 <sys>public function</sys> <act>action_demo5</act>()
 {
@@ -237,30 +268,56 @@
     <sys>echo</sys>(<prm>$this</prm>-><func>getGet</func>(<str>'id'</str>, 1));
 }</pre>
 
-        <h2 id="router-check">参数验证</h2>
-        <p>当<code>$valueCheck</code>字段开启时（默认<code>关闭</code>），
-            <code>getParam</code>，<code>getGet</code>，<code>getPost</code> 方法会自动进行参数类型验证</p>
-        <p>验证方式采用字符串命名法</p>
-        <p>以<code>i</code>开头的参数 必须为数字</p>
-        <p>以<code>s</code>开头的参数 必须为字符串</p>
-        <p>以<code>o</code>开头的参数 必须为数组/Object</p>
-        <p>以<code>b</code>开头的参数 必须为bool型（true/false）</p>
-        <p>以<code>d</code>开头的参数 必须为日期时间格式（H:i:s）</p>
-        <p>当参数不合法时，系统会抛出异常 <code>Uncaught exception 'TXException' with message 'param Key [itest] checkType Error; string given'</code></p>
-        <p>但同时也会阻碍程序继续执行，如果需要关闭单个接口的保护，可以在action中覆写<code>$valueCheck</code>变量</p>
-        <pre class="code"><note>// http://biny.oa.com/test/?iId=test</note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+        <h2 id="router-check">权限验证</h2>
+        <p>框架中提供了一套完整的权限验证逻辑，可对路由下所有<code>method</code>进行权限验证</p>
+        <p>用户需要在action中添加<code>privilege</code>方法，具体返回字段如下</p>
+        <pre class="code"><sys>class</sys> testAction <sys>extends</sys> baseAction
 {
-    <note>//关闭参数验证</note>
-    <sys>protected</sys> <prm>$valueCheck</prm> = <sys>false</sys>;
+    <sys>private</sys> <prm>$key</prm> = <str>'test'</str>;
 
+    <sys>protected function</sys> <act>privilege</act>()
+    {
+        <sys>return array</sys>(
+            <note>// 登录验证（在privilegeService中定义）</note>
+            <str>'login_required'</str> => <sys>array</sys>(
+                <str>'actions'</str> => <str>'*'</str>, <note>// 绑定action，*为所有method</note>
+                <str>'params'</str> => [],   <note>// 传参（能获取到$this，不用另外传）可不传</note>
+                <str>'callBack'</str> => [], <note>// 验证失败回调函数， 可不传</note>
+            ),
+            <str>'my_required'</str> => <sys>array</sys>(
+                <str>'actions'</str> => [<str>'index'</str>], <note>// 对action_index进行验证</note>
+                <str>'params'</str> => [<prm>$this</prm>-><prm>key</prm>],   <note>// 传参</note>
+                <str>'callBack'</str> => [<prm>$this</prm>, <str>'test'</str>], <note>// 验证失败后调用$this->test()</note>
+            ),
+        );
+    }
+    <note>// 根据逻辑被调用前会分别进行login_required和my_required验证，都成功后进入该方法</note>
     <sys>public function</sys> <act>action_index</act>()
     {
-        <note>// 不会报错，但会返回0</note>
-        <prm>$iId</prm> = <prm>$this</prm>-><func>getParam</func>(<str>'iId'</str>);
+        <note>// do something</note>
+    }
+    <note>// my_required验证失败后调用, $action为验证失败的action（这里是$this）</note>
+    <sys>public function</sys> <act>test</act>(<prm>$action</prm>)
+    {
+        <note>// do something</note>
     }
 }</pre>
-        <p>如果全局都不需要该验证，可以在<code>/lib/business/TXAction.php</code>中将 <code>$valueCheck</code>置为<code>false</code></p>
+
+        <p>然后在<code>privilegeService</code>中定义验证方法</p>
+        <pre class="code"><note>第一个参数$action为testAction，$key为params传入参数</note>
+<sys>public function</sys> <act>my_required</act>(<prm>$action</prm>, <prm>$key</prm>=<sys>NULL</sys>)
+{
+    <sys>if</sys>(<prm>$key</prm>){
+        <note>// 通过校验</note>
+        <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
+    } <sys>else</sys> {
+        <note>// 校验失败，错误信息可通过$this->privilegeService->getError()获取</note>
+        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'key not exist'</str>);
+    }
+}</pre>
+
+        <p><code>callBack</code>参数为校验失败时调用的方法，默认不填会抛出错误异常，程序不会再继续执行。</p>
+
 
     </div>
 
@@ -271,9 +328,11 @@
         <p><code>/app/config/</code> 程序逻辑配置路径</p>
 
         <h2 id="config-system">系统配置</h2>
+        <p><code>/config/config.php</code> 系统基本配置（包括默认路由，自定义路由配置等）</p>
         <p><code>/config/autoload.php</code> 系统自动加载类的配置，会根据用户代码自动生成，无需配置，但必须具有<code>写权限</code></p>
         <p><code>/config/exception.php</code> 系统异常配置类</p>
         <p><code>/config/http.php</code> HTTP请求基本错误码</p>
+        <p><code>/config/database.php</code> DAO映射配置</p>
         <p>用户可通过<code>TXConfig::getConfig</code>方法获取</p>
         <p>简单例子：</p>
         <pre class="code"><note>/config/config.php</note>
@@ -387,6 +446,8 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
     }
 }</pre>
 
+
+
         <h2 id="dao-connect">连接配置</h2>
         <p>数据库库信息都配置在<code>/app/config/dns.php</code>中，也可根据环境配置在<code>dns_dev.php</code>/<code>dns_pre.php</code>/<code>dns_pub.php</code>里面</p>
         <p>基本参数如下：</p>
@@ -405,9 +466,42 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
         <str>'encode'</str> => <str>'utf8'</str>,
         <note>// 端口号</note>
         <str>'port'</str> => 3306,
+        <note>// 是否长链接（默认关闭）</note>
+        <str>'keep-alive'</str> => true,
     )
 )</pre>
         <p>这里同时也可以配置多个，只需要在DAO类中指定该表所选的库即可（默认为<code>'database'</code>）</p>
+
+
+        <h2 id="dao-mapped">DAO映射</h2>
+        <p>上诉DAO都需要写PHP文件，框架这边也提供了一个简易版的映射方式</p>
+        <p>用户可在<code>/config/database.php</code>中配置，示例如下</p>
+        <pre class="code"><note>// database.php</note>
+<sys>return array</sys>(
+    <str>'dbConfig'</str> => array(
+        <note>// 相当于创建了一个testDAO.php</note>
+        <str>'test'</str> => <str>'Biny_Test'</str>
+    )
+);</pre>
+        <p>然后就可以在<code>Action、Service、Model</code>各层中使用<code>testDAO</code>了</p>
+
+<pre class="code"><note>// testAction.php
+/**
+* DAO 或者 Service 会自动映射 生成对应类的单例
+* @property TXSingleDAO $testDAO
+*/</note>
+<sys>class</sys> testAction <sys>extends</sys> baseAction
+{
+    <sys>public function</sys> <act>action_index</act>()
+    {
+        <note>// 此处的testDAO为映射生成的，没有baseDAO中对于缓存的操作
+            [['id'=>1, 'name'=>'xx', 'type'=>2], ['id'=>2, 'name'=>'yy', 'type'=>3]]</note>
+        <prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
+    }
+}</pre>
+        <p>需要<code>注意</code>的是，映射的DAO不具备设置数据库功能（主从库都是默认的<code>database</code>配置）</p>
+        <p>也不具备缓存操作（<code>getByPK、updateByPK、deleteByPK</code>等）的功能</p>
+        <p>如果需要使用上述功能，还是需要在<code>dao</code>目录下创建php文件自定义相关参数</p>
 
         <h2 id="dao-simple">基础查询</h2>
         <p>DAO提供了<code>query</code>，<code>find</code>等基本查询方式，使用也相当简单</p>
@@ -522,6 +616,14 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
       <sys>array</sys>(<str>'id'</str>=><str>'uId'</str>, <str>'cash'</str>),
       <str>'project'</str> => <sys>array</sys>(<str>'createTime'</str>),
     ));</pre>
+
+        <p>联表条件中有时需要用到等于固定值的情况，可以通过<code>on</code>方法添加</p>
+        <pre class="code"><note>// ... on `user`.`projectId` = `project`.`id` and `user`.`type` = 10 and `project`.`cash` > 100</note>
+<prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>))
+    -><func>on</func>(<sys>array</sys>(
+        <sys>array</sys>(<str>'type'</str>=>10),
+        <sys>array</sys>(<str>'cash'</str>=><sys>array</sys>(<str>'>'</str>, 100)),
+    ))->query();</pre>
 
         <p>多联表的查询和修改（<code>update</code>，<code>addCount</code>），和单表操作基本一致，需要注意的是单表参数为<code>一维数组</code>，多表则为<code>二维数组</code>，写错会导致执行失败。</p>
 
@@ -896,16 +998,14 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
  */</note>
 <sys>class</sys> testForm <sys>extends</sys> TXForm
 {
-    <note>// 定义表单参数以及其默认值（不写默认值自动为null）</note>
-    <sys>protected</sys> <prm>$_values</prm> = [<str>'id'</str>, <str>'name'</str>=><sys>null</sys>, <str>'status'</str>=>1];
-    <note>// 定义参数规则，不写则无规则</note>
+    <note>// 定义表单参数，类型及默认值（可不写，默认null）</note>
     <sys>protected</sys> <prm>$_rules</prm> = [
-        <note>// id必须为整型</note>
-        <str>'id'</str>=><sys>self</sys>::<prm>typeInt</prm>,
+        <note>// id必须为整型, 默认10</note>
+        <str>'id'</str>=>[<sys>self</sys>::<prm>typeInt</prm>, 10],
         <note>// name必须非空（包括null, 空字符串）</note>
-        <str>'name'</str>=><sys>self</sys>::<prm>typeNonEmpty</prm>,
+        <str>'name'</str>=>[<sys>self</sys>::<prm>typeNonEmpty</prm>],
         <note>// 自定义验证方法(valid_testCmp)</note>
-        <str>'status'</str>=><str>'testCmp'</str>
+        <str>'status'</str>=>[<str>'testCmp'</str>]
     ];
 
     <note>// 自定义验证方法</note>
@@ -936,6 +1036,7 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
 <prm>$datas</prm> = <prm>$form</prm>-><func>values</func>();
         </pre>
 
+        <p><code>注意：</code>在<code>$_rules</code>中未定义的字段，无法在<code>$form</code>中被获取到，就算不需要验证，也最好定义一下</p>
         <p>在很多情况下，表单参数并不是都完全相同的，系统支持<code>Form复用</code>，即可以在通用的Form类中自定义一些内容</p>
         <p>比如，还是上述例子的testForm，有个类似的表单，但是多了一个字段type，而且对于status的验证方式也需要变化</p>
         <p>可以在testForm中添加一个方法</p>
@@ -943,10 +1044,9 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
 <sys>public function</sys> <act>addType</act>()
 {
     <note>// 添加type字段， 默认'default', 规则为非空</note>
-    <prm>$this</prm>-><prm>_values</prm>[<str>'type'</str>] = <str>'default'</str>;
-    <prm>$this</prm>-><prm>_rules</prm>[<str>'type'</str>] = <sys>self</sys>::<prm>typeNonEmpty</prm>;
+    <prm>$this</prm>-><prm>_rules</prm>[<str>'type'</str>] = [<sys>self</sys>::<prm>typeNonEmpty</prm>,<str>'default'</str>];
     <note>// 修改status的判断条件，改为valid_typeCmp()方法验证，记得要写这个方法哦</note>
-    <prm>$this</prm>-><prm>_rules</prm>[<str>'status'</str>] = <str>'typeCmp'</str>;
+    <prm>$this</prm>-><prm>_rules</prm>[<str>'status'</str>][0] = <str>'typeCmp'</str>;
 }</pre>
 
         <p>然后在Action中加载表单也需要添加<code>'addType'</code>作为参数，其他使用方法一致</p>
@@ -963,6 +1063,7 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
         <p><code>self::typeDate</code> 判断是否为一个合法的日期</p>
         <p><code>self::typeDatetime</code> 判断是否为一个合法的日期时间</p>
         <p><code>self::typeNonEmpty</code> 判断是否非空（包括null, 空字符串）</p>
+        <p><code>self::typeRequired</code> 有该参数即可，可以为空字符串</p>
 
         <p>验证类型几乎涵盖了所有情况，如果有不能满足的类型，用户可以自定义验证方法，上述例子中已有，不再过多阐述</p>
     </div>
@@ -1013,8 +1114,10 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <p>异常记录会生成在<code>error_{日期}.log</code>文件中，如：<code>error_2016-05-05.log</code></p>
         <p>调试记录会生成在<code>log_{日期}.log</code>文件中，如：<code>log_2016-05-05.log</code></p>
 
-        <p>程序中可以通过调用<code>TXLogger::addLog($log)</code>方法添加日志，<code>TXLogger::addError($log)</code>方法添加异常</p>
-        <p><code>$log</code>参数支持传递数组</p>
+        <p>程序中可以通过调用<code>TXLogger::addLog($log, INFO)</code>方法添加日志，<code>TXLogger::addError($log, ERROR)</code>方法添加异常</p>
+        <p><code>$log</code>参数支持传数组，会自动排列打印</p>
+        <p><code>$LEVEL</code>可使用常量（<code>INFO</code>、<code>DEBUG</code>、<code>NOTICE</code>、<code>WARNING</code>、<code>ERROR</code>）不填即默认级别</p>
+        <p>系统程序错误也都会在error日志中显示，如页面出现500时可在错误日志中查看定位</p>
 
     </div>
 
@@ -1026,6 +1129,37 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <p><code>TXApp::$base->session</code> 为系统session，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->memcache</code> 为系统memcache，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->redis</code> 为系统redis，可直接获取和复制，设置过期时间</p>
+
+        <h2 id="other-request">Request</h2>
+        <p>在进入<code>Controller</code>层后，<code>Request</code>就可以被调用了，以下是几个常用操作</p>
+        <pre class="code"><note>// 已请求 /test/demo/ 为例</note>
+
+<note>// 获取Action名 返回test</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getModule</func>();
+
+<note>// 获取Method名 返回action_demo</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getMethod</func>();
+
+<note>// 获取纯Method名 返回demo</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getMethod</func>(<sys>true</sys>);
+
+<note>// 是否异步请求 返回false</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>isAjax</func>();
+
+<note>// 返回当前路径  /test/demo/</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>();
+
+<note>// 返回完整路径  http://biny.oa.com/test/demo/</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>(<sys>true</sys>);
+
+<note>// 获取来源网址 （上一个页面地址）</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getReferrer</func>();
+
+<note>// 获取浏览器UA</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserAgent</func>();
+
+<note>// 获取用户IP</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserIP</func>();</pre>
 
         <h2 id="other-session">Session</h2>
         <p>session的设置和获取都比较简单，在未调用session时，对象不会被创建，避免性能损耗。</p>
@@ -1075,10 +1209,11 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
             <li>
                 <a href="#router">路由</a>
                 <ul class="nav">
-                    <li><a href="#router-rule">规则</a></li>
+                    <li><a href="#router-rule">默认路由</a></li>
+                    <li><a href="#router-custom">自定义路由</a></li>
                     <li><a href="#router-ajax">异步请求</a></li>
                     <li><a href="#router-param">参数获取</a></li>
-                    <li><a href="#router-check">参数验证</a></li>
+                    <li><a href="#router-check">权限验证</a></li>
                 </ul>
             </li>
             <li>
@@ -1094,6 +1229,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                 <a href="#dao">数据库使用</a>
                 <ul class="nav">
                     <li><a href="#dao-connect">连接配置</a></li>
+                    <li><a href="#dao-mapped">DAO映射</a></li>
                     <li><a href="#dao-simple">基础查询</a></li>
                     <li><a href="#dao-update">删改数据</a></li>
                     <li><a href="#dao-join">多联表</a></li>
@@ -1136,6 +1272,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
             <li>
                 <a href="#other">其他</a>
                 <ul class="nav">
+                    <li><a href="#other-request">Request</a></li>
                     <li><a href="#other-session">Session</a></li>
                     <li><a href="#other-cookie">Cookie</a></li>
                 </ul>

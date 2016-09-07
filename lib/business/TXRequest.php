@@ -2,7 +2,6 @@
 class TXRequest {
     private $module;
     private $method=null;
-    public $isAjax=false;
     private $id;
     private $csrfToken = null;
     private $_hostInfo = null;
@@ -18,14 +17,13 @@ class TXRequest {
     /**
      * 单例模式
      * @param $module
-     * @param bool $isAjax
      * @param null $method
      * @return null|TXRequest
      */
-    public static function create($module, $isAjax=false, $method=null)
+    public static function create($module, $method=null)
     {
         if (NULL === self::$_instance){
-            self::$_instance = new self($module, $isAjax, $method);
+            self::$_instance = new self($module, $method);
         }
         return self::$_instance;
     }
@@ -41,12 +39,12 @@ class TXRequest {
         return self::$_instance;
     }
 
-    private function __construct($module, $isAjax=false, $method=null)
+    private function __construct($module, $method=null)
     {
         $this->id = crc32(microtime(true));
         $this->module = $module;
-        $this->isAjax = $isAjax;
         $this->method = $method ?: 'index';
+        $this->csrfToken = $this->getCookie(TXConfig::getConfig('csrfToken'));
     }
 
     /**
@@ -80,13 +78,13 @@ class TXRequest {
      */
     public function createCsrfToken()
     {
-        if (!$this->csrfToken && !$this->isAjax){
+        if (!$this->csrfToken){
             $trueToken = $this->generateCsrf();
             $this->csrfToken = md5($trueToken);
             $trueKey = TXConfig::getConfig('trueToken');
             $csrfKey = TXConfig::getConfig('csrfToken');
-            setcookie($trueKey, $trueToken, null, '/');
-            setcookie($csrfKey, $this->csrfToken, null, '/');
+            $this->setCookie($trueKey, $trueToken);
+            $this->setCookie($csrfKey, $this->csrfToken);
         }
         return $this->csrfToken;
     }
@@ -136,7 +134,7 @@ class TXRequest {
         } else {
             $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
         }
-        if (in_array($method, ['GET', 'HEAD', 'OPTIONS'], true) && !$this->isAjax) {
+        if (in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
             return true;
         }
         $ips = TXConfig::getConfig('csrfWhiteIps');
@@ -163,7 +161,12 @@ class TXRequest {
 
     public function getMethod($row=false)
     {
-        return $row ? $this->method : ($this->isAjax ? 'ajax' : 'action') . '_' . $this->method;
+        return $row ? $this->method : 'action_' . $this->method;
+    }
+
+    public function isShowTpl()
+    {
+        return isset($_SERVER['HTTP_X_SHOW_TEMPLATE']);
     }
 
     /**
@@ -319,11 +322,16 @@ class TXRequest {
     }
 
     /**
-     * Returns the user IP address.
-     * @return string user IP address. Null is returned if the user IP address cannot be detected.
+     * 获取ip
+     * @param bool $remote
+     * @return null
      */
-    public function getUserIP()
+    public function getUserIP($remote=false)
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        if ($remote){
+            return isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null);
+        } else {
+            return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        }
     }
 }

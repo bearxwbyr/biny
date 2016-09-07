@@ -5,6 +5,16 @@
  */
 class demoAction extends baseAction
 {
+    // 权限配置
+    protected function privilege()
+    {
+        return array(
+            'login_required' => array(
+                'actions' => '*', //绑定action
+            ),
+        );
+    }
+
     /**
      * demo首页
      */
@@ -12,19 +22,8 @@ class demoAction extends baseAction
     {
         //UV统计
         $date = date('Y-m-d', time());
-        $code_id = TXApp::$base->request->getCookie('code_user_name') ?: '';
-        $rtx = TXApp::$base->request->getCookie('tof_login_username') ?: TXApp::$base->request->getCookie('t_uid');
-        $pk = [$date, $code_id];
-        if ($data = $this->demoDAO->getByPk($pk)){
-            if ($code_id && !isset($data['rtx']) && $rtx){
-                $this->demoDAO->updateByPk($pk, ['rtx'=>$rtx, 'count'=>$data['count']+1]);
-            } else {
-                $this->demoDAO->addCountByPk($pk, ['count'=>1]);
-            }
-        } else {
-            $sets = array('date'=>$date, 'code_id'=>$code_id ?: '', 'rtx'=>$rtx, 'count'=>1);
-            $this->demoDAO->add($sets, false);
-        }
+        $rtx = TXApp::$base->person->name;
+        $this->demoDAO->createOrAdd(['date'=>$date, 'rtx'=>$rtx, 'count'=>1], ['count'=>1]);
 
         $view = $this->display('demo/demo');
         $view->title = "Biny演示页面";

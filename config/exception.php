@@ -45,7 +45,7 @@ return array(
 
     /* web error */
     6000 => 'cannot read request uri',
-    6001 => 'privilege [%s] is not access',
+    6001 => 'privilege [%s] is not access [%s]',
 
     /* custom error */
     8000 => 'custom Error',

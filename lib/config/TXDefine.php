@@ -15,7 +15,11 @@ class TXDefine
         defined('ENV_PRE') or define('ENV_PRE', SYS_ENV === 'pre');
         defined('ENV_PUB') or define('ENV_PUB', SYS_ENV === 'pub');
 
-        defined('isLog') or define('isLog', true);
+        defined('ERROR') or define('ERROR', 1);
+        defined('WARNING') or define('WARNING', 2);
+        defined('NOTICE') or define('NOTICE', 8);
+        defined('DEBUG') or define('DEBUG', 9);
+        defined('INFO') or define('INFO', 10);
 
         //TXEvent 默认事件
         defined('beforeAction') or define('beforeAction', 1);

@@ -81,15 +81,19 @@ class TXApp
      * 异常捕获类
      * @param $code
      * @param $message
-     * @return bool
+     * @param $file
+     * @param $line
      * @throws TXException
      */
-    public static function handleError($code, $message)
+    public static function handleError($code, $message, $file, $line)
     {
-        if (error_reporting() & $code) {
+        if ($code === E_WARNING || $code === E_NOTICE){
+            $message = sprintf("%s\n#1 %s(%s)", $message, $file, $line);
+            TXLogger::addError($message, $code);
+        } elseif (error_reporting() & $code) {
             throw new TXException(1000, $message);
         }
-        return false;
+        return;
     }
 
     /**

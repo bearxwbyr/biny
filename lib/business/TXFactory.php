@@ -14,7 +14,7 @@ class TXFactory {
      * dynamic create object
      * @param string $class
      * @param string $alias
-     * @return baseDAO
+     * @return TXSingleDAO | mixed
      */
     public static function create($class, $alias=null)
     {
@@ -23,10 +23,11 @@ class TXFactory {
         }
         if (!isset(self::$objects[$alias])) {
             //可以不写DAO文件自动建立对象
-            if (substr($alias, -3) == 'DAO') {
+            if (substr($class, -3) == 'DAO') {
+                $key = substr($class, 0, -3);
                 $dbConfig = TXConfig::getConfig('dbConfig', 'database');
-                if (isset($dbConfig[$class])){
-                    $dao = new TXSingleDAO($dbConfig[$class], $class);
+                if (isset($dbConfig[$key])){
+                    $dao = new TXSingleDAO($dbConfig[$key], $class);
                     self::$objects[$alias] = $dao;
                 } else {
                     self::$objects[$alias] = new $class();

@@ -351,7 +351,7 @@ class TXDAO
             TXEvent::trigger(onSql, [$sql]);
 
             $ret = $this->sql($sql, null, self::FETCH_TYPE_ONE);
-            return $ret[$method] ?: $ret;
+            return $ret[$method] ?: 0;
         } else {
             throw new TXException(3009, array($method, get_called_class()));
         }

@@ -56,13 +56,9 @@ class TXRouter {
         if (!$pathInfo){
             return false;
         }
-        $isAjax = false;
-        if ($pathInfo[0] == "action" || $pathInfo[0] == "ajax"){
-            $isAjax = array_shift($pathInfo) == "ajax";
-        }
         $module = isset($pathInfo[0]) ? $pathInfo[0] : null;
         $method = isset($pathInfo[1]) ? $pathInfo[1] : null;
-        return array($module, $method, $isAjax);
+        return array($module, $method);
     }
 
     /**
@@ -75,7 +71,7 @@ class TXRouter {
         $path = NULL;
         $rules = TXConfig::getConfig('routeRule');
         foreach ($rules as $key => $value){
-            if (preg_match_all("/<(\w+):([^>]+)>/", $key, $matchs)){
+            if (preg_match_all("/<([\w_]+):([^>]+)>/", $key, $matchs)){
                 foreach ($matchs[2] as &$val){
                     $val = '('.$val.')';
                 }
@@ -89,7 +85,7 @@ class TXRouter {
                     foreach ($matchs[1] as $key => $val){
                         self::$ARGS[$val] = $args[$key+1];
                     }
-                    if (preg_match_all("/<(\w+)>/", $value, $matchs)){
+                    if (preg_match_all("/<([\w_]+)>/", $value, $matchs)){
                         $replaces = [];
                         foreach ($matchs[1] as &$val){
                             $replaces[] = isset(self::$ARGS[$val]) ? self::$ARGS[$val] : $val;
@@ -109,14 +105,13 @@ class TXRouter {
      */
     public function router()
     {
-        $isAjax = false;
         if ($pathInfo = $this->getRouterInfo()){
-            List($module, $method, $isAjax) = $pathInfo;
+            List($module, $method) = $pathInfo;
             $module = $module ?: $this->routerInfo['base_action'];
         } else {
             $module = $this->routerInfo['base_action'];
             $method = null;
         }
-        TXRequest::create($module, $isAjax, $method);
+        TXRequest::create($module, $method);
     }
 }

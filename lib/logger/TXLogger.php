@@ -6,6 +6,14 @@ class TXLogger
 {
     private static $_instance = null;
 
+    private static $LEVELS = [
+        INFO => 'INFO',
+        DEBUG => 'DEBUG',
+        NOTICE => 'NOTICE',
+        WARNING => 'WARNING',
+        ERROR => 'ERROR',
+    ];
+
     public static function instance()
     {
         if (null === self::$_instance) {
@@ -35,6 +43,7 @@ class TXLogger
      */
     public function event($e, $sql)
     {
+        $this->addLog($sql);
         $this->logger($sql, $e, "info");
     }
 
@@ -157,7 +166,7 @@ class TXLogger
      * 析构函数
      */
     public function __destruct(){
-        if (TXApp::$base->request && !TXApp::$base->request->isAjax){
+        if (TXApp::$base->request && (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax())){
             self::showLogs();
         }
     }
@@ -165,28 +174,32 @@ class TXLogger
     /**
      * 记录错误日志
      * @param $message
+     * @param $level
      */
-    public static function addError($message){
+    public static function addError($message, $level=ERROR){
         if (is_array($message) || is_object($message)){
             $message = var_export($message, true);
         }
-        $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
+        $header = sprintf("[%s]%s:%s [%s]", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'ERROR',
+            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
         $message = "$header $message\n";
         $filename = sprintf("%s/error_%s.log", TXApp::$log_root, date('Y-m-d'));
-        file_put_contents($filename, $message, FILE_APPEND);
+        file_put_contents($filename, $message, FILE_APPEND | LOCK_EX);
     }
 
     /**
-     *记录日志
+     * 记录日志
      * @param $message
+     * @param $level
      */
-    public static function addLog($message){
+    public static function addLog($message, $level=INFO){
         if (is_array($message) || is_object($message)){
             $message = var_export($message, true);
         }
-        $header = sprintf("%s:%s [%s]", date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
+        $header = sprintf("[%s]%s:%s [%s]", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'INFO',
+            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
         $message = "$header $message\n";
         $filename = sprintf("%s/log_%s.log", TXApp::$log_root, date('Y-m-d'));
-        file_put_contents($filename, $message, FILE_APPEND);
+        file_put_contents($filename, $message, FILE_APPEND | LOCK_EX);
     }
 }

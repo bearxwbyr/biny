@@ -16,16 +16,19 @@ class TXException extends ErrorException
         if (class_exists('TXEvent')){
             TXEvent::trigger(onException, array($code, array($message, $this->getTraceAsString())));
         }
+        if (class_exists('TXDatabase')){
+            TXDatabase::rollback();
+        }
         try{
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);
             }
             if (SYS_DEBUG){
                 echo "<pre>";
-                parent::__construct($message, $code);
+                echo "<b>Fatal error</b>:  $message in <b>{$this->getFile()}</b>:<b>{$this->getLine()}</b>\nStack trace:\n{$this->getTraceAsString()}";
 
             } else {
-                if (!TXApp::$base->request->isAjax){
+                if (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax()){
                     $params = [
                         'webRoot' => TXConfig::getAppConfig('webRoot', 'dns')
                     ];
@@ -35,19 +38,11 @@ class TXException extends ErrorException
                     echo new TXJSONResponse($data);
                 }
             }
+            die();
         } catch (TXException $ex) {
             //防止异常的死循环
             echo "system Error";
             exit;
-        }
-
-
-    }
-
-    public function __destruct()
-    {
-        if (SYS_DEBUG || !TXApp::$base->request->isAjax){
-            echo '</pre>';
         }
     }
 

@@ -317,7 +317,7 @@ class TXSingleDAO extends TXDAO
     {
         $sets = array();
         foreach($set as $key => $value) {
-            if (!is_int($value) || $value == 0 ) {
+            if (!is_numeric($value) || $value == 0 ) {
                 continue;
             }
             $key = $this->real_escape_string($key);
@@ -528,7 +528,7 @@ class TXSingleDAO extends TXDAO
     /**
      * 更新数据或者加1
      * @param $inserts
-     * @param $sets
+     * @param $sets ['num'=>2]
      * @return bool|int|mysqli_result|string
      */
     public function createOrAdd($inserts, $sets)

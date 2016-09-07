@@ -14,7 +14,7 @@ class TXForm
     const typeDate = 5;
     const typeDatetime = 6;
     const typeNonEmpty = 7;
-    const Required = 8;
+    const typeRequired = 8;
 
     protected $_params = array();
     protected $_rules = array();
@@ -177,12 +177,13 @@ class TXForm
                     break;
 
                 case self::typeNonEmpty:
-                    if ($this->__get($key) === NULL || $this->__get($key) === ""){
-                        return $this->error(array($key=>sprintf("type Error [%s] given", $this->__get($key))));
+                    $value = $this->__get($key);
+                    if ($value === NULL || (is_string($value) && trim($value) === "")){
+                        return $this->error(array($key=>sprintf("type Error [%s] given", $value)));
                     }
                     break;
 
-                case self::Required:
+                case self::typeRequired:
                     if (!isset($this->_params[$key])){
                         return $this->error(array($key=>"type Error [NULL] given"));
                     }

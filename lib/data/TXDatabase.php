@@ -4,6 +4,7 @@
  */
 class TXDatabase {
     private static $instance = [];
+    private static $autocommit = true;
 
     /**
      * @param string $name
@@ -41,8 +42,56 @@ class TXDatabase {
         if (!$this->handler) {
             throw new TXException(3001, array($config['host']));
         }
+//        $this->handler->autocommit(self::$autocommit);
 
         mysqli_query($this->handler, "set NAMES {$config['encode']}");
+    }
+
+    /**
+     * 开始事务
+     */
+    public static function start()
+    {
+        self::$autocommit = false;
+        foreach (self::$instance as $db){
+            $db->handler->autocommit(false);
+        }
+    }
+
+    /**
+     * 结束事务
+     */
+    public static function end()
+    {
+        self::rollback();
+        self::$autocommit = true;
+        foreach (self::$instance as $db){
+            $db->handler->autocommit(true);
+        }
+    }
+
+    /**
+     * 回滚事务
+     */
+    public static function rollback()
+    {
+        foreach (self::$instance as $db){
+            if (!self::$autocommit){
+                $db->handler->rollback();
+            }
+        }
+    }
+
+    /**
+     * 提交事务
+     */
+    public static function commit()
+    {
+        foreach (self::$instance as $db){
+            if (!self::$autocommit){
+                $db->handler->commit();
+            }
+        }
     }
 
     /**
@@ -72,6 +121,7 @@ class TXDatabase {
             }
             return $result;
         } else {
+            TXLogger::addError(sprintf("sql Error: %s [%s]", mysqli_error($this->handler), $sql));
             TXLogger::error($sql, 'sql Error:');
             return [];
         }
@@ -92,19 +142,21 @@ class TXDatabase {
             }
             return true;
         } else {
+            TXLogger::addError(sprintf("sql Error: %s [%s]", mysqli_error($this->handler), $sql));
             TXLogger::error($sql, 'sql Error:');
             return false;
         }
     }
 
-    public function real_escape_string($str)
+    /**
+     * 析构函数
+     */
+    public function __destruct()
     {
-        return mysqli_real_escape_string($this->handler, $str);
-    }
-
-    public function real_like_string($str)
-    {
-        return str_replace(["_", "%"], ["\\_", "\\%"], mysqli_real_escape_string($this->handler, $str));
+        if (!self::$autocommit){
+            $this->handler->rollback();
+            $this->handler->autocommit(true);
+        }
     }
 
 }
