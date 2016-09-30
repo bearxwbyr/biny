@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/dns_dev.php" afterPath="$PROJECT_DIR$/app/config/dns_dev.php" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -29,7 +28,7 @@
       <file leaf-file-name="index.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/main/index.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-0.0">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -76,21 +75,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TXAction.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TXAction.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/business/TXAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.857142">
+            <state vertical-scroll-proportion="0.29488704">
               <caret line="39" column="7" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dns_dev.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/config/dns_dev.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.68370986">
-              <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -980,14 +969,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/business/TXAction.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.857142">
-          <caret line="39" column="7" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/config/dns_pre.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1004,10 +985,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/config/dns_dev.php">
+    <entry file="file://$PROJECT_DIR$/lib/business/TXAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.68370986">
-          <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.29488704">
+          <caret line="39" column="7" selection-start-line="39" selection-start-column="7" selection-end-line="39" selection-end-column="7" />
           <folding />
         </state>
       </provider>
