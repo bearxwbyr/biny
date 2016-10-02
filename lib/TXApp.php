@@ -37,6 +37,12 @@ class TXApp
     public static $app_root;
 
     /**
+     * Template根路径
+     * @var string /app/template/
+     */
+    public static $view_root;
+
+    /**
      * 日志路径
      * @var string
      */
@@ -60,16 +66,21 @@ class TXApp
      */
     public static function registry($apppath)
     {
+        TXDefine::init();
         self::$base = new self();
         self::$base_root = dirname(__DIR__);
         self::$plugins_root = self::$base_root.DS."plugins";
         self::$log_root = self::$base_root.DS."logs";
+        if (RUN_SHELL){
+            self::$log_root .= '/shell';
+        }
 
         if (is_readable($apppath)) {
             self::$app_root = $apppath;
         } else {
             throw new TXException(1001, array($apppath));
         }
+        self::$view_root = self::$app_root.DS."template";
         if (!is_writable(self::$log_root) && !mkdir(self::$log_root)){
             throw new TXException(1007, array(self::$log_root));
         }
@@ -101,7 +112,6 @@ class TXApp
      */
     private static function init()
     {
-        TXDefine::init();
         TXAutoload::init();
         set_error_handler(['TXApp', 'handleError']);
         TXEvent::init();
@@ -114,6 +124,37 @@ class TXApp
     public static function run()
     {
         self::$controller->dispatcher();
+    }
+
+    /**
+     * shell 执行
+     */
+    public static function shell()
+    {
+        global $argv, $argc;
+        $params = $argc > 1 ? array_slice($argv, 2) : [];
+        self::$base->router->shellRouter();
+        $module = self::$base->request->getModule()."Shell";
+        $method = self::$base->request->getMethod();
+        $shell = new $module();
+        if ($shell instanceof TXShell){
+            if (method_exists($shell, 'init')){
+                $result = $shell->init();
+                if ($result){
+                    if (is_array($result) || is_object($result)){
+                        $result = var_export($result, true);
+                    }
+                    echo "$result\n";exit;
+                }
+            }
+            $result = call_user_func_array([$shell, $method], $params);
+            if (is_array($result) || is_object($result)){
+                $result = var_export($result, true);
+            }
+            echo "$result\n";exit;
+        } else {
+            throw new TXException(2006, $module);
+        }
     }
 
     /**

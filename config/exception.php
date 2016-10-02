@@ -16,6 +16,7 @@ return array(
     2003 => 'param Key [%s] checkType Error; %s given',
     2004 => 'access error',
     2005 => 'template [%s] is not Exist',
+    2006 => 'Shell[%s] is not exists.',
 
     /* DAO error */
     3001 => 'Connect mysql[%s] is fail',

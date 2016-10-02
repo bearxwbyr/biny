@@ -1,5 +1,5 @@
-<? include dirname(__DIR__) . "/base/common.tpl.php" ?>
-<? include dirname(__DIR__) . "/base/header.tpl.php" ?>
+<? include TXApp::$view_root . "/base/common.tpl.php" ?>
+<? include TXApp::$view_root . "/base/header.tpl.php" ?>
 
 <div class="container">
     <div class="onworking">
@@ -9,4 +9,4 @@
     </div>
 </div>
 
-<? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
+<? include TXApp::$view_root . "/base/footer.tpl.php" ?>

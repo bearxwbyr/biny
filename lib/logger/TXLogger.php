@@ -181,7 +181,7 @@ class TXLogger
             $message = var_export($message, true);
         }
         $header = sprintf("[%s]%s:%s [%s]", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'ERROR',
-            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
+            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), RUN_SHELL ? TXApp::$base->request->getBaseUrl() : TXApp::$base->request->getUserIp());
         $message = "$header $message\n";
         $filename = sprintf("%s/error_%s.log", TXApp::$log_root, date('Y-m-d'));
         file_put_contents($filename, $message, FILE_APPEND | LOCK_EX);
@@ -197,7 +197,7 @@ class TXLogger
             $message = var_export($message, true);
         }
         $header = sprintf("[%s]%s:%s [%s]", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'INFO',
-            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), TXApp::$base->request->getUserIp());
+            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), RUN_SHELL ? TXApp::$base->request->getBaseUrl() : TXApp::$base->request->getUserIp());
         $message = "$header $message\n";
         $filename = sprintf("%s/log_%s.log", TXApp::$log_root, date('Y-m-d'));
         file_put_contents($filename, $message, FILE_APPEND | LOCK_EX);

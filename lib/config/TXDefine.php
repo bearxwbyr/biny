@@ -11,6 +11,12 @@ class TXDefine
      */
     public static function init()
     {
+        //定义保护
+        defined('RUN_SHELL') or define('RUN_SHELL', false);
+        defined('SYS_DEBUG') or define('SYS_DEBUG', false);
+        defined('SYS_CONSOLE') or define('SYS_CONSOLE', false);
+        defined('isMaintenance') or define('isMaintenance', false);
+
         defined('ENV_DEV') or define('ENV_DEV', SYS_ENV === 'dev');
         defined('ENV_PRE') or define('ENV_PRE', SYS_ENV === 'pre');
         defined('ENV_PUB') or define('ENV_PUB', SYS_ENV === 'pub');

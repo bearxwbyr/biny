@@ -2,7 +2,8 @@
 return array(
     'autoSkipLoad' => 5,
     'router' => array(
-        'base_action' => 'demo'
+        'base_action' => 'demo',
+        'base_shell' => 'index'
     ),
 
     'csrfWhiteIps' => [

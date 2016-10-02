@@ -17,6 +17,14 @@ class TXModel
 
     public function __get($key)
     {
+        if (substr($key, -7) == 'Service' || substr($key, -3) == 'DAO') {
+            return TXFactory::create($key);
+        }
+        return isset($this->_data[$key]) ? TXString::encode($this->_data[$key]) : null;
+    }
+
+    public function _get($key)
+    {
         return isset($this->_data[$key]) ? $this->_data[$key] : null;
     }
 

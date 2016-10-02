@@ -210,7 +210,12 @@ class TXRequest {
      */
     public function getBaseUrl($host=false)
     {
-        return $host ? $this->getHostInfo().TXApp::$base->router->rootPath : TXApp::$base->router->rootPath;
+        if (RUN_SHELL){
+            global $argv;
+            return $argv[1];
+        } else {
+            return $host ? $this->getHostInfo().TXApp::$base->router->rootPath : TXApp::$base->router->rootPath;
+        }
     }
 
     /**
@@ -333,5 +338,31 @@ class TXRequest {
         } else {
             return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         }
+    }
+
+    /**
+     * 获取ContentType
+     * @return mixed
+     */
+    public function getContentType()
+    {
+        return $_SERVER['CONTENT_TYPE'];
+    }
+
+    //设置默认编码
+    public function setCharset($charset = 'UTF-8')
+    {
+        header('charset: ' . $charset);
+    }
+
+    public function setContentType($contentType='text/html')
+    {
+        header('Content-type: ' . $contentType);
+    }
+
+    public function redirect($url)
+    {
+        header("Location:$url");
+        exit();
     }
 }

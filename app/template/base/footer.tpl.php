@@ -1,4 +1,4 @@
 </body>
 </html>
 
-<? include dirname(__DIR__) . "/base/commonJs.tpl.php" ?>
+<? include TXApp::$view_root . "/base/commonJs.tpl.php" ?>

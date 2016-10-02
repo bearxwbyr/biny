@@ -30,10 +30,9 @@ class testAction extends baseAction
             'test'=>$data
         );
         TXDatabase::start();
-        $this->testDAO->filter(['id'=>2])->addCount(['type'=>1]);
+        $this->testDAO->add(['name'=>'rollback', 'userId'=>10, 'time'=>time(), 'type'=>2]);
+        $this->userDAO->add(['name'=>'rollback']);
         TXDatabase::commit();
-        $this->testDAO->filter(['id'=>2])->addCount(['type'=>1]);
-        TXDatabase::end();
         return $this->display('main/test', $params);
 
     }
@@ -50,10 +49,5 @@ class testAction extends baseAction
     public function action_view($id)
     {
         TXLogger::display($id);exit;
-    }
-
-    public function action_mail()
-    {
-        var_dump(TXCommon::sendMail(array('billge@tencent.com'), 'test', 'dfdfdfdfd'));
     }
 }

@@ -37,6 +37,7 @@ class TXAutoload
             self::$loaders = array();
             self::getLoads(__DIR__);
             self::getLoads(TXApp::$app_root. DS . "controller");
+            self::getLoads(TXApp::$app_root. DS . "shell");
             self::getLoads(TXApp::$app_root. DS . "service");
             self::getLoads(TXApp::$app_root. DS . "dao");
             self::getLoads(TXApp::$app_root. DS . "form");

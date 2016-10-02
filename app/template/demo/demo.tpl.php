@@ -1,5 +1,5 @@
-<? include dirname(__DIR__) . "/base/common.tpl.php" ?>
-<? include dirname(__DIR__) . "/base/header.tpl.php" ?>
+<? include TXApp::$view_root . "/base/common.tpl.php" ?>
+<? include TXApp::$view_root . "/base/header.tpl.php" ?>
 <link href="<?=$CDN_ROOT?>static/css/demo.css" rel="stylesheet" type="text/css"/>
 <script>
     var _hmt = _hmt || [];
@@ -27,8 +27,8 @@
 <div class="row">
 <div class="col-md-9" role="main">
     <div class="bs-docs-section">
-        <h1 id="overview" class="page-header"><?=lang('概览')?></h1>
-        <p><?=lang('Biny是一个轻量级易用性强的web Server框架')?></p>
+        <h1 id="overview" class="page-header"><?=_L('概览')?></h1>
+        <p><?=_L('Biny是一个轻量级易用性强的web Server框架')?></p>
 
         <h2 id="overview-introduce">介绍</h2>
         <p>支持跨库连表，条件复合筛选，PK缓存查询等</p>
@@ -87,7 +87,7 @@
     {
         <note>// 未登录时调整登录页面</note>
         <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>exist</func>()){
-            <sys>return</sys> <prm>$this</prm>-><func>redirect</func>(<str>'/auth/login/'</str>);
+            <sys>return</sys> TXApp::<prm>$base</prm>-><prm>request</prm>-><func>redirect</func>(<str>'/auth/login/'</str>);
         }
     }
 
@@ -126,7 +126,7 @@
         <p><code>/web/index.php</code>是程序的主入口，其中有几个关键配置</p>
         <pre class="code"><note>//默认时区配置</note>
 <sys>date_default_timezone_set</sys>(<str>'Asia/Shanghai'</str>);
-<note>// 开启debug调试模式（会报错）</note>
+<note>// 开启debug调试模式（会输出异常）</note>
 <sys>defined</sys>(<str>'SYS_DEBUG'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_DEBUG'</str>, <sys>true</sys>);
 <note>// 开启Logger页面调试</note>
 <sys>defined</sys>(<str>'SYS_CONSOLE'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_CONSOLE'</str>, <sys>true</sys>);
@@ -770,6 +770,37 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
         <p>以上替换方式都会进行<code>SQL转义</code>，建议用户使用模版替换，而不要自己将变量放入SQL语句中，防止<code>SQL注入</code></p>
 
+        <h2 id="dao-transaction">事务处理</h2>
+        <p>框架为DAO提供了一套简单的事务处理机制，默认是关闭的，可以通过<code>TXDatebase::start()</code>方法开启</p>
+        <p><code>注意：</code>请确保连接的数据表是<code>innodb</code>的存储引擎，否者事务并不会生效。</p>
+
+        <p>在<code>TXDatebase::start()</code>之后可以通过<code>TXDatebase::commit()</code>来进行完整事务的提交保存，但并不会影响<code>start</code>之前的操作</p>
+        <p>同理，可以通过<code>TXDatebase::rollback()</code>进行整个事务的回滚，回滚所有当前未提交的事务</p>
+        <p>当程序调用<code>TXDatebase::end()</code>方法后事务会全部终止，未提交的事务也会自动回滚，另外，程序析构时，也会自动回滚未提交的事务</p>
+
+        <pre class="code"><note>// 在事务开始前的操作都会默认提交，num:0</note>
+<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>update</func>([<str>'num'</str>=>0]);
+<note>// 开始事务</note>
+TXDatabase::<func>start</func>();
+<note>// set num = num+2</note>
+<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
+<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
+<note>// 回滚事务</note>
+TXDatabase::<func>rollback</func>();
+<note>// 当前num还是0</note>
+<prm>$num</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>find</func>()[<str>'num'</str>];
+<note>// set num = num+2</note>
+<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
+<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
+<note>// 提交事务</note>
+TXDatabase::<func>commit</func>();
+<note>// num = 2</note>
+<prm>$num</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>find</func>()[<str>'num'</str>];
+<note>// 关闭事务</note>
+TXDatabase::<func>end</func>();</pre>
+
+        <p>另外，事务的开启并不会影响<code>select</code>操作，只对增加，删除，修改操作有影响</p>
+
         <h2 id="dao-cache">数据缓存</h2>
         <p>框架这边针对<code>pk键值索引</code>数据可以通过继承<code>baseDAO</code>进行缓存操作，默认为<code>关闭</code>，可在DAO中定义<code>$_pkCache = true</code>来开启</p>
         <p>然后需要在DAO中制定表键值，复合索引需要传<code>数组</code>，例如：<code>['id', 'type']</code></p>
@@ -850,6 +881,15 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 <act>&lt;/div&gt;</act></pre>
 
         <p>第二个参数的数据都会放到<code>$PRM</code>这个页面对象中。第三个参数则会直接被渲染，适合<code>静态资源地址</code>或者<code>类数据</code></p>
+
+        <h2 id="view-tkd">自定义TKD</h2>
+        <p>页面TKD一般都默认在<code>common.tpl.php</code>定义好，如果页面单独需要修改对应的<code>title，keywords，description</code>的话，
+            也可以在<code>TXResponse</code>生成后对其赋值</p>
+        <pre class="code"><prm>$view</prm> = <prm>$this</prm>-><func>display</func>(<str>'main/test'</str>, <prm>$params</prm>);
+<prm>$view</prm>-><prm>title</prm> = <str>'Biny'</str>;
+<prm>$view</prm>-><prm>keywords</prm> = <str>'biny,php,框架'</str>;
+<prm>$view</prm>-><prm>description</prm> = <str>'一款轻量级好用的框架'</str>;
+<sys>return</sys> <prm>$view</prm>;</pre>
 
         <h2 id="view-xss">反XSS注入</h2>
         <p>使用框架<code>display</code>方法，自动会进行参数<code>html实例化</code>，防止XSS注入。</p>
@@ -1122,6 +1162,82 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
     </div>
 
     <div class="bs-docs-section">
+        <h1 id="shell" class="page-header">脚本执行</h1>
+        <p>Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整的脚本执行逻辑</p>
+        <p>执行入口为根目录下的<code>shell.php</code>文件，用户可以通过命令行执行<code>php shell.php {router} {param}</code>方式调用</p>
+        <p>其中<code>router</code>为脚本路由，<code>param</code>为执行参数，可缺省或多个参数</p>
+        <pre class="code"><note>// shell.php</note>
+<note>//默认时区配置</note>
+<sys>date_default_timezone_set</sys>(<str>'Asia/Shanghai'</str>);
+<note>// 开启脚本执行（shell.php固定为true）</note>
+<sys>defined</sys>(<str>'RUN_SHELL'</str>) <sys>or</sys> <sys>define</sys>(<str>'RUN_SHELL'</str>, <sys>true</sys>);
+<note>// dev pre pub 当前环境</note>
+<sys>defined</sys>(<str>'SYS_ENV'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_ENV'</str>, <str>'dev'</str>);
+</pre>
+
+        <h2 id="shell-router">脚本路由</h2>
+        <p>路由跟http请求模式基本保持一致，分为<code>{module}/{method}</code>的形式，其中<code>{method}</code>可以缺省，默认为<code>index</code></p>
+        <p>例如：<code>index/test</code>就会执行<code>indexShell</code>中的<code>action_test</code>方法，而<code>demo</code>则会执行<code>demoShell</code>中的<code>action_index</code>方法</p>
+        <p>如果router缺省的话，默认会读取<code>/config/config.php</code>中的router内容作为默认路由</p>
+        <pre class="code"><note>// /config/config.php</note>
+<sys>return array</sys>(
+    <str>'router'</str> => <sys>array</sys>(
+        <note>// http 默认路由</note>
+        <str>'base_action'</str> => <str>'demo'</str>,
+        <note>// shell 默认路由</note>
+        <str>'base_shell'</str> => <str>'index'</str>
+    )
+
+<note>// /app/shell/indexShell.php</note>
+<sys>class</sys> testShell <sys>extends</sys> TXShell
+{
+    <note>// 和http一样都会先执行init方法</note>
+    <sys>public function</sys> <act>init</act>()
+    {
+        <note>//return 0 或者 不return 则程序继续执行。如果返回其他内容则输出内容后程序终止。</note>
+        <sys>return</sys> 0;
+    }
+
+    <note>//默认路由index</note>
+    <sys>public function</sys> <act>action_index</act>()
+    {
+        <note>//返回异常，会记录日志并输出在终端</note>
+        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'执行错误'</str>);
+    }
+}
+)</pre>
+
+        <h2 id="shell-param">脚本参数</h2>
+        <p>脚本执行可传复数的参数，同http请求可在方法中直接捕获，顺序跟参数顺序保持一致，可缺省</p>
+        <p>另外，可以用<code>getParam</code>方法获取对应位置的参数，用法与http模式保持一致</p>
+        <p>例如：终端执行<code>php shell.php test/demo 1 2 aaa</code>，结果如下：</p>
+        <pre class="code"><note>// php shell.php test/demo 1 2 aaa</note>
+<sys>class</sys> testShell <sys>extends</sys> TXShell
+{
+    <note>test/demo => testShell/action_demo</note>
+    <sys>public function</sys> <act>action_demo</act>(<prm>$prm1</prm>, <prm>$prm2</prm>, <prm>$prm3</prm>, <prm>$prm4</prm>=<str>'default'</str>)
+    {
+        <note>//1, 2, aaa, default</note>
+        <sys>echo</sys> <str>"<prm>$prm1</prm>, <prm>$prm2</prm>, <prm>$prm3</prm>, <prm>$prm4</prm>"</str>;
+        <note>//1</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(0);
+        <note>//2</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(1);
+        <note>//aaa</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(2);
+        <note>//default</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(3, <str>'default'</str>);
+    }
+}</pre>
+
+        <h2 id="shell-log">脚本日志</h2>
+        <p>脚本执行不再具有HTTP模式的其他功能，例如<code>表单验证</code>，<code>页面渲染</code>，<code>浏览器控制台调试</code>。所以在<code>TXLogger</code>调试类中，<code>info/error/debug/warning</code>这几个方法不在有效了</p>
+        <p>需要调试的可以继续调用<code>TXLogger::addLog</code>和<code>TXLogger::addError</code>方法来进行写日志的操作</p>
+        <p>日志目录则保存在<code>/logs/shell/</code>目录下，请确保该目录有<code>写权限</code>。格式与http模式保持一致。</p>
+        <p><code>注意:</code>当程序返回<code>$this->error($msg)</code>的时候，系统会默认调用<code>TXLogger::addError($msg)</code>，请勿重复调用。</p>
+    </div>
+
+    <div class="bs-docs-section">
         <h1 id="other" class="page-header">其他</h1>
         <p>系统有很多单例都可以直接通过<code>TXApp::$base</code>直接获取</p>
         <p><code>TXApp::$base->person</code> 为当前用户，可在<code>/app/model/Person.php</code>中定义</p>
@@ -1237,6 +1353,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                     <li><a href="#dao-extracts">复杂选择</a></li>
                     <li><a href="#dao-group">其他条件</a></li>
                     <li><a href="#dao-command">SQL模版</a></li>
+                    <li><a href="#dao-transaction">事务处理</a></li>
                     <li><a href="#dao-cache">数据缓存</a></li>
                     <li><a href="#dao-log">语句调试</a></li>
                 </ul>
@@ -1245,6 +1362,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                 <a href="#view">页面渲染</a>
                 <ul class="nav">
                     <li><a href="#view-param">渲染参数</a></li>
+                    <li><a href="#view-tkd">自定义TKD</a></li>
                     <li><a href="#view-xss">反XSS注入</a></li>
                     <li><a href="#view-func">参数方法</a></li>
                 </ul>
@@ -1270,6 +1388,14 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                 </ul>
             </li>
             <li>
+                <a href="#shell">脚本执行</a>
+                <ul class="nav">
+                    <li><a href="#shell-router">脚本路由</a></li>
+                    <li><a href="#shell-param">脚本参数</a></li>
+                    <li><a href="#shell-log">脚本日志</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="#other">其他</a>
                 <ul class="nav">
                     <li><a href="#other-request">Request</a></li>
@@ -1289,5 +1415,5 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
 </div>
 </div>
 
-<? include dirname(__DIR__) . "/base/footer.tpl.php" ?>
+<? include TXApp::$view_root . "/base/footer.tpl.php" ?>
 <script type="text/javascript" src="<?=$CDN_ROOT?>static/js/demo.js"></script>

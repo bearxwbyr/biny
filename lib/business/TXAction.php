@@ -55,8 +55,8 @@ class TXAction
         // 权限验证
         $this->valid_privilege();
         TXApp::$base->request->createCsrfToken();
-        $this->setCharset();
-        $this->setContentType();
+        TXApp::$base->request->setCharset();
+        TXApp::$base->request->setContentType();
     }
 
     /**
@@ -140,7 +140,11 @@ class TXAction
      */
     public function getParam($key, $default=null)
     {
-        return isset($this->params[$key]) ? $this->params[$key] : $default;
+        if (TXApp::$base->request->getContentType() == 'application/json' || TXApp::$base->request->getContentType() == 'text/json'){
+            return $this->getJson($key, $default);
+        } else {
+            return isset($this->params[$key]) ? $this->params[$key] : $default;
+        }
     }
 
     /**
@@ -214,22 +218,5 @@ class TXAction
             $data = array("flag" => false, "error" => $msg);
             return $this->json($data, $encode);
         }
-    }
-
-    //设置默认编码
-    protected function setCharset($charset = 'UTF-8')
-    {
-        header('charset: ' . $charset);
-    }
-
-    protected function setContentType($contentType='text/html')
-    {
-        header('Content-type: ' . $contentType);
-    }
-
-    public function redirect($url)
-    {
-        header("Location:$url");
-        exit();
     }
 }

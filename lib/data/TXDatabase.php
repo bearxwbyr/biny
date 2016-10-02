@@ -42,7 +42,7 @@ class TXDatabase {
         if (!$this->handler) {
             throw new TXException(3001, array($config['host']));
         }
-//        $this->handler->autocommit(self::$autocommit);
+        $this->handler->autocommit(self::$autocommit);
 
         mysqli_query($this->handler, "set NAMES {$config['encode']}");
     }

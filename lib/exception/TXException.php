@@ -13,6 +13,7 @@ class TXException extends ErrorException
     public function __construct($code, $params=array(), $html="500")
     {
         $message = $this->fmt_code($code, $params);
+//        \Biny\Logger::error($message, array('file'=>$this->getFile().":".$this->getLine(), 'trace'=>$this->getTraceAsString()));
         if (class_exists('TXEvent')){
             TXEvent::trigger(onException, array($code, array($message, $this->getTraceAsString())));
         }
@@ -20,6 +21,10 @@ class TXException extends ErrorException
             TXDatabase::rollback();
         }
         try{
+            if (RUN_SHELL){
+                echo "<b>Fatal error</b>:  $message in <b>{$this->getFile()}</b>:<b>{$this->getLine()}</b>\nStack trace:\n{$this->getTraceAsString()}";
+                exit;
+            }
             if ($httpCode = TXConfig::getConfig($html, 'http')){
                 header($httpCode);
             }

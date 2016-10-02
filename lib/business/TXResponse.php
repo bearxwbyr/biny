@@ -95,6 +95,6 @@ class TXResponse {
  * @param $content
  * @return mixed
  */
-function lang($content){
+function _L($content){
     return TXLanguage::getLanguage() ? TXLanguage::getContent($content) : $content;
 }

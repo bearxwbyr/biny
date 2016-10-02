@@ -114,4 +114,16 @@ class TXRouter {
         }
         TXRequest::create($module, $method);
     }
+
+    /**
+     * shell路由入口
+     */
+    public function shellRouter()
+    {
+        global $argv;
+        $router = isset($argv[1]) ? explode('/', $argv[1]) : [$this->routerInfo['base_shell']];
+        $module = $router[0];
+        $method = isset($router[1]) ? $router[1] : 'index';
+        TXRequest::create($module, $method);
+    }
 }
