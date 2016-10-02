@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -90,8 +91,8 @@
       <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20738976">
-              <caret line="1676" column="0" selection-start-line="1676" selection-start-column="0" selection-end-line="1676" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.13945173">
+              <caret line="1673" column="28" selection-start-line="1673" selection-start-column="28" selection-end-line="1673" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -560,7 +561,13 @@
       <option name="project" value="LOCAL" />
       <updated>1475399281774</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="readme">
+      <created>1475401075216</created>
+      <option name="number" value="00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1475401075216</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -1035,8 +1042,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ReadMe.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20738976">
-          <caret line="1676" column="0" selection-start-line="1676" selection-start-column="0" selection-end-line="1676" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.13945173">
+          <caret line="1673" column="28" selection-start-line="1673" selection-start-column="28" selection-end-line="1673" selection-end-column="28" />
           <folding />
         </state>
       </provider>

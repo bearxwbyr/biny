@@ -1,28 +1,3 @@
-<!-- Docs master nav -->
-<header class="navbar navbar-static-top navbar-inverse" id="top" role="banner">
-    <div class="container">
-        <div class="navbar-header">
-            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            [/demo/" class="navbar-brand">Biny 演示页面](<?=$webRoot?)
-        </div>
-    </div>
-</header>
-
-<div class="container bs-docs-container">
-
-<div class="row">
-<div class="col-md-9" role="main">
-    <div class="bs-docs-section">
-
-# <?=_L('概览')?>
-
-<?=_L('Biny是一个轻量级易用性强的web Server框架')?>
-
 ## 介绍
 
 支持跨库连表，条件复合筛选，PK缓存查询等
@@ -42,9 +17,7 @@
 GitHub 地址：[https://github.com/billge1205/biny](https://github.com/billge1205/biny)
 
 ## 目录结构
-
-        <div class="col-lg-3">![](http://r.photo.store.qq.com/psb?/V130E8h51JH2da/.9gsh.Yw9u4O9rrwwiJTWNYEVPxTBA0eCwr0fNvGjcE!/o/dGIAAAAAAAAA&bo=yQAVAskAFQIDACU!)</div>
-        <div class="col-lg-8" style="margin-left: 20px">
+![](http://r.photo.store.qq.com/psb?/V130E8h51JH2da/.9gsh.Yw9u4O9rrwwiJTWNYEVPxTBA0eCwr0fNvGjcE!/o/dGIAAAAAAAAA&bo=yQAVAskAFQIDACU!)
 
 `/app/` 总工作目录
 
@@ -80,9 +53,6 @@ GitHub 地址：[https://github.com/billge1205/biny](https://github.com/billge12
 
 `/web/index.php` 总执行文件
 
-        </div>
-        <div style="clear: both"></div>
-
 ## 调用关系
 
 `Action`为总路由入口，`Action`可调用私有对象`Service`业务层 和 `DAO`数据库层
@@ -105,38 +75,40 @@ GitHub 地址：[https://github.com/billge1205/biny](https://github.com/billge12
 
 简单示例
 
-        <pre class="code"><span class="nc">/**
+```
+/**
 * 主页Action
 * @property projectService $projectService
 * @property projectDAO $projectDAO
-*/  </span>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+*/  
+class testAction extends baseAction
 {
-    <note>// init方法会在action执行前被执行</note>
-    <sys>public function</sys> <act>init</act>()
+    // init方法会在action执行前被执行
+    public function init()
     {
-        <note>// 未登录时调整登录页面</note>
-        <sys>if</sys>(!TXApp::<prm>$base</prm>-><prm>person</prm>-><func>exist</func>()){
-            <sys>return</sys> TXApp::<prm>$base</prm>-><prm>request</prm>-><func>redirect</func>(<str>'/auth/login/'</str>);
+        // 未登录时调整登录页面
+        if(!TXApp::$base->person->exist()){
+            return TXApp::$base->request->redirect('/auth/login/');
         }
     }
 
-    <note>//默认路由index</note>
-    <sys>public function</sys> <act>action_index</act>()
+    //默认路由index
+    public function action_index()
     {
-        <note>// 获取当前用户</note>
-        <prm>$person</prm> = TXApp::<prm>$base</prm>-><prm>person</prm>-><func>get</func>();
-        <prm>$members</prm> = TXApp::<prm>$base</prm>-><prm>memcache</prm>-><func>get</func>(<str>'cache_'</str><sys>.</sys><prm>$person</prm>-><prm>project_id</prm>);
-        <sys>if</sys> (!<prm>$members</prm>){
-            <note>// 获取用户所在项目成员</note>
-            <prm>$project</prm> = <prm>$this</prm>-><prm>projectDAO</prm>-><func>find</func>(<sys>array</sys>(<str>'id'</str>=><prm>$person</prm>-><prm>project_id</prm>));
-            <prm>$members</prm> = <prm>$this</prm>-><prm>projectService</prm>-><func>getMembers</func>(<prm>$project</prm>[<str>'id'</str>]);
-            TXApp::<prm>$base</prm>-><prm>memcache</prm>-><func>set</func>(<str>'cache_'</str><sys>.</sys><prm>$person</prm>-><prm>project_id</prm>, <prm>$members</prm>);
+        // 获取当前用户
+        $person = TXApp::$base->person->get();
+        $members = TXApp::$base->memcache->get('cache_'.$person->project_id);
+        if (!$members){
+            // 获取用户所在项目成员
+            $project = $this->projectDAO->find(array('id'=>$person->project_id));
+            $members = $this->projectService->getMembers($project['id']);
+            TXApp::$base->memcache->set('cache_'.$person->project_id, $members);
         }
-        <note>//返回 project/members.tpl.php</note>
-        <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'project/members'</str>, <sys>array</sys>(<str>'members'</str>=><prm>$members</prm>));
+        //返回 project/members.tpl.php
+        return $this->display('project/members', array('members'=>$members));
     }
-}</pre>
+}
+```
 
 P.S: 示例中的用法会在下面具体展开介绍
 
@@ -155,38 +127,38 @@ PHP版本必须在`5.5`以上，包含`5.5`
 本例子中主要介绍linux下nginx的配置
 
 nginx根目录需要指向`/web/`目录下，示例如下
-
-        <pre class="code"><sys>location</sys> / {
-    <const>root</const>   /data/billge/biny/web/;
-    <act>index</act>  index.php index.html index.htm;
-    <act>try_files</act> $uri $uri/ /index.php?$args;
-}                </pre>
+```
+location / {
+    root   /data/billge/biny/web/;
+    index  index.php index.html index.htm;
+    try_files $uri $uri/ /index.php?$args;
+}         
+```
 
 `/web/index.php`是程序的主入口，其中有几个关键配置
-
-        <pre class="code"><note>//默认时区配置</note>
-<sys>date_default_timezone_set</sys>(<str>'Asia/Shanghai'</str>);
-<note>// 开启debug调试模式（会输出异常）</note>
-<sys>defined</sys>(<str>'SYS_DEBUG'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_DEBUG'</str>, <sys>true</sys>);
-<note>// 开启Logger页面调试</note>
-<sys>defined</sys>(<str>'SYS_CONSOLE'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_CONSOLE'</str>, <sys>true</sys>);
-<note>// dev pre pub 当前环境</note>
-<sys>defined</sys>(<str>'SYS_ENV'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_ENV'</str>, <str>'dev'</str>);
-<note>// 系统维护中。。。</note>
-<sys>defined</sys>(<str>'isMaintenance'</str>) <sys>or</sys> <sys>define</sys>(<str>'isMaintenance'</str>, <sys>false</sys>);</pre>
+```
+//默认时区配置
+date_default_timezone_set('Asia/Shanghai');
+// 开启debug调试模式（会输出异常）
+defined('SYS_DEBUG') or define('SYS_DEBUG', true);
+// 开启Logger页面调试
+defined('SYS_CONSOLE') or define('SYS_CONSOLE', true);
+// dev pre pub 当前环境
+defined('SYS_ENV') or define('SYS_ENV', 'dev');
+// 系统维护中。。。
+defined('isMaintenance') or define('isMaintenance', false);
+```
 
 其中`SYS_ENV`的环境值也有bool型，方便判断使用
-
-        <pre class="code"><note>// 在\lib\config\TXDefine.php 中配置</note>
-<note>// 测试环境</note>
-<sys>defined</sys>(<str>'ENV_DEV'</str>) <sys>or define</sys>(<str>'ENV_DEV'</str>, <const>SYS_ENV</const> === 'dev');
-<note>// 预发布环境</note>
-<sys>defined</sys>(<str>'ENV_PRE'</str>) <sys>or define</sys>(<str>'ENV_PRE'</str>, <const>SYS_ENV</const> === 'pre');
-<note>// 线上正式环境</note>
-<sys>defined</sys>(<str>'ENV_PUB'</str>) <sys>or define</sys>(<str>'ENV_PUB'</str>, <const>SYS_ENV</const> === 'pub');</pre>
-    </div>
-
-    <div class="bs-docs-section">
+```
+// 在\lib\config\TXDefine.php 中配置
+// 测试环境
+defined('ENV_DEV') or define('ENV_DEV', SYS_ENV === 'dev');
+// 预发布环境
+defined('ENV_PRE') or define('ENV_PRE', SYS_ENV === 'pre');
+// 线上正式环境
+defined('ENV_PUB') or define('ENV_PUB', SYS_ENV === 'pub');
+```
 
 # 路由
 
@@ -197,34 +169,36 @@ nginx根目录需要指向`/web/`目录下，示例如下
 在`/app/controller`目录下，文件可以放在任意子目录或孙目录中。但必须确保文件名与类名一致，且不重复
 
 示例：/app/controller/Main/testAction.php
-
-        <pre class="code"><note>// http://biny.oa.com/test/</note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+```
+// http://biny.oa.com/test/
+class testAction extends baseAction
 {
-    <note>//默认路由index</note>
-    <sys>public function</sys> <act>action_index</act>()
+    //默认路由index
+    public function action_index()
     {
-        <note>//返回 test/test.tpl.php</note>
-        <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/test'</str>);
+        //返回 test/test.tpl.php
+        return $this->display('test/test');
     }
-}</pre>
+}
+```
 
 同时也能在同一文件内配置多个子路由
-
-        <pre class="code"><note>//子路由查找action_{$router}</note>
-<note>// http://biny.oa.com/test/demo1</note>
-<sys>public function</sys> <act>action_demo1</act>()
+```
+//子路由查找action_{$router}
+// http://biny.oa.com/test/demo1
+public function action_demo1()
 {
-    <note>//返回 test/demo1.tpl.php</note>
-    <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/demo1'</str>);
+    //返回 test/demo1.tpl.php
+    return $this->display('test/demo1');
 }
 
-<note>// http://biny.oa.com/test/demo2</note>
-<sys>public function</sys> <act>action_demo2</act>()
+// http://biny.oa.com/test/demo2
+public function action_demo2()
 {
-    <note>//返回 test/demo2.tpl.php</note>
-    <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/demo2'</str>);
-}</pre>
+    //返回 test/demo2.tpl.php
+    return $this->display('test/demo2');
+}
+```
 
 ## 自定义路由
 
@@ -232,27 +206,28 @@ nginx根目录需要指向`/web/`目录下，示例如下
 
 自定义路由规则会先被执行，匹配失败后走默认规则，参数冒号后面的字符串会自动转化为`正则匹配符`
 
-<pre class="code"><note>/config/config.php</note>
-<str>'routeRule'</str> => <sys>array</sys>(
-    <note>// test/(\d+).html 的路由会自动转发到testAction中的 action_view方法</note>
-    <str>'<prm>test</prm>/&lt;<prm>id</prm>:\d+&gt;.html'</str> => <str>'test/view'</str>,
-    <note>// 匹配的参数可在转发路由中动态使用</note>
-    <str>'<prm>test</prm>/&lt;<prm>method</prm>:[\w_]+&gt;/&lt;<prm>id</prm>:\d+&gt;.html'</str> => <str>'test/&lt;<prm>method</prm>&gt;'</str>,
+```
+/config/config.php
+'routeRule' => array(
+    // test/(\d+).html 的路由会自动转发到testAction中的 action_view方法
+    'test/<id:\d+>.html' => 'test/view',
+    // 匹配的参数可在转发路由中动态使用
+    'test/<method:[\w_]+>/<id:\d+>.html' => 'test/<method>',
 ),
 
-<note>/app/controller/testAction.php</note>
-<note>// test/272.html 正则匹配的内容会传入方法</note>
-<sys>public function</sys> <act>action_view</act>(<prm>$id</prm>)
+/app/controller/testAction.php
+// test/272.html 正则匹配的内容会传入方法
+public function action_view($id)
 {
-    <sys>echo</sys> <prm>$id</prm>; <note>// 272</note>
+    echo $id; // 272
 }
 
-<note>// test/my_router/123.html</note>
-<sys>public function</sys> <act>action_my_router</act>(<prm>$id</prm>)
+// test/my_router/123.html
+public function action_my_router($id)
 {
-    <sys>echo</sys> <prm>$id</prm>; <note>// 123</note>
+    echo $id; // 123
 }
-</pre>
+```
 
 ## 异步请求
 
@@ -260,58 +235,68 @@ nginx根目录需要指向`/web/`目录下，示例如下
 
 程序中响应方法和同步请求保持一致，返回`$this->error()`会自动和同步请求作区分，返回`json数据`
 
-        <pre class="code"><note>// http://biny.oa.com/test/demo3</note>
-<sys>public function</sys> <act>action_demo3</act>()
+```
+// http://biny.oa.com/test/demo3
+public function action_demo3()
 {
-    <prm>$ret</prm> = <sys>array</sys>(<str>'result'</str>=>1);
-    <note>//返回 json {"flag": true, "ret": {"result": 1}}</note>
-    <sys>return</sys> <prm>$this</prm>-><func>correct</func>(<prm>$ret</prm>);
+    $ret = array('result'=>1);
+    //返回 json {"flag": true, "ret": {"result": 1}}
+    return $this->correct($ret);
 
-    <note>//返回 json {"flag": false, "error": {"result": 1}}</note>
-    <sys>return</sys> <prm>$this</prm>-><func>error</func>(<prm>$ret</prm>);
-}</pre>
+    //返回 json {"flag": false, "error": {"result": 1}}
+    return $this->error($ret);
+}
+```
 
 框架提供了一整套`csrf验证`机制，默认`开启`，可通过在Action中将`$csrfValidate = false`关闭。
 
-        <pre class="code"><note>// http://biny.oa.com/test/</note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+```
+// http://biny.oa.com/test/
+class testAction extends baseAction
 {
-    <note>//关闭csrf验证</note>
-    <sys>protected</sys> <prm>$csrfValidate</prm> = <sys>false</sys>;
+    //关闭csrf验证
+    protected $csrfValidate = false;
 
-    <note>//默认路由index</note>
-    <sys>public function</sys> <act>action_index</act>()
+    //默认路由index
+    public function action_index()
     {
-        <note>//返回 test/test.tpl.php</note>
-        <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
+        //返回 test/test.tpl.php
+        return $this->correct();
     }
-}</pre>
+}
+```
 
 当csrf验证开启时，前端ajax请求需要预先加载引用`/static/js/main.js`文件，ajax提交时，系统会自动加上验证字段。
 
 POST请求同样也会触发csrf验证，需要在form中添加如下数据字段：
 
-        <pre class="code"><note>// 加在form中提交</note>
-<act>&lt;input</act> type="<str>text</str>" name="<str>_csrf</str>" hidden value="<sys>&lt;?=</sys><prm>$this</prm>-><func>getCsrfToken</func>()<sys>?&gt;</sys>"<act>/></act></pre>
+```
+// 加在form中提交
+<input type="text" name="_csrf" hidden value="<?=$this->getCsrfToken()?>"/>
+```
 
 同样也可以在js中获取（前提是引用`/static/js/main.js`JS文件），加在POST参数中即可。
 
-        <pre class="code"><sys>var</sys> <prm>_csrf</prm> = <func>getCookie</func>(<str>'csrf-token'</str>);</pre>
+```
+var _csrf = getCookie('csrf-token');
+```
 
 ## 参数传递
 
 方法可以直接接收 GET 参数，并可以赋默认值，空则返回null
 
-        <pre class="code"><note>// http://biny.oa.com/test/demo4/?id=33</note>
-<sys>public function</sys> <act>action_demo4</act>(<prm>$id</prm>=10, <prm>$type</prm>, <prm>$name</prm>=<str>'biny'</str>)
+```
+// http://biny.oa.com/test/demo4/?id=33
+public function action_demo4($id=10, $type, $name='biny')
 {
-    <note>// 33</note>
-    <sys>echo</sys>(<prm>$id</prm>);
-    <note>// NULL</note>
-    <sys>echo</sys>(<prm>$type</prm>);
-    <note>// 'biny'</note>
-    <sys>echo</sys>(<prm>$name</prm>);
-}</pre>
+    // 33
+    echo($id);
+    // NULL
+    echo($type);
+    // 'biny'
+    echo($name);
+}
+```
 
 同时也可以调用`getParam`，`getGet`，`getPost` 方法获取参数。
 
@@ -323,16 +308,18 @@ POST请求同样也会触发csrf验证，需要在form中添加如下数据字�
 
 `getJson($key, $default)` 如果传递过来的参数为完整json流可使用该方法获取
 
-        <pre class="code"><note>// http://biny.oa.com/test/demo5/?id=33</note>
-<sys>public function</sys> <act>action_demo5</act>()
+```
+// http://biny.oa.com/test/demo5/?id=33
+public function action_demo5()
 {
-    <note>// NULL</note>
-    <sys>echo</sys>(<prm>$this</prm>-><func>getParam</func>(<str>'name'</str>));
-    <note>// 'install'</note>
-    <sys>echo</sys>(<prm>$this</prm>-><func>getPost</func>(<str>'type'</str>, <str>'install'</str>));
-    <note>// 33</note>
-    <sys>echo</sys>(<prm>$this</prm>-><func>getGet</func>(<str>'id'</str>, 1));
-}</pre>
+    // NULL
+    echo($this->getParam('name'));
+    // 'install'
+    echo($this->getPost('type', 'install'));
+    // 33
+    echo($this->getGet('id', 1));
+}
+```
 
 ## 权限验证
 
@@ -340,57 +327,57 @@ POST请求同样也会触发csrf验证，需要在form中添加如下数据字�
 
 用户需要在action中添加`privilege`方法，具体返回字段如下
 
-        <pre class="code"><sys>class</sys> testAction <sys>extends</sys> baseAction
+```
+class testAction extends baseAction
 {
-    <sys>private</sys> <prm>$key</prm> = <str>'test'</str>;
+    private $key = 'test';
 
-    <sys>protected function</sys> <act>privilege</act>()
+    protected function privilege()
     {
-        <sys>return array</sys>(
-            <note>// 登录验证（在privilegeService中定义）</note>
-            <str>'login_required'</str> => <sys>array</sys>(
-                <str>'actions'</str> => <str>'*'</str>, <note>// 绑定action，*为所有method</note>
-                <str>'params'</str> => [],   <note>// 传参（能获取到$this，不用另外传）可不传</note>
-                <str>'callBack'</str> => [], <note>// 验证失败回调函数， 可不传</note>
+        return array(
+            // 登录验证（在privilegeService中定义）
+            'login_required' => array(
+                'actions' => '*', // 绑定action，*为所有method
+                'params' => [],   // 传参（能获取到$this，不用另外传）可不传
+                'callBack' => [], // 验证失败回调函数， 可不传
             ),
-            <str>'my_required'</str> => <sys>array</sys>(
-                <str>'actions'</str> => [<str>'index'</str>], <note>// 对action_index进行验证</note>
-                <str>'params'</str> => [<prm>$this</prm>-><prm>key</prm>],   <note>// 传参</note>
-                <str>'callBack'</str> => [<prm>$this</prm>, <str>'test'</str>], <note>// 验证失败后调用$this->test()</note>
+            'my_required' => array(
+                'actions' => ['index'], // 对action_index进行验证
+                'params' => [$this->key],   // 传参
+                'callBack' => [$this, 'test'], // 验证失败后调用$this->test()
             ),
         );
     }
-    <note>// 根据逻辑被调用前会分别进行login_required和my_required验证，都成功后进入该方法</note>
-    <sys>public function</sys> <act>action_index</act>()
+    // 根据逻辑被调用前会分别进行login_required和my_required验证，都成功后进入该方法
+    public function action_index()
     {
-        <note>// do something</note>
+        // do something
     }
-    <note>// my_required验证失败后调用, $action为验证失败的action（这里是$this）</note>
-    <sys>public function</sys> <act>test</act>(<prm>$action</prm>)
+    // my_required验证失败后调用, $action为验证失败的action（这里是$this）
+    public function test($action)
     {
-        <note>// do something</note>
+        // do something
     }
-}</pre>
+}
+```
 
 然后在`privilegeService`中定义验证方法
 
-        <pre class="code"><note>第一个参数$action为testAction，$key为params传入参数</note>
-<sys>public function</sys> <act>my_required</act>(<prm>$action</prm>, <prm>$key</prm>=<sys>NULL</sys>)
+```
+第一个参数$action为testAction，$key为params传入参数
+public function my_required($action, $key=NULL)
 {
-    <sys>if</sys>(<prm>$key</prm>){
-        <note>// 通过校验</note>
-        <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
-    } <sys>else</sys> {
-        <note>// 校验失败，错误信息可通过$this->privilegeService->getError()获取</note>
-        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'key not exist'</str>);
+    if($key){
+        // 通过校验
+        return $this->correct();
+    } else {
+        // 校验失败，错误信息可通过$this->privilegeService->getError()获取
+        return $this->error('key not exist');
     }
-}</pre>
+}
+```
 
 `callBack`参数为校验失败时调用的方法，默认不填会抛出错误异常，程序不会再继续执行。
-
-    </div>
-
-    <div class="bs-docs-section">
 
 # 配置
 
@@ -416,10 +403,15 @@ POST请求同样也会触发csrf验证，需要在form中添加如下数据字�
 
 简单例子：
 
-        <pre class="code"><note>/config/config.php</note>
-<sys>return array</sys>(
-    <str>'session_name'</str> => <str>'biny_sessionid'</str>
+```
+/config/config.php
+return array(
+    'session_name' => 'biny_sessionid'
 }
+
+// 程序中获取方式 第二个参数为文件名（默认为config可不传）第三个参数为是否使用别名（默认为true）
+TXConfig::getConfig('session_name', 'config', true);
+```
 
 <note>// 程序中获取方式 第二个参数为文件名（默认为config可不传）第三个参数为是否使用别名（默认为true）</note>
 TXConfig::<func>getConfig</func>(<str>'session_name'</str>, <str>'config'</str>, <sys>true</sys>);</pre>
@@ -432,13 +424,18 @@ TXConfig::<func>getConfig</func>(<str>'session_name'</str>, <str>'config'</str>,
 
 使用方式也与系统配置基本一致
 
-        <pre class="code"><note>/app/config/dns.php</note>
-<sys>return array</sys>(
-    <str>'memcache'</str> => <sys>array</sys>(
-        <str>'host'</str> => <str>'10.1.163.35'</str>,
-        <str>'port'</str> => 12121
+```
+/app/config/dns.php
+return array(
+    'memcache' => array(
+        'host' => '10.1.163.35',
+        'port' => 12121
     )
 }
+
+// 程序中获取方式 第二个参数为文件名（默认为config可不传）第三个参数为是否使用别名（默认为true）
+TXConfig::getAppConfig('memcache', 'dns');
+```
 
 <note>// 程序中获取方式 第二个参数为文件名（默认为config可不传）第三个参数为是否使用别名（默认为true）</note>
 TXConfig::<func>getAppConfig</func>(<str>'memcache'</str>, <str>'dns'</str>);</pre>
@@ -449,37 +446,43 @@ TXConfig::<func>getAppConfig</func>(<str>'memcache'</str>, <str>'dns'</str>);</p
 
 系统配置在`/web/index.php`中
 
-        <pre class="code"><note>// dev pre pub 当前环境</note>
-<sys>defined</sys>(<str>'SYS_ENV'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_ENV'</str>, <str>'dev'</str>);</pre>
+```
+// dev pre pub 当前环境
+defined('SYS_ENV') or define('SYS_ENV', 'dev');
+```
 
 当程序调用`TXConfig::getConfig`时，系统会自动查找对应的配置文件
 
-        <pre class="code"><note>// 当前环境dev 会自动查找 /config/config_dev.php文件</note>
-TXConfig::<func>getConfig</func>(<str>'test'</str>, <str>'config'</str>);
+```
+// 当前环境dev 会自动查找 /config/config_dev.php文件
+TXConfig::getConfig('test', 'config');
 
-<note>// 当前环境pub 会自动查找 /config/dns_pub.php文件</note>
-TXConfig::<func>getConfig</func>(<str>'test2'</str>, <str>'dns'</str>);</pre>
+// 当前环境pub 会自动查找 /config/dns_pub.php文件
+TXConfig::getConfig('test2', 'dns');
+```
 
 公用配置文件可以放在不添加环境名的文件中，如`/config/config.php`
 
 在系统中同时存在`config.php`和`config_dev.php`时，带有环境配置的文件内容会覆盖通用配置
 
-        <pre class="code"><note>/app/config/dns.php</note>
-<sys>return array</sys>(
-    <str>'test'</str> => <str>'dns'</str>,
-    <str>'demo'</str> => <str>'dns'</str>,
+```
+/app/config/dns.php
+return array(
+    'test' => 'dns',
+    'demo' => 'dns',
 }
 
-<note>/app/config/dns_dev.php</note>
-<sys>return array</sys>(
-    <str>'test'</str> => <str>'dns_dev</str>
+/app/config/dns_dev.php
+return array(
+    'test' => 'dns_dev
 }
 
-<note>// 返回 'dns_dev' </note>
-TXConfig::<func>getAppConfig</func>(<str>'test'</str>, <str>'dns'</str>);
+// 返回 'dns_dev' 
+TXConfig::getAppConfig('test', 'dns');
 
-<note>// 返回 'dns' </note>
-TXConfig::<func>getAppConfig</func>(<str>'demo'</str>, <str>'dns'</str>);</pre>
+// 返回 'dns' 
+TXConfig::getAppConfig('demo', 'dns');
+```
 
 系统配置和程序配置中的使用方法相同
 
@@ -489,35 +492,35 @@ TXConfig::<func>getAppConfig</func>(<str>'demo'</str>, <str>'dns'</str>);</pre>
 
 系统默认有个别名 `web`会替换当前路径
 
-        <pre class="code"><note>/config/config.php</note>
-<sys>return array</sys>(
-    <str>'path'</str> => <str>'@web@/my-path/'</str>
+```
+/config/config.php
+return array(
+    'path' => '@web@/my-path/'
 }
 
-<note>// 返回 '/biny/my-path/' </note>
-TXConfig::<func>getConfig</func>(<str>'path'</str>);</pre>
+// 返回 '/biny/my-path/' 
+TXConfig::getConfig('path');
+```
 
 用户也可以自定义别名，例如
 
-        <pre class="code"><note>// getConfig 之前执行</note>
-TXConfig::<func>setAlias</func>(<str>'time'</str>, <sys>time</sys>());
+```
+// getConfig 之前执行
+TXConfig::setAlias('time', time());
 
-<note>// config.php</note>
-<sys>return array</sys>(
-    <str>'path'</str> => <str>'@web@/my-path/?time=@time@'</str>
+// config.php
+return array(
+    'path' => '@web@/my-path/?time=@time@'
 }
 
-<note>// 返回 '/biny/my-path/?time=1461141347'</note>
-TXConfig::<func>getConfig</func>(<str>'path'</str>);
+// 返回 '/biny/my-path/?time=1461141347'
+TXConfig::getConfig('path');
 
-<note>// 返回 '@web@/my-path/?time=@time@'</note>
-TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>false</sys>);</pre>
+// 返回 '@web@/my-path/?time=@time@'
+TXConfig::getConfig('path', 'config', false);
+```
 
 当然如果需要避免别名转义，也可以在`TXConfig::getConfig`第三个参数传`false`，就不会执行别名转义了。
-
-    </div>
-
-    <div class="bs-docs-section">
 
 # 数据库使用
 
@@ -527,26 +530,28 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
 例如：
 
-        <pre class="code"><note>// testDAO.php 与类名保持一致</note>
-<sys>class</sys> testDAO <sys>extends</sys> baseDAO
+```
+// testDAO.php 与类名保持一致
+class testDAO extends baseDAO
 {
-    <note>// 链接库 数组表示主库从库分离：['database', 'slaveDb'] 对应dns里配置 默认为'database'</note>
-    <sys>protected</sys> <prm>$dbConfig</prm> = <str>'database'</str>;
-    <note>// 表名</note>
-    <sys>protected</sys> <prm>$table</prm> = <str>'Biny_Test'</str>;
-    <note>// 键值 多键值用数组表示：['id', 'type']</note>
-    <sys>protected</sys> <prm>$_pk</prm> = <str>'id'</str>;
-    <note>// 是否使用数据库键值缓存，默认false</note>
-    <sys>protected</sys> <prm>$_pkCache</prm> = <sys>true</sys>;
+    // 链接库 数组表示主库从库分离：['database', 'slaveDb'] 对应dns里配置 默认为'database'
+    protected $dbConfig = 'database';
+    // 表名
+    protected $table = 'Biny_Test';
+    // 键值 多键值用数组表示：['id', 'type']
+    protected $_pk = 'id';
+    // 是否使用数据库键值缓存，默认false
+    protected $_pkCache = true;
 
-    <note>// 分表逻辑，默认为表名直接加上分表id</note>
-    <sys>public function</sys> <act>choose</act>(<prm>$id</prm>)
+    // 分表逻辑，默认为表名直接加上分表id
+    public function choose($id)
     {
-        <prm>$sub</prm> = <prm>$id</prm> <sys>%</sys> 100;
-        <prm>$this</prm>-><func>setDbTable</func>(<sys>sprintf</sys>(<str>'%s_%02d'</str>, <prm>$this</prm>-><prm>table</prm>, <prm>$sub</prm>));
-        <sys>return</sys> <prm>$this</prm>;
+        $sub = $id % 100;
+        $this->setDbTable(sprintf('%s_%02d', $this->table, $sub));
+        return $this;
     }
-}</pre>
+}
+```
 
 ## 连接配置
 
@@ -554,25 +559,27 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
 基本参数如下：
 
-        <pre class="code"><note>/app/config/dns_dev.php</note>
-<sys>return array</sys>(
-    <str>'database'</str> => <sys>array</sys>(
-        <note>// 库ip</note>
-        <str>'host'</str> => <str>'127.0.0.1'</str>,
-        <note>// 库名</note>
-        <str>'database'</str> => <str>'Biny'</str>,
-        <note>// 用户名</note>
-        <str>'user'</str> => <str>'root'</str>,
-        <note>// 密码</note>
-        <str>'password'</str> => <str>'pwd'</str>,
-        <note>// 编码格式</note>
-        <str>'encode'</str> => <str>'utf8'</str>,
-        <note>// 端口号</note>
-        <str>'port'</str> => 3306,
-        <note>// 是否长链接（默认关闭）</note>
-        <str>'keep-alive'</str> => true,
+```
+/app/config/dns_dev.php
+return array(
+    'database' => array(
+        // 库ip
+        'host' => '127.0.0.1',
+        // 库名
+        'database' => 'Biny',
+        // 用户名
+        'user' => 'root',
+        // 密码
+        'password' => 'pwd',
+        // 编码格式
+        'encode' => 'utf8',
+        // 端口号
+        'port' => 3306,
+        // 是否长链接（默认关闭）
+        'keep-alive' => true,
     )
-)</pre>
+)
+```
 
 这里同时也可以配置多个，只需要在DAO类中指定该表所选的库即可（默认为`'database'`）
 
@@ -582,30 +589,34 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
 用户可在`/config/database.php`中配置，示例如下
 
-        <pre class="code"><note>// database.php</note>
-<sys>return array</sys>(
-    <str>'dbConfig'</str> => array(
-        <note>// 相当于创建了一个testDAO.php</note>
-        <str>'test'</str> => <str>'Biny_Test'</str>
+```
+// database.php
+return array(
+    'dbConfig' => array(
+        // 相当于创建了一个testDAO.php
+        'test' => 'Biny_Test'
     )
-);</pre>
+);
+```
 
 然后就可以在`Action、Service、Model`各层中使用`testDAO`了
 
-<pre class="code"><note>// testAction.php
+```
+// testAction.php
 /**
 * DAO 或者 Service 会自动映射 生成对应类的单例
 * @property TXSingleDAO $testDAO
-*/</note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+*/
+class testAction extends baseAction
 {
-    <sys>public function</sys> <act>action_index</act>()
+    public function action_index()
     {
-        <note>// 此处的testDAO为映射生成的，没有baseDAO中对于缓存的操作
-            [['id'=>1, 'name'=>'xx', 'type'=>2], ['id'=>2, 'name'=>'yy', 'type'=>3]]</note>
-        <prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
+        // 此处的testDAO为映射生成的，没有baseDAO中对于缓存的操作
+            [['id'=>1, 'name'=>'xx', 'type'=>2], ['id'=>2, 'name'=>'yy', 'type'=>3]]
+        $datas = $this->testDAO->query();
     }
-}</pre>
+}
+```
 
 需要`注意`的是，映射的DAO不具备设置数据库功能（主从库都是默认的`database`配置）
 
@@ -617,45 +628,48 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
 DAO提供了`query`，`find`等基本查询方式，使用也相当简单
 
-        <pre class="code"><note>// testAction.php
+```
+// testAction.php
 /**
  * DAO 或者 Service 会自动映射 生成对应类的单例
  * @property testDAO $testDAO
- */</note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+ */
+class testAction extends baseAction
 {
-    <sys>public function</sys> <act>action_index</act>()
+    public function action_index()
     {
-        <note>// 返回 testDAO所对应表的全部内容 格式为二维数组
-            [['id'=>1, 'name'=>'xx', 'type'=>2], ['id'=>2, 'name'=>'yy', 'type'=>3]]</note>
-        <prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
-        <note>// 第一个参数为返回的字段 [['id'=>1, 'name'=>'xx'], ['id'=>2, 'name'=>'yy']]</note>
-        <prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>(<sys>array</sys>(<str>'id'</str>, <str>'name'</str>));
-        <note>// 第二个参数返回键值，会自动去重 [1 => ['id'=>1, 'name'=>'xx'], 2 => ['id'=>2, 'name'=>'yy']]</note>
-        <prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>(<sys>array</sys>(<str>'id'</str>, <str>'name'</str>), <str>'id'</str>);
+        // 返回 testDAO所对应表的全部内容 格式为二维数组
+            [['id'=>1, 'name'=>'xx', 'type'=>2], ['id'=>2, 'name'=>'yy', 'type'=>3]]
+        $datas = $this->testDAO->query();
+        // 第一个参数为返回的字段 [['id'=>1, 'name'=>'xx'], ['id'=>2, 'name'=>'yy']]
+        $datas = $this->testDAO->query(array('id', 'name'));
+        // 第二个参数返回键值，会自动去重 [1 => ['id'=>1, 'name'=>'xx'], 2 => ['id'=>2, 'name'=>'yy']]
+        $datas = $this->testDAO->query(array('id', 'name'), 'id');
 
-        <note>// 返回 表第一条数据 格式为一维 ['id'=>1, 'name'=>'xx', 'type'=>2]</note>
-        <prm>$data</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>find</func>();
-        <note>// 参数为返回的字段名 可以为字符串或者数组 ['name'=>'xx']</note>
-        <prm>$data</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>find</func>('name');
+        // 返回 表第一条数据 格式为一维 ['id'=>1, 'name'=>'xx', 'type'=>2]
+        $data = $this->testDAO->find();
+        // 参数为返回的字段名 可以为字符串或者数组 ['name'=>'xx']
+        $data = $this->testDAO->find('name');
     }
-}</pre>
+}
+```
 
 同时还支持`count`，`max`，`sum`，`min`，`avg`等基本运算，count带参数即为`参数去重后数量`
 
-        <pre class="code"><note>// count(*) 返回数量</note>
-<prm>$count</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>count</func>();
-<note>// count(distinct `name`) 返回去重后数量</note>
-<prm>$count</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>count</func>(<str>'name'</str>);
-<note>// max(`id`)</note>
-<prm>$max</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>max</func>(<str>'id'</str>);
-<note>// min(`id`)</note>
-<prm>$min</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>min</func>(<str>'id'</str>);
-<note>// avg(`id`)</note>
-<prm>$avg</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>avg</func>(<str>'id'</str>);
-<note>// sum(`id`)</note>
-<prm>$sum</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>sum</func>(<str>'id'</str>);
-</pre>
+```
+// count(*) 返回数量
+$count = $this->testDAO->count();
+// count(distinct `name`) 返回去重后数量
+$count = $this->testDAO->count('name');
+// max(`id`)
+$max = $this->testDAO->max('id');
+// min(`id`)
+$min = $this->testDAO->min('id');
+// avg(`id`)
+$avg = $this->testDAO->avg('id');
+// sum(`id`)
+$sum = $this->testDAO->sum('id');
+```
 
 这里运算都为简单运算，需要用到复合运算或者多表运算时，建议使用`addtion`方法
 
@@ -665,40 +679,52 @@ DAO提供了`query`，`find`等基本查询方式，使用也相当简单
 
 `update`方法为更新数据，返回成功（`true`）或者失败（`false`），条件内容参考后面`选择器`的使用
 
-<pre class="code"><note>// update `DATABASE`.`TABLE` set `name`='xxx', `type`=5</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>update</func>(<sys>array</sys>(<str>'name'</str>=><str>'xxx'</str>, <str>'type'</str>=>5));</pre>
+```
+// update `DATABASE`.`TABLE` set `name`='xxx', `type`=5
+$result = $this->testDAO->update(array('name'=>'xxx', 'type'=>5));
+```
 
 `delete`方法返回成功（`true`）或者失败（`false`），条件内容参考后面`选择器`的使用
 
-<pre class="code"><note>// delete from `DATABASE`.`TABLE`</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>delete</func>();</pre>
+```
+// delete from `DATABASE`.`TABLE`
+$result = $this->testDAO->delete();
+```
 
 `add`方法 insert成功时默认返回数据库新插入自增ID，第二个参数为`false`时 返回成功（`true`）或者失败（`false`）
 
-<pre class="code"><note>// insert into `DATABASE`.`TABLE` (`name`,`type`) values('test', 1)</note>
-<prm>$sets</prm> = <sys>array</sys>(<str>'name'</str>=><str>'test'</str>, <str>'type'</str>=>1);
-<note>// false 时返回true/false</note>
-<prm>$id</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>add</func>(<prm>$sets</prm>, <sys>false</sys>);</pre>
+```
+// insert into `DATABASE`.`TABLE` (`name`,`type`) values('test', 1)
+$sets = array('name'=>'test', 'type'=>1);
+// false 时返回true/false
+$id = $this->testDAO->add($sets, false);
+```
 
 `addCount`方法返回成功（`true`）或者失败（`false`），相当于`update set count += n`
 
-<pre class="code"><note>// update `DATABASE`.`TABLE` set `type`+=5</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>addCount</func>(<sys>array</sys>(<str>'type'</str>=>5);</pre>
+```
+// update `DATABASE`.`TABLE` set `type`+=5
+$result = $this->testDAO->addCount(array('type'=>5);
+```
 
 `createOrUpdate`方法 为添加数据，但当有重复键值时会自动update数据
 
-<pre class="code"><note>// 第一个参数为insert数组，第二个参数为失败时update参数，不传即为第一个参数</note>
-<prm>$sets</prm> = <sys>array</sys>(<str>'name'</str>=><str>'test'</str>, <str>'type'</str>=>1);
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>createOrUpdate</func>(<prm>$sets</prm>);</pre>
+```
+// 第一个参数为insert数组，第二个参数为失败时update参数，不传即为第一个参数
+$sets = array('name'=>'test', 'type'=>1);
+$result = $this->testDAO->createOrUpdate($sets);
+```
 
 `addList`方法 为批量添加数据，返回成功（`true`）或者失败（`false`）
 
-<pre class="code"><note>// 参数为批量数据值（二维数组），键值必须统一</note>
-<prm>$sets</prm> = <sys>array</sys>(
-    <sys>array</sys>(<str>'name'</str>=><str>'test1'</str>, <str>'type'</str>=>1),
-    <sys>array</sys>(<str>'name'</str>=><str>'test2'</str>, <str>'type'</str>=>2),
+```
+// 参数为批量数据值（二维数组），键值必须统一
+$sets = array(
+    array('name'=>'test1', 'type'=>1),
+    array('name'=>'test2', 'type'=>2),
 );
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>addList</func>(<prm>$sets</prm>);</pre>
+$result = $this->testDAO->addList($sets);
+```
 
 ## 多联表
 
@@ -706,55 +732,67 @@ DAO提供了`query`，`find`等基本查询方式，使用也相当简单
 
 参数为联接关系
 
-        <pre class="code"><note>// on `user`.`projectId` = `project`.`id` and `user`.`type` = `project`.`type`</note>
-<prm>$DAO</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>, <str>'type'</str>=><str>'type'</str>));</pre>
+```
+// on `user`.`projectId` = `project`.`id` and `user`.`type` = `project`.`type`
+$DAO = $this->userDAO->join($this->projectDAO, array('projectId'=>'id', 'type'=>'type'));
+```
 
 `$DAO`可以继续联接，联接第三个表时，联接关系为二维数组，第一个数组对应第一张表与新表关系，第二个数组对应第二张表与新表关系
 
-        <pre class="code"><note>// on `user`.`testId` = `test`.`id` and `project`.`type` = `test`.`status`</note>
-<prm>$DAO</prm> = <prm>$DAO</prm>-><func>leftJoin</func>(<prm>$this</prm>-><prm>testDAO</prm>, <sys>array</sys>(
-    <sys>array</sys>(<str>'testId'</str>=><str>'id'</str>),
-    <sys>array</sys>(<str>'type'</str>=><str>'status'</str>)
-));</pre>
+```
+// on `user`.`testId` = `test`.`id` and `project`.`type` = `test`.`status`
+$DAO = $DAO->leftJoin($this->testDAO, array(
+    array('testId'=>'id'),
+    array('type'=>'status')
+));
+```
 
 可以继续联接，联接关系同样为二维数组，三个对象分别对应原表与新表关系，无关联则为空，最后的空数组可以`省略`
 
-        <pre class="code"><note>// on `project`.`message` = `message`.`name`</note>
-<prm>$DAO</prm> = <prm>$DAO</prm>-><func>rightJoin</func>(<prm>$this</prm>-><prm>messageDAO</prm>, <sys>array</sys>(
-    <sys>array</sys>(),
-    <sys>array</sys>(<str>'message'</str>=><str>'name'</str>),
-<note>//  array()</note>
-));</pre>
+```
+// on `project`.`message` = `message`.`name`
+$DAO = $DAO->rightJoin($this->messageDAO, array(
+    array(),
+    array('message'=>'name'),
+//  array()
+));
+```
 
 以此类推，理论上可以建立任意数量的关联表
 
 参数有两种写法，上面那种是位置对应表，另外可以根据`别名`做对应，`别名`即DAO之前的字符串
 
-        <pre class="code"><note>// on `project`.`message` = `message`.`name` and `user`.`mId` = `message`.`id`</note>
-<prm>$DAO</prm> = <prm>$DAO</prm>-><func>rightJoin</func>(<prm>$this</prm>-><prm>messageDAO</prm>, <sys>array</sys>(
-    <str>'project'</str> => <sys>array</sys>(<str>'message'</str>=><str>'name'</str>),
-    <str>'user'</str> => <sys>array</sys>(<str>'mId'</str>=><str>'id'</str>),
-));</pre>
+```
+// on `project`.`message` = `message`.`name` and `user`.`mId` = `message`.`id`
+$DAO = $DAO->rightJoin($this->messageDAO, array(
+    'project' => array('message'=>'name'),
+    'user' => array('mId'=>'id'),
+));
+```
 
 多联表同样可以使用`query`，`find`，`count`等查询语句。参数则改为`二维数组`。
 
 和联表参数一样，参数有两种写法，一种是位置对应表，另一种即`别名`对应表，同样也可以混合使用。
 
-        <pre class="code"><note>// SELECT `user`.`id` AS 'uId', `user`.`cash`, `project`.`createTime` FROM ...</note>
-<prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>))
-    -><func>query</func>(<sys>array</sys>(
-      <sys>array</sys>(<str>'id'</str>=><str>'uId'</str>, <str>'cash'</str>),
-      <str>'project'</str> => <sys>array</sys>(<str>'createTime'</str>),
-    ));</pre>
+```
+// SELECT `user`.`id` AS 'uId', `user`.`cash`, `project`.`createTime` FROM ...
+$this->userDAO->join($this->projectDAO, array('projectId'=>'id'))
+    ->query(array(
+      array('id'=>'uId', 'cash'),
+      'project' => array('createTime'),
+    ));
+```
 
 联表条件中有时需要用到等于固定值的情况，可以通过`on`方法添加
 
-        <pre class="code"><note>// ... on `user`.`projectId` = `project`.`id` and `user`.`type` = 10 and `project`.`cash` > 100</note>
-<prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>))
-    -><func>on</func>(<sys>array</sys>(
-        <sys>array</sys>(<str>'type'</str>=>10),
-        <sys>array</sys>(<str>'cash'</str>=><sys>array</sys>(<str>'>'</str>, 100)),
-    ))->query();</pre>
+```
+// ... on `user`.`projectId` = `project`.`id` and `user`.`type` = 10 and `project`.`cash` > 100
+$this->userDAO->join($this->projectDAO, array('projectId'=>'id'))
+    ->on(array(
+        array('type'=>10),
+        array('cash'=>array('>', 100)),
+    ))->query();
+```
 
 多联表的查询和修改（`update`，`addCount`），和单表操作基本一致，需要注意的是单表参数为`一维数组`，多表则为`二维数组`，写错会导致执行失败。
 
@@ -764,34 +802,44 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 同样选择器支持单表和多表操作，参数中单表为`一维数组`，多表则为`二维数组`
 
-        <pre class="code"><note>// ... WHERE `user`.`id` = 1 AND `user`.`type` = 'admin'</note>
-<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>1, <str>'type'</str>=><str>'admin'</str>));</pre>
+```
+// ... WHERE `user`.`id` = 1 AND `user`.`type` = 'admin'
+$filter = $this->userDAO->filter(array('id'=>1, 'type'=>'admin'));
+```
 
 而用`merge`或选择器筛选，条件则用`or`相连接
 
-        <pre class="code"><note>// ... WHERE `user`.`id` = 1 OR `user`.`type` = 'admin'</note>
-<prm>$merge</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>merge</func>(<sys>array</sys>(<str>'id'</str>=>1, <str>'type'</str>=><str>'admin'</str>));</pre>
+```
+// ... WHERE `user`.`id` = 1 OR `user`.`type` = 'admin'
+$merge = $this->userDAO->merge(array('id'=>1, 'type'=>'admin'));
+```
 
 同样多表参数也可用`别名`对应表，用法跟上面一致，这里就不展开了
 
-        <pre class="code"><note>// ... WHERE `user`.`id` = 1 AND `project`.`type` = 'outer'</note>
-<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>))
-    -><func>filter</func>(<sys>array</sys>(
-        <sys>array</sys>(<str>'id'</str>=><str>1</str>),
-        <sys>array</sys>(<str>'type'</str>=><str>'outer'</str>),
-    ));</pre>
+```
+// ... WHERE `user`.`id` = 1 AND `project`.`type` = 'outer'
+$filter = $this->userDAO->join($this->projectDAO, array('projectId'=>'id'))
+    ->filter(array(
+        array('id'=>1),
+        array('type'=>'outer'),
+    ));
+```
 
 `$filter`条件可以继续调用`filter`/`merge`方法，条件会在原来的基础上继续筛选
 
-        <pre class="code"><note>// ... WHERE (...) OR (`user`.`name` = 'test')</note>
-<prm>$filter</prm> = <prm>$filter</prm>-><func>merge</func>(<sys>array</sys>(<str>'name'</str>=><str>'test'</str>);</pre>
+```
+// ... WHERE (...) OR (`user`.`name` = 'test')
+$filter = $filter->merge(array('name'=>'test');
+```
 
 `$filter`条件也可以作为参数传入`filter`/`merge`方法。效果为条件的叠加。
 
-        <pre class="code"><note>// ... WHERE (`user`.`id` = 1 AND `user`.`type` = 'admin') OR (`user`.`id` = 2 AND `user`.`type` = 'user')</note>
-<prm>$filter1</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>1, <str>'type'</str>=><str>'admin'</str>);
-<prm>$filter2</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>2, <str>'type'</str>=><str>'user'</str>));
-<prm>$merge</prm> = <prm>$filter1</prm>-><func>merge</func>(<prm>$filter2</prm>);</pre>
+```
+// ... WHERE (`user`.`id` = 1 AND `user`.`type` = 'admin') OR (`user`.`id` = 2 AND `user`.`type` = 'user')
+$filter1 = $this->userDAO->filter(array('id'=>1, 'type'=>'admin');
+$filter2 = $this->userDAO->filter(array('id'=>2, 'type'=>'user'));
+$merge = $filter1->merge($filter2);
+```
 
 无论是`与选择器`还是`或选择器`，条件本身作为参数时，条件自身的`DAO`必须和被选择对象的`DAO`保持一致，否者会抛出`异常`
 
@@ -799,23 +847,27 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 可以参考下面这个例子
 
-        <pre class="code"><note>// WHERE (`user`.`id`=1 AND `user`.`type`='admin') OR `user`.`id`=2</note>
-<prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>1, <str>'type'</str>=><str>'admin'</str>)-><func>merge</func>(<sys>array</sys>(<str>'id'</str>=>2));
+```
+// WHERE (`user`.`id`=1 AND `user`.`type`='admin') OR `user`.`id`=2
+$this->userDAO->filter(array('id'=>1, 'type'=>'admin')->merge(array('id'=>2));
 
-<note>// WHERE `user`.`id`=2 AND (`user`.`id`=1 AND `user`.`type`='admin')</note>
-<prm>$this</prm>-><prm>userDAO</prm>-><func>merge</func>(<sys>array</sys>(<str>'id'</str>=>2))-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>1, <str>'type'</str>=><str>'admin'</str>);</pre>
+// WHERE `user`.`id`=2 AND (`user`.`id`=1 AND `user`.`type`='admin')
+$this->userDAO->merge(array('id'=>2))->filter(array('id'=>1, 'type'=>'admin');
+```
 
 由上述例子可知，添加之间关联符是跟`后面`的选择器表达式`保持一致`
 
 `选择器`获取数据跟`DAO`方法一致，单表的`选择器`具有单表的所有查询，删改方法，而多表的`选择器`具有多表的所有查询，修改改方法
 
-        <pre class="code"><note>// UPDATE `DATABASE`.`TABLE` AS `user` SET `user`.`name` = 'test' WHERE `user`.`id` = 1</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>1)-><func>update</func>(<sys>array</sys>(<str>'name'</str>=><str>'test'</str>));
+```
+// UPDATE `DATABASE`.`TABLE` AS `user` SET `user`.`name` = 'test' WHERE `user`.`id` = 1
+$result = $this->userDAO->filter(array('id'=>1)->update(array('name'=>'test'));
 
-<note>// SELECT * FROM ... WHERE `project`.`type` = 'admin'</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>projectDAO</prm>, <sys>array</sys>(<str>'projectId'</str>=><str>'id'</str>))
-    -><func>filter</func>(<sys>array</sys>(<sys>array</sys>(),<sys>array</sys>(<str>'type'</str>=><str>'admin'</str>)))
-    -><func>query</func>();</pre>
+// SELECT * FROM ... WHERE `project`.`type` = 'admin'
+$result = $this->userDAO->join($this->projectDAO, array('projectId'=>'id'))
+    ->filter(array(array(),array('type'=>'admin')))
+    ->query();
+```
 
 无论是`filter`还是`merge`，在执行SQL语句前都`不会被执行`，不会增加sql负担，可以放心使用。
 
@@ -825,44 +877,52 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 如果数组中值为`数组`的话，会自动变为`in`条件语句
 
-        <pre class="code"><note>// WHERE `user`.`type` IN (1,2,3,'test')</note>
-<prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=><sys>array</sys>(1,2,3,<str>'test'</str>)));</pre>
+```
+// WHERE `user`.`type` IN (1,2,3,'test')
+$this->userDAO->filter(array('id'=>array(1,2,3,'test')));
+```
 
 其他还包括 `>`，`<`，`>=`，`<=`，`!=`，`<>`，`is`，`is not`
             ，同样，多表的情况下需要用`二维数组`去封装
 
-        <pre class="code"><note>// WHERE `user`.`id` >= 10 AND `user`.`time` >= 1461584562 AND `user`.`type` is not null</note>
-<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(
-    <str>'>='</str>=><sys>array</sys>(<str>'id'</str>=>10, <str>'time'</str>=>1461584562),
-    <str>'is not'</str>=><sys>array</sys>(<str>'type'</str>=><sys>NULL</sys>),
-));</pre>
+```
+// WHERE `user`.`id` >= 10 AND `user`.`time` >= 1461584562 AND `user`.`type` is not null
+$filter = $this->userDAO->filter(array(
+    '>='=>array('id'=>10, 'time'=>1461584562),
+    'is not'=>array('type'=>NULL),
+));
+```
 
 另外，`like语句`也是支持的，可匹配正则符的开始结尾符，具体写法如下：
 
-        <pre class="code"><note>// WHERE `user`.`name` LIKE '%test%' OR `user`.`type` LIKE 'admin%' OR `user`.`type` LIKE '%admin'</note>
-<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>merge</func>(<sys>array</sys>(
-    <str>'__like__'</str>=><sys>array</sys>(<str>'name'</str>=><str>test</str>, <str>'type'</str>=><str>'^admin'</str>, <str>'type'</str>=><str>'admin$'</str>),
-));</pre>
+```
+// WHERE `user`.`name` LIKE '%test%' OR `user`.`type` LIKE 'admin%' OR `user`.`type` LIKE '%admin'
+$filter = $this->userDAO->merge(array(
+    '__like__'=>array('name'=>test, 'type'=>'^admin', 'type'=>'admin$'),
+));
+```
 
 `not in`语法暂时并未支持，可以暂时使用多个`!=`或者`<>`替代
 
 同时`filter/merge`也可以被迭代调用，以应对不确定筛选条件的复杂查询
 
-        <pre class="code"><note>// 某一个返回筛选数据的Action</note>
-<prm>$DAO</prm> = <prm>$this</prm>-><prm>userDAO</prm>;
-<sys>if </sys>(<prm>$status</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'status'</str>)){
-    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'status'</str>=><prm>$status</prm>));
+```
+// 某一个返回筛选数据的Action
+$DAO = $this->userDAO;
+if ($status=$this->getParam('status')){
+    $DAO = $DAO->filter(array('status'=>$status));
 }
-<sys>if </sys>(<prm>$startTime</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'start'</str>, 0)){
-    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'>='</str>=><sys>array</sys>(<str>'start'</str>=><prm>$startTime</prm>)));
+if ($startTime=$this->getParam('start', 0)){
+    $DAO = $DAO->filter(array('>='=>array('start'=>$startTime)));
 }
-<sys>if </sys>(<prm>$endTime</prm>=<prm>$this</prm>-><func>getParam</func>(<str>'end'</str>, <func>time</func>())){
-    <prm>$DAO</prm> = <prm>$DAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'<'</str>=><sys>array</sys>(<str>'end'</str>=><prm>$endTime</prm>)));
+if ($endTime=$this->getParam('end', time())){
+    $DAO = $DAO->filter(array('<'=>array('end'=>$endTime)));
 }
-<note>// 获取复合条件数量</note>
-<prm>$count</prm> = <prm>$DAO</prm>-><func>count</func>();
-<note>// 获取复合条件前10条数据</note>
-<prm>$data</prm> = <prm>$DAO</prm>-><func>limit</func>(10)-><func>query</func>();</pre>
+// 获取复合条件数量
+$count = $DAO->count();
+// 获取复合条件前10条数据
+$data = $DAO->limit(10)->query();
+```
 
 ## 其他条件
 
@@ -870,27 +930,31 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 其中包括`group`，`addition`，`order`，`limit`，`having`
 
-        <pre class="code"><note>// SELECT avg(`user`.`cash`) AS 'a_c' FROM `TABLE` `user` WHERE ...
-                GROUP BY `user`.`id`,`user`.`type` HAVING `a_c` >= 1000 ORDER BY `a_c` DESC, `id` ASC LIMIT 0,10;</note>
-<prm>$this</prm>-><prm>userDAO</prm> <note>//->filter(...)</note>
-    -><func>addition</func>(<sys>array</sys>(<str>'avg'</str>=><sys>array</sys>(<str>'cash'</str>=><str>'a_c'</str>))
-    -><func>group</func>(<sys>array</sys>(<str>'id'</str>, <str>'type'</str>))
-    -><func>having</func>(<sys>array</sys>(<str>'>='</str>=><sys>array</sys>(<str>'a_c'</str>, 1000)))
-    -><func>order</func>(<sys>array</sys>(<str>'a_c'</str>=><str>'DESC'</str>, <str>'id'</str>=><str>'ASC'</str>))
-    <note>// limit 第一个参数为取的条数，第二个参数为起始位置（默认为0）</note>
-    -><func>limit</func>(10)
-    -><func>query</func>();</pre>
+```
+// SELECT avg(`user`.`cash`) AS 'a_c' FROM `TABLE` `user` WHERE ...
+                GROUP BY `user`.`id`,`user`.`type` HAVING `a_c` >= 1000 ORDER BY `a_c` DESC, `id` ASC LIMIT 0,10;
+$this->userDAO //->filter(...)
+    ->addition(array('avg'=>array('cash'=>'a_c'))
+    ->group(array('id', 'type'))
+    ->having(array('>='=>array('a_c', 1000)))
+    ->order(array('a_c'=>'DESC', 'id'=>'ASC'))
+    // limit 第一个参数为取的条数，第二个参数为起始位置（默认为0）
+    ->limit(10)
+    ->query();
+```
 
 每次添加条件后都是独立的，`不会影响`原DAO 或者 选择器，可以放心的使用
 
-        <pre class="code"><note>// 这个对象不会因添加条件而变化</note>
-<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=><sys>array</sys>(1,2,3,<str>'test'</str>)));
-<note>// 2</note>
-<prm>$count</prm> = <prm>$filter</prm>-><func>limit</func>(2)-><func>count</func>()
-<note>// 4</note>
-<prm>$count</prm> = <prm>$filter</prm>-><func>count</func>()
-<note>// 100 (user表总行数)</note>
-<prm>$count</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>count</func>()</pre>
+```
+// 这个对象不会因添加条件而变化
+$filter = $this->userDAO->filter(array('id'=>array(1,2,3,'test')));
+// 2
+$count = $filter->limit(2)->count()
+// 4
+$count = $filter->count()
+// 100 (user表总行数)
+$count = $this->userDAO->count()
+```
 
 ## SQL模版
 
@@ -901,25 +965,31 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 方法会自动替换`:where`和`:table`字段
 
-        <pre class="code"><note>// select * from `DATABASE`.`TABLE` WHERE ...</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select * from :table WHERE ...;'</str>);
+```
+// select * from `DATABASE`.`TABLE` WHERE ...
+$result = $this->userDAO->select('select * from :table WHERE ...;');
 
-<note>// update `DATABASE`.`TABLE` `user` set name = 'test' WHERE `user`.`id` = 10 AND type = 2</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>10))
-    -><func>command</func>(<str>'update :table set name = 'test' WHERE :where AND type = 2;'</str>)</pre>
+// update `DATABASE`.`TABLE` `user` set name = 'test' WHERE `user`.`id` = 10 AND type = 2
+$result = $this->userDAO->filter(array('id'=>10))
+    ->command('update :table set name = 'test' WHERE :where AND type = 2;')
+```
 
 另外还可以添加一些自定义变量，这些变量会自动进行`sql转义`，防止`sql注入`
 
 其中键值的替换符为`;`，例如`;key`，值的替换符为`:`，例如`:value`
 
-        <pre class="code"><note>// select `name` from `DATABASE`.`TABLE` WHERE `name`=2</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select ;key from :table WHERE ;key=:value;'</str>, <sys>array</sys>(<str>'key'</str>=><str>'name'</str>, <str>'value'</str>=>2));</pre>
+```
+// select `name` from `DATABASE`.`TABLE` WHERE `name`=2
+$result = $this->userDAO->select('select ;key from :table WHERE ;key=:value;', array('key'=>'name', 'value'=>2));
+```
 
 同时替换内容也可以是数组，系统会自动替换为以`,`连接的字符串
 
-        <pre class="code"><note>// select `id`,`name` from `DATABASE`.`TABLE` WHERE `name` in (1,2,3,'test')</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select ;fields from :table WHERE ;key in :value;'</str>,
-    <sys>array</sys>(<str>'key'</str>=><str>'name'</str>, <str>'value'</str>=><sys>array</sys>(1,2,3,<str>'test'</str>), <str>'fields'</str>=><sys>array</sys>(<str>'id'</str>, <str>'name'</str>)));</pre>
+```
+// select `id`,`name` from `DATABASE`.`TABLE` WHERE `name` in (1,2,3,'test')
+$result = $this->userDAO->select('select ;fields from :table WHERE ;key in :value;',
+    array('key'=>'name', 'value'=>array(1,2,3,'test'), 'fields'=>array('id', 'name')));
+```
 
 以上替换方式都会进行`SQL转义`，建议用户使用模版替换，而不要自己将变量放入SQL语句中，防止`SQL注入`
 
@@ -935,26 +1005,28 @@ DAO类都可以调用`filter`（与选择器），`merge`（或选择器），�
 
 当程序调用`TXDatebase::end()`方法后事务会全部终止，未提交的事务也会自动回滚，另外，程序析构时，也会自动回滚未提交的事务
 
-        <pre class="code"><note>// 在事务开始前的操作都会默认提交，num:0</note>
-<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>update</func>([<str>'num'</str>=>0]);
-<note>// 开始事务</note>
-TXDatabase::<func>start</func>();
-<note>// set num = num+2</note>
-<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
-<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
-<note>// 回滚事务</note>
-TXDatabase::<func>rollback</func>();
-<note>// 当前num还是0</note>
-<prm>$num</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>find</func>()[<str>'num'</str>];
-<note>// set num = num+2</note>
-<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
-<prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>addCount</func>([<str>'num'</str>=>1]);
-<note>// 提交事务</note>
-TXDatabase::<func>commit</func>();
-<note>// num = 2</note>
-<prm>$num</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>([<str>'id'</str>=>1])-><func>find</func>()[<str>'num'</str>];
-<note>// 关闭事务</note>
-TXDatabase::<func>end</func>();</pre>
+```
+// 在事务开始前的操作都会默认提交，num:0
+$this->testDAO->filter(['id'=>1])->update(['num'=>0]);
+// 开始事务
+TXDatabase::start();
+// set num = num+2
+$this->testDAO->filter(['id'=>1])->addCount(['num'=>1]);
+$this->testDAO->filter(['id'=>1])->addCount(['num'=>1]);
+// 回滚事务
+TXDatabase::rollback();
+// 当前num还是0
+$num = $this->testDAO->filter(['id'=>1])->find()['num'];
+// set num = num+2
+$this->testDAO->filter(['id'=>1])->addCount(['num'=>1]);
+$this->testDAO->filter(['id'=>1])->addCount(['num'=>1]);
+// 提交事务
+TXDatabase::commit();
+// num = 2
+$num = $this->testDAO->filter(['id'=>1])->find()['num'];
+// 关闭事务
+TXDatabase::end();
+```
 
 另外，事务的开启并不会影响`select`操作，只对增加，删除，修改操作有影响
 
@@ -966,42 +1038,52 @@ TXDatabase::<func>end</func>();</pre>
 
 因为系统缓存默认走`redis`，所以开启缓存的话，需要在`/app/config/dns_xxx.php`中配置环境相应的redis配置
 
-        <pre class="code"><note>// testDAO</note>
-<sys>class</sys> testDAO <sys>extends</sys> baseDAO
+```
+// testDAO
+class testDAO extends baseDAO
 {
-    <sys>protected</sys> <prm>$dbConfig</prm> = [<str>'database'</str>, <str>'slaveDb'</str>];
-    <sys>protected</sys> <prm>$table</prm> = <str>'Biny_Test'</str>;
-    <note>// 表pk字段 复合pk为数组 ['id', 'type']</note>
-    <sys>protected</sys> <prm>$_pk</prm> = <str>'id'</str>;
-    <note>// 开启pk缓存</note>
-    <sys>protected</sys> <prm>$_pkCache</prm> = <sys>true</sys>;
-}</pre>
+    protected $dbConfig = ['database', 'slaveDb'];
+    protected $table = 'Biny_Test';
+    // 表pk字段 复合pk为数组 ['id', 'type']
+    protected $_pk = 'id';
+    // 开启pk缓存
+    protected $_pkCache = true;
+}
+```
 
 `baseDAO`中提供了`getByPk`，`updateByPk`，`deleteByPk`，`addCountByPk`方法，
             当`$_pkCache`参数为`true`时，数据会走缓存，加快数据读取速度。
 
 `getByPk` 读取键值数据，返回一维数组数据
 
-        <pre class="code"><note>//参数为pk值 返回 ['id'=>10, 'name'=>'test', 'time'=>1461845038]</note>
-<prm>$data</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>getByPk</func>(10);
+```
+//参数为pk值 返回 ['id'=>10, 'name'=>'test', 'time'=>1461845038]
+$data = $this->testDAO->getByPk(10);
 
-<note>//复合pk需要传数组</note>
-<prm>$data</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>getByPk</func>(<sys>array</sys>(10, <str>'test'</str>));</pre>
+//复合pk需要传数组
+$data = $this->userDAO->getByPk(array(10, 'test'));
+```
 
 `updateByPk` 更新单条数据
 
-        <pre class="code"><note>//参数为pk值,update数组，返回true/false</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>updateByPk</func>(10, <sys>array</sys>(<str>'name'</str>=><str>'test'</str>));</pre>
+```
+//参数为pk值,update数组，返回true/false
+$result = $this->testDAO->updateByPk(10, array('name'=>'test'));
+```
 
 `deleteByPk` 删除单条数据
 
-        <pre class="code"><note>//参数为pk值，返回true/false</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>deleteByPk</func>(10);</pre>
+```
+//参数为pk值，返回true/false
+$result = $this->testDAO->deleteByPk(10);
+```
 
 `addCountByPk` 添加字段次数，效果等同`addCount()`方法：`set times = times + 3`
 
-        <pre class="code"><note>//参数为pk值，添加字段次数，返回true/false</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>addCountByPk</func>(10, <sys>array</sys>(<str>'times'</str>=>3));</pre>
+```
+//参数为pk值，添加字段次数，返回true/false
+$result = $this->testDAO->addCountByPk(10, array('times'=>3));
+```
 
 `注意：`开启`$_pkCache`的DAO不允许再使用`update`和`delete`方法，这样会导致缓存与数据不同步的现象。
 
@@ -1011,22 +1093,20 @@ TXDatabase::<func>end</func>();</pre>
 
 SQL调试方法已经集成在框架事件中，只需要在需要调试语句的方法前调用`TXEvent::on(onSql)`就可以在`页面控制台`中输出sql语句了
 
-        <pre class="code"><note>// one方法绑定一次事件，输出一次后自动释放</note>
-TXEvent::<func>one</func>(<const>onSql</const>);
-<prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
+```
+// one方法绑定一次事件，输出一次后自动释放
+TXEvent::one(onSql);
+$datas = $this->testDAO->query();
 
-<note>// on方法绑定事件，直到off释放前都会有效</note>
-TXEvent::<func>on</func>(<const>onSql</const>);
-<prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
-<prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
-<prm>$datas</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>query</func>();
-TXEvent::<func>off</func>(<const>onSql</const>);</pre>
+// on方法绑定事件，直到off释放前都会有效
+TXEvent::on(onSql);
+$datas = $this->testDAO->query();
+$datas = $this->testDAO->query();
+$datas = $this->testDAO->query();
+TXEvent::off(onSql);
+```
 
 该SQL事件功能还可自行绑定方法，具体用法会在后面`事件`介绍中详细展开
-
-    </div>
-
-    <div class="bs-docs-section">
 
 # 页面渲染
 
@@ -1040,19 +1120,21 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
 `display`方法有三个参数，第一个为指定`template`文件，第二个为页面参数数组，第三个为系统类数据(`没有可不传`)。
 
-        <pre class="code"><note>// 返回/app/template/main/test.tpl.php </note>
-<sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'main/test'</str>, <sys>array</sys>(<str>'test'</str>=>1), <sys>array</sys>(<str>'path'</str>=><str>'/test.png'</str>));
+```
+// 返回/app/template/main/test.tpl.php 
+return $this->display('main/test', array('test'=>1), array('path'=>'/test.png'));
 
-<note>/* /app/template/main/test.tpl.php
+/* /app/template/main/test.tpl.php
 返回:
-&lt;div class="container">
-    &lt;span> 1  &lt;/span>
-    &lt;img src="/test.png"/>
-&lt;/div> */</note>
-<act>&lt;div</act> class="<func>container</func>"<act>&gt;</act>
-    <act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'test'</str>]<sys>?&gt;</sys>  <act>&lt;/span&gt;</act>
-    <act>&lt;img</act> src="<sys>&lt;?=</sys><prm>$path</prm><sys>?&gt;</sys>"<act>/&gt;</act>
-<act>&lt;/div&gt;</act></pre>
+<div class="container">
+    <span> 1  </span>
+    <img src="/test.png"/>
+</div> */
+<div class="container">
+    <span> <?=$PRM['test']?>  </span>
+    <img src="<?=$path?>"/>
+</div>
+```
 
 第二个参数的数据都会放到`$PRM`这个页面对象中。第三个参数则会直接被渲染，适合`静态资源地址`或者`类数据`
 
@@ -1061,11 +1143,13 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 页面TKD一般都默认在`common.tpl.php`定义好，如果页面单独需要修改对应的`title，keywords，description`的话，
             也可以在`TXResponse`生成后对其赋值
 
-        <pre class="code"><prm>$view</prm> = <prm>$this</prm>-><func>display</func>(<str>'main/test'</str>, <prm>$params</prm>);
-<prm>$view</prm>-><prm>title</prm> = <str>'Biny'</str>;
-<prm>$view</prm>-><prm>keywords</prm> = <str>'biny,php,框架'</str>;
-<prm>$view</prm>-><prm>description</prm> = <str>'一款轻量级好用的框架'</str>;
-<sys>return</sys> <prm>$view</prm>;</pre>
+```
+$view = $this->display('main/test', $params);
+$view->title = 'Biny';
+$view->keywords = 'biny,php,框架';
+$view->description = '一款轻量级好用的框架';
+return $view;
+```
 
 ## 反XSS注入
 
@@ -1073,21 +1157,27 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
 `$PRM`获取参数时有两种写法，普通的数组内容获取，会自动进行`转义`
 
-        <pre><note>// 显示 &lt;div&gt; 源码为 &amp;lt;div&amp;gt;</note>
-<act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'test'</str>]<sys>?&gt;</sys>  <act>&lt;/span&gt;</act></pre>
+```
+// 显示 <div> 源码为 &lt;div&gt;
+<span> <?=$PRM['test']?>  </span>
+```
 
 另外可以用私用参数的方式获取，则不会被转义，适用于需要显示完整页面结构的需求（`普通页面不推荐使用，隐患很大`）
 
-        <pre><note>// 显示 &lt;div&gt; 源码为 &lt;div&gt; </note>
-<act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>-><prm>test</prm><sys>?&gt;</sys>  <act>&lt;/span&gt;</act>
-<note>// 效果同上</note>
-<act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>-><func>get</func>(<str>'test'</str>)<sys>?&gt;</sys>  <act>&lt;/span&gt;</act></pre>
+```
+// 显示 <div> 源码为 <div> 
+<span> <?=$PRM->test?>  </span>
+// 效果同上
+<span> <?=$PRM->get('test')?>  </span>
+```
 
 在多层数据结构中，也一样可以递归使用
 
-        <pre><note>// 显示 &lt;div&gt; 源码为 &amp;lt;div&amp;gt;</note>
-<act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'array'</str>][<str>'key1'</str>]<sys>?&gt;</sys>  <act>&lt;/span&gt;</act>
-<act>&lt;span&gt;</act> <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'array'</str>]-><func>get</func>(0)<sys>?&gt;</sys>  <act>&lt;/span&gt;</act></pre>
+```
+// 显示 <div> 源码为 &lt;div&gt;
+<span> <?=$PRM['array']['key1']?>  </span>
+<span> <?=$PRM['array']->get(0)?>  </span>
+```
 
 而多层结构数组参数会在使用时`自动转义`，不使用时则不会进行转义，避免资源浪费，影响渲染效率。
 
@@ -1099,48 +1189,56 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
 `in_array` 判断字段是否在数组中
 
-        <pre class="code"><note>// 等同于 in_array('value', $array)</note>
-<sys>&lt;? if </sys>(<prm>$PRM</prm>[<str>'array'</str>]-><func>in_array</func>(<str>'value'</str>) {
-    <note>// do something</note>
-}<sys>?&gt;</sys></pre>
+```
+// 等同于 in_array('value', $array)
+<? if ($PRM['array']->in_array('value') {
+    // do something
+}?>
+```
 
 `array_key_exists` 判断key字段是否在数组中
 
-        <pre class="code"><note>// 等同于 array_key_exists('key1', $array)</note>
-<sys>&lt;? if </sys>(<prm>$PRM</prm>[<str>'array'</str>]-><func>array_key_exists</func>(<str>'key1'</str>) {
-    <note>// do something</note>
-}<sys>?&gt;</sys></pre>
+```
+// 等同于 array_key_exists('key1', $array)
+<? if ($PRM['array']->array_key_exists('key1') {
+    // do something
+}?>
+```
 
 其他方法以此类推，使用方式是相同的，其他还有`json_encode`
 
-        <pre><note>// 赋值给js参数 var jsParam = {'test':1, "demo": {"key": "test"}};</note>
-<sys>var</sys> <prm>jsParam</prm> = <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'array'</str>]-><func>json_encode</func>()<sys>?&gt;</sys>;</pre>
+```
+// 赋值给js参数 var jsParam = {'test':1, "demo": {"key": "test"}};
+var jsParam = <?=$PRM['array']->json_encode()?>;
+```
 
 判断数组参数是否为空，可以直接调用`$PRM['array']()`方法判断
 
-        <pre class="code"><note>// 等同于 if ($array)</note>
-<sys>&lt;? if </sys>(<prm>$PRM</prm>[<str>'array'</str>]() ) {
-    <note>// do something</note>
-}<sys>?&gt;</sys></pre>
+```
+// 等同于 if ($array)
+<? if ($PRM['array']() ) {
+    // do something
+}?>
+```
 
 其他参数方法可以自行在`/lib/data/TXArray.php`中进行定义
 
 比如：定义一个`len`方法，返回数组长度
 
-        <pre class="code"><note>/lib/data/TXArray.php</note>
-<sys>public function</sys> <act>len</act>()
+```
+/lib/data/TXArray.php
+public function len()
 {
-    <sys>return count</sys>(<prm>$this</prm>-><prm>storage</prm>);
-}</pre>
+    return count($this->storage);
+}
+```
 
 然后就可以在`tpl`中开始使用了
 
-        <pre><note>// 赋值给js参数 var jsParam = 2;</note>
-<sys>var</sys> <prm>jsParam</prm> = <sys>&lt;?=</sys><prm>$PRM</prm>[<str>'array'</str>]-><func>len</func>()<sys>?&gt;</sys>;</pre>
-
-    </div>
-
-    <div class="bs-docs-section">
+```
+// 赋值给js参数 var jsParam = 2;
+var jsParam = <?=$PRM['array']->len()?>;
+```
 
 # 事件
 
@@ -1164,55 +1262,61 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
 `$fd`返回的是该事件的操作符。在调用off方法时，可以通过传递该操作符解绑该事件。
 
-        <pre class="code"><note>/**
+```
+/**
 * 主页Action
 * @property testService $testService
-*/  </note>
-<sys>class</sys> testAction <sys>extends</sys> baseAction
+*/  
+class testAction extends baseAction
 {
-    <note>//构造函数</note>
-    <sys>public function</sys> <act>__construct</act>()
+    //构造函数
+    public function __construct()
     {
-        <note>// 构造函数记得要调用一下父级的构造函数</note>
-        <sys>parent</sys>::<func>__construct</func>();
-        <note>// 要触发beforeAction事件，必须在init被调用前定义</note>
-        TXEvent::<func>on</func>(<const>beforeAction</const>, <sys>array</sys>(<prm>$this</prm>, <str>'test_event'</str>));
+        // 构造函数记得要调用一下父级的构造函数
+        parent::__construct();
+        // 要触发beforeAction事件，必须在init被调用前定义
+        TXEvent::on(beforeAction, array($this, 'test_event'));
     }
 
-    <note>//默认路由index</note>
-    <sys>public function</sys> <act>action_index</act>()
+    //默认路由index
+    public function action_index()
     {
-        <note>// 绑定testService里的my_event1方法 和 my_event2方法 到 myEvent事件中，两个方法都会被执行，按绑定先后顺序执行</note>
-        <prm>$fd1</prm> = TXEvent::<func>on</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>-><prm>testService</prm>, <str>'my_event1'</str>));
-        <prm>$fd2</prm> = TXEvent::<func>on</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>-><prm>testService</prm>, <str>'my_event2'</str>));
+        // 绑定testService里的my_event1方法 和 my_event2方法 到 myEvent事件中，两个方法都会被执行，按绑定先后顺序执行
+        $fd1 = TXEvent::on('myEvent', array($this->testService, 'my_event1'));
+        $fd2 = TXEvent::on('myEvent', array($this->testService, 'my_event2'));
 
-        <note>// do something ..... </note>
+        // do something ..... 
 
-        <note>// 解绑myEvent事件的 my_event1方法</note>
-        TXEvent::<func>off</func>(<str>'myEvent'</str>, <prm>$fd1</prm>);
+        // 解绑myEvent事件的 my_event1方法
+        TXEvent::off('myEvent', $fd1);
 
-        <note>// 解绑myEvent事件，所有绑定在该事件上的方法都不会再被执行</note>
-        TXEvent::<func>off</func>(<str>'myEvent'</str>);
+        // 解绑myEvent事件，所有绑定在该事件上的方法都不会再被执行
+        TXEvent::off('myEvent');
 
-        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'测试一下'</str>);
+        return $this->error('测试一下');
     }
 
-    <note>// 自定义的事件类</note>
-    <sys>public function</sys> <act>test_event</act>(<prm>$event</prm>)
+    // 自定义的事件类
+    public function test_event($event)
     {
-        <note>// addLog为写日志的方法</note>
-        TXLogger::<func>addLog</func>(<str>'触发beforeAction事件'</str>);
+        // addLog为写日志的方法
+        TXLogger::addLog('触发beforeAction事件');
     }
-}</pre>
+}
+```
 
 另一种绑定则为一次绑定事件`TXEvent::one()`，调用参数相同，返回`$fd`操作符，当该事件被触发一次后会自动解绑
 
-        <pre><prm>$fd</prm> = TXEvent::<func>one</func>(<str>'myEvent'</str>, <sys>array</sys>(<prm>$this</prm>, <str>'my_event'</str>));</pre>
+```
+$fd = TXEvent::one('myEvent', array($this, 'my_event'));
+```
 
 当然如果想要绑定多次但非长期绑定时，系统也提供了`bind`方法，参数用法类似。
 
-        <pre><note>// 第一个参数绑定方法，第二个为事件名，第三个为绑定次数，触发次数满后自动释放</note>
-<prm>$fd</prm> = TXEvent::<func>bind</func>(<sys>array</sys>(<prm>$this</prm>, <str>'my_event'</str>), <str>'myEvent'</str>, <prm>$times</prm>);</pre>
+```
+// 第一个参数绑定方法，第二个为事件名，第三个为绑定次数，触发次数满后自动释放
+$fd = TXEvent::bind(array($this, 'my_event'), 'myEvent', $times);
+```
 
 ## 触发事件
 
@@ -1220,19 +1324,17 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 
 参数有两个，第一个为触发的事件名，第二个为触发传递的参数，会传递到触发方法中执行
 
-        <pre class="code"><note>// 触发myEvent事件</note>
-TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_class</func>(<prm>$this</prm>), <str>'test'</str>))
+```
+// 触发myEvent事件
+TXEvent::trigger('myEvent', array(get_class($this), 'test'))
 
-<note>// 定义事件时绑定的方法</note>
-<sys>public function</sys> my_event(<prm>$event</prm>, <prm>$params</prm>)
+// 定义事件时绑定的方法
+public function my_event($event, $params)
 {
-    <note>// array('testService', 'test')</note>
-    <sys>var_dump</sys>(<prm>$params</prm>);
-}</pre>
-
-    </div>
-
-    <div class="bs-docs-section">
+    // array('testService', 'test')
+    var_dump($params);
+}
+```
 
 # 表单验证
 
@@ -1242,51 +1344,54 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
 
 简单示例：
 
-        <pre class="code"><note>/**
+```
+/**
  * @property testService $testService
  * 自定义一个表单验证类型类 继承TXForm
- */</note>
-<sys>class</sys> testForm <sys>extends</sys> TXForm
+ */
+class testForm extends TXForm
 {
-    <note>// 定义表单参数，类型及默认值（可不写，默认null）</note>
-    <sys>protected</sys> <prm>$_rules</prm> = [
-        <note>// id必须为整型, 默认10</note>
-        <str>'id'</str>=>[<sys>self</sys>::<prm>typeInt</prm>, 10],
-        <note>// name必须非空（包括null, 空字符串）</note>
-        <str>'name'</str>=>[<sys>self</sys>::<prm>typeNonEmpty</prm>],
-        <note>// 自定义验证方法(valid_testCmp)</note>
-        <str>'status'</str>=>[<str>'testCmp'</str>]
+    // 定义表单参数，类型及默认值（可不写，默认null）
+    protected $_rules = [
+        // id必须为整型, 默认10
+        'id'=>[self::typeInt, 10],
+        // name必须非空（包括null, 空字符串）
+        'name'=>[self::typeNonEmpty],
+        // 自定义验证方法(valid_testCmp)
+        'status'=>['testCmp']
     ];
 
-    <note>// 自定义验证方法</note>
-    <sys>public function</sys> <act>valid_testCmp</act>()
+    // 自定义验证方法
+    public function valid_testCmp()
     {
-        <note>// 和Action一样可以调用Service和DAO作为私有方法</note>
-        <sys>if</sys> (<prm>$this</prm>-><prm>testService</prm>-><func>checkStatus</func>(<prm>$this</prm>-><prm>status</prm>)){
-            <note>// 验证通过</note>
-            <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
-        } <sys>else</sys> {
-            <note>// 验证失败，参数可以通过getError方法获取</note>
-            <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'非法类型'</str>);
+        // 和Action一样可以调用Service和DAO作为私有方法
+        if ($this->testService->checkStatus($this->status)){
+            // 验证通过
+            return $this->correct();
+        } else {
+            // 验证失败，参数可以通过getError方法获取
+            return $this->error('非法类型');
         }
     }
-}</pre>
+}
+```
 
 定义完验证类，然后就可以在Action中使用了，可以通过`getForm`方法加载表单
 
-        <pre class="code"><note>// 加载testForm</note>
-<prm>$form</prm> = <prm>$this</prm>-><func>getForm</func>(<str>'test'</str>);
-<note>// 验证表单字段，true/false</note>
-<sys>if</sys> (!<prm>$form</prm>-><func>check</func>()){
-    <note>// 获取错误信息</note>
-    <prm>$error</prm> = <prm>$form</prm>-><func>getError</func>();
-    <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'参数错误'</str>);
+```
+// 加载testForm
+$form = $this->getForm('test');
+// 验证表单字段，true/false
+if (!$form->check()){
+    // 获取错误信息
+    $error = $form->getError();
+    return $this->error('参数错误');
 }
-<note>// 获取对应字段</note>
-<prm>$status</prm> = <prm>$form</prm>-><prm>status</prm>;
-<note>// 获取全部字段 返回数组类型 ['id'=>1, 'name'=>'billge', 'status'=>2]</note>
-<prm>$datas</prm> = <prm>$form</prm>-><func>values</func>();
-        </pre>
+// 获取对应字段
+$status = $form->status;
+// 获取全部字段 返回数组类型 ['id'=>1, 'name'=>'billge', 'status'=>2]
+$datas = $form->values();
+```
 
 `注意：`在`$_rules`中未定义的字段，无法在`$form`中被获取到，就算不需要验证，也最好定义一下
 
@@ -1296,18 +1401,22 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
 
 可以在testForm中添加一个方法
 
-        <pre class="code"><note>// 在testForm中添加</note>
-<sys>public function</sys> <act>addType</act>()
+```
+// 在testForm中添加
+public function addType()
 {
-    <note>// 添加type字段， 默认'default', 规则为非空</note>
-    <prm>$this</prm>-><prm>_rules</prm>[<str>'type'</str>] = [<sys>self</sys>::<prm>typeNonEmpty</prm>,<str>'default'</str>];
-    <note>// 修改status的判断条件，改为valid_typeCmp()方法验证，记得要写这个方法哦</note>
-    <prm>$this</prm>-><prm>_rules</prm>[<str>'status'</str>][0] = <str>'typeCmp'</str>;
-}</pre>
+    // 添加type字段， 默认'default', 规则为非空
+    $this->_rules['type'] = [self::typeNonEmpty,'default'];
+    // 修改status的判断条件，改为valid_typeCmp()方法验证，记得要写这个方法哦
+    $this->_rules['status'][0] = 'typeCmp';
+}
+```
 
 然后在Action中加载表单也需要添加`'addType'`作为参数，其他使用方法一致
 
-        <pre class="code"><prm>$form</prm> = <prm>$this</prm>-><func>getForm</func>(<str>'test'</str>, <str>'addType'</str>);</pre>
+```
+$form = $this->getForm('test', 'addType');
+```
 
 一个表单验证类里可以写多个附加方法，相互直接并不会有任何影响
 
@@ -1333,10 +1442,6 @@ TXEvent::<func>trigger</func>(<str>'myEvent'</str>, <sys>array</sys>(<func>get_c
 
 验证类型几乎涵盖了所有情况，如果有不能满足的类型，用户可以自定义验证方法，上述例子中已有，不再过多阐述
 
-    </div>
-
-    <div class="bs-docs-section">
-
 # 调试
 
 框架中有两种调试方式，一种是在页面控制台中输出的调试，方便用户对应网页调试。
@@ -1349,8 +1454,10 @@ Biny的一大特色既是这控制台调试方式，用户可以调试自己想�
 
 调试的开关在`/web/index.php`里
 
-        <pre class="code"><note>// console调试开关，关闭后控制台不会输出内容</note>
-<sys>defined</sys>(<str>'SYS_CONSOLE'</str>) <sys>or define</sys>(<str>'SYS_CONSOLE'</str>, <sys>true</sys>);</pre>
+```
+// console调试开关，关闭后控制台不会输出内容
+defined('SYS_CONSOLE') or define('SYS_CONSOLE', true);
+```
 
 控制台调试的方式，同步异步都可以调试，但异步的调试是需要引用`/static/js/main.js`文件，这样异步ajax的请求也会把调试信息输出在控制台里了。
 
@@ -1368,26 +1475,28 @@ Biny的一大特色既是这控制台调试方式，用户可以调试自己想�
 
 下面是一个简单例子，和控制台的输出结果。结果会因为浏览器不一样而样式不同，效果上是一样的。
 
-        <pre class="code"><note>// 以下代码全局都可以使用</note>
-TXLogger::<func>log</func>(<sys>array</sys>(<str>'cc'</str>=><str>'dd'</str>));
-TXLogger::<func>error</func>(<str>'this is a error'</str>);
-TXLogger::<func>info</func>(<sys>array</sys>(1,2,3,4,5));
-TXLogger::<func>warn</func>(<str>"ss"</str>, <str>"warnKey"</str>);</pre>
+```
+// 以下代码全局都可以使用
+TXLogger::log(array('cc'=>'dd'));
+TXLogger::error('this is a error');
+TXLogger::info(array(1,2,3,4,5));
+TXLogger::warn("ss", "warnKey");
+```
 
 ![](http://km.oa.com/files/photos/captures/201505/1432003538_35_w219_h87.png)
 
 另外`TXLogger`调试类中还支持time，memory的输出，可以使用其对代码性能做优化。
 
-        <pre class="code"><note>// 开始结尾处加上时间 和 memory 就可以获取中间程序消耗的性能了</note>
-TXLogger::<func>time</func>(<str>'start-time'</str>);
-TXLogger::<func>memory</func>(<str>'start-memory'</str>);
-TXLogger::<func>log</func>(<str>'do something'</str>);
-TXLogger::<func>time</func>(<str>'end-time'</str>);
-TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
+```
+// 开始结尾处加上时间 和 memory 就可以获取中间程序消耗的性能了
+TXLogger::time('start-time');
+TXLogger::memory('start-memory');
+TXLogger::log('do something');
+TXLogger::time('end-time');
+TXLogger::memory('end-memory');
+```
 
 ![](http://shp.qpic.cn/gqop/20000/LabImage_2ee327c680046dc1d14d7dce5c7bcb45.png/0)
-
-这块调试的内容在KM中也有[相关的文章](http://km.oa.com/group/1746/articles/show/226484)。文章中作为demo的框架代码已经比较老了，仅作参考。
 
 ## 日志调试
 
@@ -1405,10 +1514,6 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
 
 系统程序错误也都会在error日志中显示，如页面出现500时可在错误日志中查看定位
 
-    </div>
-
-    <div class="bs-docs-section">
-
 # 脚本执行
 
 Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整的脚本执行逻辑
@@ -1417,14 +1522,15 @@ Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整
 
 其中`router`为脚本路由，`param`为执行参数，可缺省或多个参数
 
-        <pre class="code"><note>// shell.php</note>
-<note>//默认时区配置</note>
-<sys>date_default_timezone_set</sys>(<str>'Asia/Shanghai'</str>);
-<note>// 开启脚本执行（shell.php固定为true）</note>
-<sys>defined</sys>(<str>'RUN_SHELL'</str>) <sys>or</sys> <sys>define</sys>(<str>'RUN_SHELL'</str>, <sys>true</sys>);
-<note>// dev pre pub 当前环境</note>
-<sys>defined</sys>(<str>'SYS_ENV'</str>) <sys>or</sys> <sys>define</sys>(<str>'SYS_ENV'</str>, <str>'dev'</str>);
-</pre>
+```
+// shell.php
+//默认时区配置
+date_default_timezone_set('Asia/Shanghai');
+// 开启脚本执行（shell.php固定为true）
+defined('RUN_SHELL') or define('RUN_SHELL', true);
+// dev pre pub 当前环境
+defined('SYS_ENV') or define('SYS_ENV', 'dev');
+```
 
 ## 脚本路由
 
@@ -1434,33 +1540,34 @@ Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整
 
 如果router缺省的话，默认会读取`/config/config.php`中的router内容作为默认路由
 
-        <pre class="code"><note>// /config/config.php</note>
-<sys>return array</sys>(
-    <str>'router'</str> => <sys>array</sys>(
-        <note>// http 默认路由</note>
-        <str>'base_action'</str> => <str>'demo'</str>,
-        <note>// shell 默认路由</note>
-        <str>'base_shell'</str> => <str>'index'</str>
+```
+// /config/config.php
+return array(
+    'router' => array(
+        // http 默认路由
+        'base_action' => 'demo',
+        // shell 默认路由
+        'base_shell' => 'index'
     )
-
-<note>// /app/shell/indexShell.php</note>
-<sys>class</sys> testShell <sys>extends</sys> TXShell
+)
+// /app/shell/indexShell.php
+class testShell extends TXShell
 {
-    <note>// 和http一样都会先执行init方法</note>
-    <sys>public function</sys> <act>init</act>()
+    // 和http一样都会先执行init方法
+    public function init()
     {
-        <note>//return 0 或者 不return 则程序继续执行。如果返回其他内容则输出内容后程序终止。</note>
-        <sys>return</sys> 0;
+        //return 0 或者 不return 则程序继续执行。如果返回其他内容则输出内容后程序终止。
+        return 0;
     }
 
-    <note>//默认路由index</note>
-    <sys>public function</sys> <act>action_index</act>()
+    //默认路由index
+    public function action_index()
     {
-        <note>//返回异常，会记录日志并输出在终端</note>
-        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'执行错误'</str>);
+        //返回异常，会记录日志并输出在终端
+        return $this->error('执行错误');
     }
 }
-)</pre>
+```
 
 ## 脚本参数
 
@@ -1470,24 +1577,26 @@ Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整
 
 例如：终端执行`php shell.php test/demo 1 2 aaa`，结果如下：
 
-        <pre class="code"><note>// php shell.php test/demo 1 2 aaa</note>
-<sys>class</sys> testShell <sys>extends</sys> TXShell
+```
+// php shell.php test/demo 1 2 aaa
+class testShell extends TXShell
 {
-    <note>test/demo => testShell/action_demo</note>
-    <sys>public function</sys> <act>action_demo</act>(<prm>$prm1</prm>, <prm>$prm2</prm>, <prm>$prm3</prm>, <prm>$prm4</prm>=<str>'default'</str>)
+    test/demo => testShell/action_demo
+    public function action_demo($prm1, $prm2, $prm3, $prm4='default')
     {
-        <note>//1, 2, aaa, default</note>
-        <sys>echo</sys> <str>"<prm>$prm1</prm>, <prm>$prm2</prm>, <prm>$prm3</prm>, <prm>$prm4</prm>"</str>;
-        <note>//1</note>
-        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(0);
-        <note>//2</note>
-        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(1);
-        <note>//aaa</note>
-        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(2);
-        <note>//default</note>
-        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(3, <str>'default'</str>);
+        //1, 2, aaa, default
+        echo "$prm1, $prm2, $prm3, $prm4";
+        //1
+        echo $this->getParam(0);
+        //2
+        echo $this->getParam(1);
+        //aaa
+        echo $this->getParam(2);
+        //default
+        echo $this->getParam(3, 'default');
     }
-}</pre>
+}
+```
 
 ## 脚本日志
 
@@ -1498,10 +1607,6 @@ Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整
 日志目录则保存在`/logs/shell/`目录下，请确保该目录有`写权限`。格式与http模式保持一致。
 
 `注意:`当程序返回`$this->error($msg)`的时候，系统会默认调用`TXLogger::addError($msg)`，请勿重复调用。
-
-    </div>
-
-    <div class="bs-docs-section">
 
 # 其他
 
@@ -1521,58 +1626,68 @@ Biny框架除了提供HTTP的请求处理以外，同时还提供了一套完整
 
 在进入`Controller`层后，`Request`就可以被调用了，以下是几个常用操作
 
-        <pre class="code"><note>// 已请求 /test/demo/ 为例</note>
+```
+// 已请求 /test/demo/ 为例
 
-<note>// 获取Action名 返回test</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getModule</func>();
+// 获取Action名 返回test
+TXApp::$base->request->getModule();
 
-<note>// 获取Method名 返回action_demo</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getMethod</func>();
+// 获取Method名 返回action_demo
+TXApp::$base->request->getMethod();
 
-<note>// 获取纯Method名 返回demo</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getMethod</func>(<sys>true</sys>);
+// 获取纯Method名 返回demo
+TXApp::$base->request->getMethod(true);
 
-<note>// 是否异步请求 返回false</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>isAjax</func>();
+// 是否异步请求 返回false
+TXApp::$base->request->isAjax();
 
-<note>// 返回当前路径  /test/demo/</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>();
+// 返回当前路径  /test/demo/
+TXApp::$base->request->getBaseUrl();
 
-<note>// 返回完整路径  http://biny.oa.com/test/demo/</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>(<sys>true</sys>);
+// 返回完整路径  http://biny.oa.com/test/demo/
+TXApp::$base->request->getBaseUrl(true);
 
-<note>// 获取来源网址 （上一个页面地址）</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getReferrer</func>();
+// 获取来源网址 （上一个页面地址）
+TXApp::$base->request->getReferrer();
 
-<note>// 获取浏览器UA</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserAgent</func>();
+// 获取浏览器UA
+TXApp::$base->request->getUserAgent();
 
-<note>// 获取用户IP</note>
-TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserIP</func>();</pre>
+// 获取用户IP
+TXApp::$base->request->getUserIP();
+```
 
 ## Session
 
 session的设置和获取都比较简单，在未调用session时，对象不会被创建，避免性能损耗。
 
-        <pre class="code"><note>// 只需要赋值就可以实现session的设置了</note>
-TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm> = <str>'test'</str>;
-<note>// 获取则是直接去元素，不存在则返回null</note>
-<prm>$testKey</prm> = TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm>;</pre>
+```
+// 只需要赋值就可以实现session的设置了
+TXApp::$base->session->testkey = 'test';
+// 获取则是直接去元素，不存在则返回null
+$testKey = TXApp::$base->session->testkey;
+```
 
 同时也可以通过方法`close()`来关闭session，避免session死锁的问题
 
-        <pre class="code"><note>// close之后再获取数据时会重新开启session</note>
-TXApp::<prm>$base</prm>-><prm>session</prm>-><func>close</func>();</pre>
+```
+// close之后再获取数据时会重新开启session
+TXApp::$base->session->close();
+```
 
 而`clear()`方法则会清空当前session中的内容
 
-        <pre class="code"><note>// clear之后再获取则为null</note>
-TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
+```
+// clear之后再获取则为null
+TXApp::$base->session->clear();
+```
 
 同时session也是支持`isset`判断的
 
-        <pre class="code"><note>// isset 相当于先get 后isset 返回 true/false</note>
-<prm>$bool</prm> = <sys>isset</sys>(TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testKey</prm>);</pre>
+```
+// isset 相当于先get 后isset 返回 true/false
+$bool = isset(TXApp::$base->session->testKey);
+```
 
 ## Cookie
 
@@ -1580,16 +1695,12 @@ cookie的获取和设置都是在`TXApp::$base->request`中完成的，分别提
 
 `getCookie`参数为需要的cookie键值，如果不传，则返回全部cookie，以数组结构返回
 
-        <pre class="code"><prm>$param</prm> = TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getCookie</func>(<str>'param'</str>);</pre>
+```
+$param = TXApp::$base->request->getCookie('param');
+```
 
 `setCookie`参数有4个，分别为键值，值，过期时间(单位秒)，cookie所属路径，过期时间不传默认1天，路径默认`'/'`
 
-        <pre class="code">TXApp::<prm>$base</prm>-><prm>request</prm>-><func>setCookie</func>(<str>'param'</str>, <str>'test'</str>, 86400, <str>'/'</str>);</pre>
-
-        <div style="height: 200px"></div>
-    </div>
-
-</div>
-
-</div>
-</div>
+```
+TXApp::$base->request->setCookie('param', 'test', 86400, '/');
+```
