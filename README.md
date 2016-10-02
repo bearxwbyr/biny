@@ -12,8 +12,6 @@
 
 高性能，框架响应时间在1ms以内，tps轻松上3000
 
-公共组件地址：[http://pub.code.oa.com/project/home?comeFrom=104&projectName=Biny](http://pub.code.oa.com/project/home?comeFrom=104&projectName=Biny)
-
 GitHub 地址：[https://github.com/billge1205/biny](https://github.com/billge1205/biny)
 
 ## 目录结构
