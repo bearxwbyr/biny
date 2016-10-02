@@ -1,4 +1,4 @@
-<? include dirname(__DIR__) . '/base/common.tpl.php' ?>
+<? include TXApp::$view_root . '/base/common.tpl.php' ?>
 <div class="container center">
     <div class="messageImage">
         <img src="<?=$CDN_ROOT?>static/images/source/error.gif" />
