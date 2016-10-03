@@ -896,7 +896,14 @@ $filter = $this->userDAO->filter(array(
 ```
 // WHERE `user`.`name` LIKE '%test%' OR `user`.`type` LIKE 'admin%' OR `user`.`type` LIKE '%admin'
 $filter = $this->userDAO->merge(array(
-    '__like__'=>array('name'=>test, 'type'=>'^admin', 'type'=>'admin$'),
+    '__like__'=>array('name'=>'test', 'type'=>'^admin', 'type'=>'admin$'),
+));
+
+// WHERE `user`.`name` LIKE '%test%' OR `user`.`name` LIKE 'admin%' OR `user`.`name` LIKE '%demo'
+$filter = $this->userDAO->merge(array(
+    '__like__'=>array(
+        'name'=>array('test', '^admin', 'demo$'),
+    )
 ));
 ```
 
@@ -1653,6 +1660,26 @@ TXApp::$base->request->getUserAgent();
 
 // 获取用户IP
 TXApp::$base->request->getUserIP();
+```
+
+## Cache
+
+框架提供了程序运行生命周期内的全局缓存，使用非常简单
+
+```
+// 只需要赋值就可以实现cache的设置了
+TXApp::$base->cache->testkey = 'test';
+// 获取则是直接取元素，不存在则返回null
+$testKey = TXApp::$base->cache->testkey;
+```
+
+同时Cache也支持isset判断及unset操作
+
+```
+// isset 相当于先get 后isset 返回 true/false
+$bool = isset(TXApp::$base->cache->testKey);
+// 删除缓存
+unset(TXApp::$base->cache->testKey);
 ```
 
 ## Session
