@@ -34,7 +34,7 @@ class TXRequest {
     public static function getInstance()
     {
         if (NULL === self::$_instance){
-            self::$_instance = new self(null);
+            return new self(null);
         }
         return self::$_instance;
     }

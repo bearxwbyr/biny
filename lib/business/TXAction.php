@@ -81,7 +81,7 @@ class TXAction
             foreach ($privileges as $method => $privilege){
                 if (is_callable([$this->privilegeService, $method])){
                     $actions = $privilege['actions'];
-                    if ($actions === '*' || in_array($request->getMethod(true), $actions)){
+                    if ($actions === '*' || (is_array($actions) && in_array($request->getMethod(true), $actions))){
                         $params = isset($privilege['params']) ? $privilege['params'] : [];
                         array_unshift($params, $this);
                         if (!call_user_func_array([$this->privilegeService, $method], $params)){

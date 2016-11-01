@@ -63,7 +63,7 @@ class TXAutoload
             if (is_dir($file)) {
                 self::getLoads($file);
             } else {
-                $name = explode(DS, $file);
+                $name = explode('/', $file);
                 $class = str_replace('.php', '', end($name));
                 self::$loaders[$class] = $file;
             }

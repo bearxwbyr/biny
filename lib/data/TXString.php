@@ -45,7 +45,7 @@ class TXString
      */
     public static function encode($content)
     {
-        return is_string($content) ? htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE) : $content;
+        return is_string($content) ? str_replace('\\', '\\\\', htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE)) : $content;
     }
 
     /**
@@ -55,7 +55,7 @@ class TXString
      */
     public static function decode($content)
     {
-        return is_string($content) ? htmlspecialchars_decode($content, ENT_QUOTES) : $content;
+        return is_string($content) ? str_replace('\\\\', '\\', htmlspecialchars_decode($content, ENT_QUOTES)) : $content;
     }
 
     /**

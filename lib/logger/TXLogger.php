@@ -142,22 +142,34 @@ class TXLogger
      * 返回所有日志
      */
     public static function showLogs(){
-        if (SYS_CONSOLE && self::$ConsoleOut){
+        if (self::$ConsoleOut){
             self::format();
-            echo "\n<script type=\"text/javascript\">\n";
-            foreach (self::$ConsoleOut as $Out){
-                $value = $Out['value'];
-                $key = $Out['key'];
-                $type = $Out['type'];
-                if (is_array($value)){
-                    $value = json_encode($value);
-                    $message = sprintf('console.%s("%s => ", %s);', $type, $key, $value ?: "false");
-                } else {
-                    $message = sprintf('console.%s("%s => ", "%s");', $type, $key, addslashes(str_replace(array("\r\n", "\r", "\n"), "", $value)));
+            if (RUN_SHELL){
+                foreach (self::$ConsoleOut as $Out){
+                    $value = $Out['value'];
+                    $key = $Out['key'];
+                    $type = $Out['type'];
+                    if (is_array($value)){
+                        $value = var_export($value, true);
+                    }
+                    echo "[$type] $key => $value\n";
                 }
-                echo $message."\n";
+            } elseif (SYS_CONSOLE){
+                echo "\n<script type=\"text/javascript\">\n";
+                foreach (self::$ConsoleOut as $Out){
+                    $value = $Out['value'];
+                    $key = $Out['key'];
+                    $type = $Out['type'];
+                    if (is_array($value)){
+                        $value = json_encode($value);
+                        $message = sprintf('console.%s("%s => ", %s);', $type, $key, $value ?: "false");
+                    } else {
+                        $message = sprintf('console.%s("%s => ", "%s");', $type, $key, addslashes(str_replace(array("\r\n", "\r", "\n"), "", $value)));
+                    }
+                    echo $message."\n";
+                }
+                echo "</script>";
             }
-            echo "</script>";
             self::$ConsoleOut = array();
         }
     }

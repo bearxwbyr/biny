@@ -35,7 +35,7 @@ class TXDatabase {
         if (!$config || !isset($config['host']) || !isset($config['user']) || !isset($config['password']) || !isset($config['port'])){
             throw new TXException(3001, array('unKnown'));
         }
-        if ($config['keep-alive']){
+        if (isset($config['keep-alive']) && $config['keep-alive']){
             $config['host'] = 'p:'.$config['host'];
         }
         $this->handler = mysqli_connect($config['host'], $config['user'], $config['password'], '', $config['port']);

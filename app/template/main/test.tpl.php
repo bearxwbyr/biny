@@ -35,5 +35,16 @@
 </div>
 
 <? include TXApp::$view_root . "/base/footer.tpl.php" ?>
+<script type="text/javascript">
+    function testAjax(){
+        $.ajax({
+            url: webRoot + '/main/test',
+            type: "POST",
+            success: function(data){
+                console.log(data);
+            }
+        })
+    }
+</script>
 
 

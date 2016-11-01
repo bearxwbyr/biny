@@ -30,7 +30,7 @@ class TXMemcache
     public function __construct($config)
     {
         $this->handler = new Memcache();
-        if ($config['keep-alive']){
+        if (isset($config['keep-alive']) && $config['keep-alive']){
             $fd = $this->handler->pconnect($config['host'], $config['port'], TXConst::minute);
         } else {
             $fd = $this->handler->connect($config['host'], $config['port']);

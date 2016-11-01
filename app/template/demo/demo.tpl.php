@@ -697,7 +697,14 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
         <p>另外，<code>like语句</code>也是支持的，可匹配正则符的开始结尾符，具体写法如下：</p>
         <pre class="code"><note>// WHERE `user`.`name` LIKE '%test%' OR `user`.`type` LIKE 'admin%' OR `user`.`type` LIKE '%admin'</note>
 <prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>merge</func>(<sys>array</sys>(
-    <str>'__like__'</str>=><sys>array</sys>(<str>'name'</str>=><str>test</str>, <str>'type'</str>=><str>'^admin'</str>, <str>'type'</str>=><str>'admin$'</str>),
+    <str>'__like__'</str>=><sys>array</sys>(<str>'name'</str>=><str>'test'</str>, <str>'type'</str>=><str>'^admin'</str>, <str>'type'</str>=><str>'admin$'</str>),
+));
+
+<note>// WHERE `user`.`name` LIKE '%test%' OR `user`.`name` LIKE 'admin%' OR `user`.`name` LIKE '%demo'</note>
+<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>merge</func>(<sys>array</sys>(
+    <str>'__like__'</str>=><sys>array</sys>(
+        <str>'name'</str>=><sys>array</sys><str>('test'</str>, <str>'^admin'</str>, <str>'demo$'</str>),
+    )
 ));</pre>
 
         <p><code>not in</code>语法暂时并未支持，可以暂时使用多个<code>!=</code>或者<code><></code>替代</p>
@@ -1187,7 +1194,7 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <note>// shell 默认路由</note>
         <str>'base_shell'</str> => <str>'index'</str>
     )
-
+)
 <note>// /app/shell/indexShell.php</note>
 <sys>class</sys> testShell <sys>extends</sys> TXShell
 {
@@ -1205,7 +1212,7 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'执行错误'</str>);
     }
 }
-)</pre>
+</pre>
 
         <h2 id="shell-param">脚本参数</h2>
         <p>脚本执行可传复数的参数，同http请求可在方法中直接捕获，顺序跟参数顺序保持一致，可缺省</p>
@@ -1231,8 +1238,9 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
 }</pre>
 
         <h2 id="shell-log">脚本日志</h2>
-        <p>脚本执行不再具有HTTP模式的其他功能，例如<code>表单验证</code>，<code>页面渲染</code>，<code>浏览器控制台调试</code>。所以在<code>TXLogger</code>调试类中，<code>info/error/debug/warning</code>这几个方法不在有效了</p>
-        <p>需要调试的可以继续调用<code>TXLogger::addLog</code>和<code>TXLogger::addError</code>方法来进行写日志的操作</p>
+        <p>脚本执行不再具有HTTP模式的其他功能，例如<code>表单验证</code>，<code>页面渲染</code>，<code>浏览器控制台调试</code>。
+            所以在<code>TXLogger</code>调试类中，<code>info/error/debug/warning</code>这几个方法将改为在终端输出</p>
+        <p>同时也可以继续调用<code>TXLogger::addLog</code>和<code>TXLogger::addError</code>方法来进行写日志的操作</p>
         <p>日志目录则保存在<code>/logs/shell/</code>目录下，请确保该目录有<code>写权限</code>。格式与http模式保持一致。</p>
         <p><code>注意:</code>当程序返回<code>$this->error($msg)</code>的时候，系统会默认调用<code>TXLogger::addError($msg)</code>，请勿重复调用。</p>
     </div>
@@ -1242,13 +1250,14 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <p>系统有很多单例都可以直接通过<code>TXApp::$base</code>直接获取</p>
         <p><code>TXApp::$base->person</code> 为当前用户，可在<code>/app/model/Person.php</code>中定义</p>
         <p><code>TXApp::$base->request</code> 为当前请求，可获取当前地址，客户端ip等</p>
+        <p><code>TXApp::$base->cache</code> 为请求静态缓存，只在当前请求中有效</p>
         <p><code>TXApp::$base->session</code> 为系统session，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->memcache</code> 为系统memcache，可直接获取和复制，设置过期时间</p>
         <p><code>TXApp::$base->redis</code> 为系统redis，可直接获取和复制，设置过期时间</p>
 
         <h2 id="other-request">Request</h2>
         <p>在进入<code>Controller</code>层后，<code>Request</code>就可以被调用了，以下是几个常用操作</p>
-        <pre class="code"><note>// 已请求 /test/demo/ 为例</note>
+        <pre class="code"><note>// 以请求 /test/demo/ 为例</note>
 
 <note>// 获取Action名 返回test</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getModule</func>();
@@ -1277,11 +1286,25 @@ TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserAgent</func>();
 <note>// 获取用户IP</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUserIP</func>();</pre>
 
+        <h2 id="other-cache">Cache</h2>
+        <p>框架提供了<code>程序运行生命周期</code>内的全局缓存，使用非常简单</p>
+        <pre class="code"><note>// 只需要赋值就可以实现cache的设置了</note>
+TXApp::<prm>$base</prm>-><prm>cache</prm>-><prm>testkey</prm> = <str>'test'</str>;
+<note>// 获取则是直接取元素，不存在则返回null</note>
+<prm>$testKey</prm> = TXApp::<prm>$base</prm>-><prm>cache</prm>-><prm>testkey</prm>;</pre>
+
+        <p>同时Cache也支持<code>isset</code>判断及<code>unset</code>操作</p>
+        <pre class="code"><note>// isset 相当于先get 后isset 返回 true/false</note>
+<prm>$bool</prm> = <sys>isset</sys>(TXApp::<prm>$base</prm>-><prm>cache</prm>-><prm>testKey</prm>);
+<note>// 删除缓存</note>
+<sys>unset</sys>(TXApp::<prm>$base</prm>-><prm>cache</prm>-><prm>testKey</prm>);
+        </pre>
+
         <h2 id="other-session">Session</h2>
-        <p>session的设置和获取都比较简单，在未调用session时，对象不会被创建，避免性能损耗。</p>
+        <p>session的设置和获取都比较简单（与cache相同），在未调用session时，对象不会被创建，避免性能损耗。</p>
         <pre class="code"><note>// 只需要赋值就可以实现session的设置了</note>
 TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm> = <str>'test'</str>;
-<note>// 获取则是直接去元素，不存在则返回null</note>
+<note>// 获取则是直接取元素，不存在则返回null</note>
 <prm>$testKey</prm> = TXApp::<prm>$base</prm>-><prm>session</prm>-><prm>testkey</prm>;</pre>
 
         <p>同时也可以通过方法<code>close()</code>来关闭session，避免session死锁的问题</p>
@@ -1399,6 +1422,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                 <a href="#other">其他</a>
                 <ul class="nav">
                     <li><a href="#other-request">Request</a></li>
+                    <li><a href="#other-cache">Cache</a></li>
                     <li><a href="#other-session">Session</a></li>
                     <li><a href="#other-cookie">Cookie</a></li>
                 </ul>

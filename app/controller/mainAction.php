@@ -32,9 +32,6 @@ class mainAction extends baseAction
 
     public function action_test($id, $type="ss")
     {
-        TXEvent::on(onSql);
-        $DAO = $this->userDAO->leftJoin($this->projectDAO, ['projectId'=>'id'])->leftJoin($this->testDAO, [['id'=>'id']]);
-        TXLogger::info($DAO->filter([[], ['id'=>[1,2,3]]])->select('SELECT ;ks from :table WHERE :where and projectid in (:aaa)', array('ks'=>['projectid', 'maxCount'], 'aaa'=>["2323", 'sss'])));
         return $this->error('aaaa');
     }
 
