@@ -131,30 +131,7 @@ class TXApp
      */
     public static function shell()
     {
-        global $argv, $argc;
-        $params = $argc > 1 ? array_slice($argv, 2) : [];
-        self::$base->router->shellRouter();
-        $module = self::$base->request->getModule()."Shell";
-        $method = self::$base->request->getMethod();
-        $shell = new $module();
-        if ($shell instanceof TXShell){
-            if (method_exists($shell, 'init')){
-                $result = $shell->init();
-                if ($result){
-                    if (is_array($result) || is_object($result)){
-                        $result = var_export($result, true);
-                    }
-                    echo "$result\n";exit;
-                }
-            }
-            $result = call_user_func_array([$shell, $method], $params);
-            if (is_array($result) || is_object($result)){
-                $result = var_export($result, true);
-            }
-            echo "$result\n";exit;
-        } else {
-            throw new TXException(2006, $module);
-        }
+        self::$controller->shellStart();
     }
 
     /**

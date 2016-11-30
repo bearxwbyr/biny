@@ -24,5 +24,11 @@ return array(
     'csrfHeader' => 'X-CSRF-TOKEN',
 
     //cookie
-    'session_name' => 'biny_sessionid'
+    'session_name' => 'biny_sessionid',
+
+    //ErrorDisplay
+    'errorLevel' => NOTICE,
+
+    //sqlWarning
+    'slowQuery' => 100,
 );

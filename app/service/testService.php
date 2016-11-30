@@ -15,6 +15,7 @@ class testService extends baseService
     public function test()
     {
         TXEvent::on(onSql);
+
         $this->testDAO->filter(['id'=>1])->query();
         $this->userDAO->filter(['id'=>1])->update(['name'=>'xx']);
         $DAO = $this->userDAO->leftJoin($this->projectDAO, ['projectId'=>'id'])->on([['projectId'=>1, 'loginTime'=>['>', 100]]])

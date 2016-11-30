@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="windows兼容优化版本">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/webServers.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/controller/loginAction.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/dao/base/baseDAO.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/dao/demoDAO.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/service/privilegeService.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/template/Error/500.tpl.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/template/main/login.tpl.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config/database.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/business/TXLanguage.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/business/TXShell.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/vendor/Logger.sdk.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/deployment.xml" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
+    <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/template/main/logger.tpl.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/static/js/Logger.sdk.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/demoAction.php" afterPath="$PROJECT_DIR$/app/controller/demoAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/mainAction.php" afterPath="$PROJECT_DIR$/app/controller/mainAction.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/testAction.php" afterPath="$PROJECT_DIR$/app/controller/testAction.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/service/testService.php" afterPath="$PROJECT_DIR$/app/service/testService.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/shell/testShell.php" afterPath="$PROJECT_DIR$/app/shell/testShell.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" afterPath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/main/test.tpl.php" afterPath="$PROJECT_DIR$/app/template/main/test.tpl.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXAutoload.php" afterPath="$PROJECT_DIR$/lib/TXAutoload.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXAction.php" afterPath="$PROJECT_DIR$/lib/business/TXAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRequest.php" afterPath="$PROJECT_DIR$/lib/business/TXRequest.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/main/login.tpl.php" afterPath="$PROJECT_DIR$/app/template/main/login.tpl.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/config.php" afterPath="$PROJECT_DIR$/config/config.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXApp.php" afterPath="$PROJECT_DIR$/lib/TXApp.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXController.php" afterPath="$PROJECT_DIR$/lib/business/TXController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRouter.php" afterPath="$PROJECT_DIR$/lib/business/TXRouter.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXShell.php" afterPath="$PROJECT_DIR$/lib/business/TXShell.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXDatabase.php" afterPath="$PROJECT_DIR$/lib/data/TXDatabase.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXMemcache.php" afterPath="$PROJECT_DIR$/lib/data/TXMemcache.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXRedis.php" afterPath="$PROJECT_DIR$/lib/data/TXRedis.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXString.php" afterPath="$PROJECT_DIR$/lib/data/TXString.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/logger/TXLogger.php" afterPath="$PROJECT_DIR$/lib/logger/TXLogger.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/js/main.js" afterPath="$PROJECT_DIR$/web/static/js/main.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXDoubleDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXDoubleDAO.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXSingleDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXSingleDAO.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/index.php" afterPath="$PROJECT_DIR$/web/index.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/test.php" afterPath="$PROJECT_DIR$/web/test.php" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -50,21 +44,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TXAutoload.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/TXAutoload.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-37.32143">
-              <caret line="57" column="20" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="mainAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/mainAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.0">
-              <caret line="37" column="33" selection-start-line="37" selection-start-column="33" selection-end-line="37" selection-end-column="33" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -73,28 +57,48 @@
       <file leaf-file-name="demo.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/demo/demo.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.821429">
-              <caret line="677" column="92" selection-start-line="677" selection-start-column="92" selection-end-line="677" selection-end-column="92" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="698" column="81" selection-start-line="698" selection-start-column="81" selection-end-line="698" selection-end-column="81" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.tpl.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="login.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/main/login.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2972477">
-              <caret line="41" column="45" selection-start-line="41" selection-start-column="45" selection-end-line="41" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demoAction.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="testAction.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dns_dev.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/config/dns_dev.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="3" column="32" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="demoAction.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controller/demoAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.214286">
-              <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.7003567">
+              <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -103,7 +107,7 @@
       <file leaf-file-name="privilegeService.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/service/privilegeService.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.892858">
+            <state vertical-scroll-proportion="0.0">
               <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
               <folding />
             </state>
@@ -123,18 +127,8 @@
       <file leaf-file-name="baseAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/base/baseAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.392857">
-              <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/web/index.php">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
+              <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -144,7 +138,7 @@
         <entry file="file://$PROJECT_DIR$/config/config.php">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="30" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="30" />
+              <caret line="11" column="0" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -177,11 +171,12 @@
         <option value="$PROJECT_DIR$/lib/business/TXAction.php" />
         <option value="$PROJECT_DIR$/ReadMe.md" />
         <option value="$PROJECT_DIR$/lib/TXAutoload.php" />
-        <option value="$PROJECT_DIR$/app/controller/mainAction.php" />
         <option value="$PROJECT_DIR$/config/config.php" />
         <option value="$PROJECT_DIR$/app/service/privilegeService.php" />
-        <option value="$PROJECT_DIR$/app/controller/demoAction.php" />
         <option value="$PROJECT_DIR$/app/template/main/login.tpl.php" />
+        <option value="$PROJECT_DIR$/app/controller/testAction.php" />
+        <option value="$PROJECT_DIR$/app/controller/mainAction.php" />
+        <option value="$PROJECT_DIR$/app/controller/demoAction.php" />
       </list>
     </option>
   </component>
@@ -667,7 +662,13 @@
       <option name="project" value="LOCAL" />
       <updated>1475464463001</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="windows兼容优化版本">
+      <created>1477992277278</created>
+      <option name="number" value="00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1477992277278</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -697,7 +698,7 @@
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992035" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -750,13 +751,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/template/main/index.tpl.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/template/main/maintenance.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -929,7 +923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1025,7 +1018,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="64" column="26" selection-start-line="64" selection-start-column="26" selection-end-line="64" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1033,7 +1025,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1041,22 +1032,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2091743">
           <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="11" selection-end-column="2" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/TXAutoload.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-37.32143">
+        <state vertical-scroll-proportion="0.0">
           <caret line="57" column="20" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/config/config.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="30" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="30" />
+          <caret line="11" column="0" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -1071,7 +1060,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/service/privilegeService.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.892858">
+        <state vertical-scroll-proportion="0.0">
           <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
           <folding />
         </state>
@@ -1079,48 +1068,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controller/base/baseAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.392857">
+        <state vertical-scroll-proportion="0.0">
           <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controller/demoAction.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.214286">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/config/dns_dev.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.77798164">
-          <caret line="3" column="32" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controller/mainAction.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.0">
-          <caret line="37" column="33" selection-start-line="37" selection-start-column="33" selection-end-line="37" selection-end-column="33" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/template/demo/demo.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.821429">
-          <caret line="677" column="92" selection-start-line="677" selection-start-column="92" selection-end-line="677" selection-end-column="92" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="698" column="81" selection-start-line="698" selection-start-column="81" selection-end-line="698" selection-end-column="81" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/template/main/login.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2972477">
-          <caret line="41" column="45" selection-start-line="41" selection-start-column="45" selection-end-line="41" selection-end-column="45" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/config/dns_dev.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="32" selection-start-line="3" selection-start-column="23" selection-end-line="3" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controller/mainAction.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controller/demoAction.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7003567">
+          <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
           <folding />
         </state>
       </provider>

@@ -11,12 +11,18 @@ class TXShell
     private $params;
 
     /**
+     * 顺序参数
+     * @var array
+     */
+    private $args;
+
+    /**
      * 构造函数
      */
-    public function __construct()
+    public function __construct($params)
     {
-        global $argv, $argc;
-        $this->params = $argc > 1 ? array_slice($argv, 2) : [];
+        $this->args = $params['args'];
+        $this->params = $params['params'];
     }
 
     /**
@@ -39,7 +45,11 @@ class TXShell
      */
     public function getParam($key, $default=null)
     {
-        return isset($this->params[$key]) ? $this->params[$key] : $default;
+        if (is_int($key)){
+            return isset($this->args[$key]) ? $this->args[$key] : $default;
+        } else {
+            return isset($this->params[$key]) ? $this->params[$key] : $default;
+        }
     }
 
     /**

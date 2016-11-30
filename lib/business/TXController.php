@@ -43,13 +43,13 @@ class TXController {
     private function getAction($module, $request)
     {
         $object = new $module();
-        TXEvent::trigger(beforeAction, array($request));
         if (method_exists($object, 'init')){
             $result = $object->init();
             if ($result instanceof TXResponse || $result instanceof TXJSONResponse){
                 return $result;
             }
         }
+        TXEvent::trigger(beforeAction, array($request));
         return $object;
     }
 
@@ -118,6 +118,39 @@ class TXController {
             echo $result;
         } else {
             echo $result;
+        }
+    }
+
+    /**
+     * Shell执行入口
+     * @throws TXException
+     */
+    public function shellStart()
+    {
+        TXApp::$base->router->shellRouter();
+        $module = TXApp::$base->request->getModule()."Shell";
+        $method = TXApp::$base->request->getMethod();
+        $params = TXApp::$base->router->getArgs();
+        $shell = new $module($params);
+        if ($shell instanceof TXShell){
+            if (method_exists($shell, 'init')){
+                $result = $shell->init();
+                if ($result){
+                    if (is_array($result) || is_object($result)){
+                        $result = var_export($result, true);
+                    }
+                    echo "$result\n";exit;
+                }
+            }
+            // 兼容原模式
+            $args = $params['params'] ? $this->getArgs($shell, $method) : $params['args'];
+            $result = call_user_func_array([$shell, $method], $args);
+            if (is_array($result) || is_object($result)){
+                $result = var_export($result, true);
+            }
+            echo "$result\n";exit;
+        } else {
+            throw new TXException(2006, $module);
         }
     }
 }

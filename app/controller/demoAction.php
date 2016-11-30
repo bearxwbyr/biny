@@ -20,7 +20,7 @@ class demoAction extends baseAction
      */
     public function action_index()
     {
-        //UV统计
+//        //UV统计
 //        $date = date('Y-m-d', time());
 //        $rtx = TXApp::$base->person->name;
 //        $this->demoDAO->createOrAdd(['date'=>$date, 'rtx'=>$rtx, 'count'=>1], ['count'=>1]);

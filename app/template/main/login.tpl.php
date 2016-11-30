@@ -40,6 +40,7 @@
         padding-left: 20px;
 
         -webkit-background-clip: padding-box;
+        -moz-background-clip: padding-box;
         background-clip: padding-box;
         border-radius: 6px;
 
@@ -76,6 +77,7 @@
         border: 1px solid rgba(0, 0, 0, .49);
 
         -webkit-background-clip: padding-box;
+        -moz-background-clip: padding-box;
         background-clip: padding-box;
         border-radius: 6px;
 

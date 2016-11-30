@@ -121,9 +121,33 @@ class TXRouter {
     public function shellRouter()
     {
         global $argv;
+        if (isset($argv[1]) && substr($argv[1], 0, 1) == "-"){
+            array_splice($argv, 1, 0, $this->routerInfo['base_shell']);
+        }
         $router = isset($argv[1]) ? explode('/', $argv[1]) : [$this->routerInfo['base_shell']];
         $module = $router[0];
         $method = isset($router[1]) ? $router[1] : 'index';
         TXRequest::create($module, $method);
+    }
+
+    /**
+     * shell构造参数
+     * @return array
+     */
+    public function getArgs()
+    {
+        global $argv, $argc;
+        //构造参数
+        $params = ['args'=>[], 'params'=>[]];
+        $params['args'] = $argc > 1 ? array_slice($argv, 2) : [];
+        foreach($params['args'] as $k => $param){
+            if (preg_match_all("/--([\w_]+)=(.*)/", $param, $matchs)){
+                $params['params'][$matchs[1][0]] = $matchs[2][0];
+                unset($params['args'][$k]);
+            }
+        }
+        $params['args'] = array_values($params['args']);
+        self::$ARGS = $params['params'];
+        return $params;
     }
 }

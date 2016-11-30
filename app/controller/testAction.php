@@ -25,14 +25,31 @@ class testAction extends baseAction
 
     public function action_index()
     {
+        TXEvent::on(onSql);
+
+        $ids = array_keys($this->projectDAO
+            ->rightJoin($this->testDAO, ['type'=>'type'])
+            ->filter([['name'=>'test'], ['>='=>['time'=>time()]]])
+            ->query([['id'=>'projectId']], 'projectId'));
+        $this->userDAO->filter(['projectId'=>[2,3,4]])->query();
+
+
+        $this->userDAO
+            ->leftJoin($this->projectDAO, ['projectId'=>'id'])
+            ->rightJoin($this->testDAO, [[], ['type'=>'type']])
+            ->filter([[], ['name'=>'test'], ['>='=>['time'=>time()]]])
+            ->query(['*']);
+
+        $result = $this->userDAO->filter(['>='=>['id'=>20], 'count'=>2])->limit(2)->query();
+        TXLogger::info($result);
         $data = $this->getParam('test');
         $params = array(
             'test'=>$data
         );
-        TXDatabase::start();
-        $this->testDAO->add(['name'=>'rollback', 'userId'=>10, 'time'=>time(), 'type'=>2]);
-        $this->userDAO->add(['name'=>'rollback']);
-        TXDatabase::commit();
+//        TXDatabase::start();
+//        $this->testDAO->add(['name'=>'rollback', 'userId'=>10, 'time'=>time(), 'type'=>2]);
+//        $this->userDAO->add(['name'=>'rollback']);
+//        TXDatabase::commit();
         return $this->display('main/test', $params);
 
     }
@@ -44,6 +61,12 @@ class testAction extends baseAction
         TXLogger::info($form->check());
         TXLogger::info($form->getError());
         return $this->correct();
+    }
+
+    public function action_logger()
+    {
+        \Biny\Logger::info(['test'=>2]);
+        return $this->display('main/logger');
     }
 
     public function action_view($id)

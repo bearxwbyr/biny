@@ -161,10 +161,14 @@ class TXDoubleDAO extends TXDAO
                         $arrk = $this->real_escape_string($arrk);
                         if (is_null($arrv)){
                             $where[] = "`{$table}`.`{$arrk}`{$key} NULL";
-                        }
-                        else if (is_string($arrv)){
+                        } else if (is_string($arrv)){
                             $arrv = $this->real_escape_string($arrv);
                             $where[] = "`{$table}`.`{$arrk}`{$key}'{$arrv}'";
+                        } else if (is_array($arrv)){
+                            foreach ($arrv as $av){
+                                $arrv = $this->real_escape_string($av);
+                                $where[] = "`{$table}`.`{$arrk}`{$key}'{$arrv}'";
+                            }
                         } else {
                             $where[] = "`{$table}`.`{$arrk}`{$key}{$arrv}";
                         }

@@ -21,6 +21,7 @@ class testShell extends TXShell
 
     public function action_prm($id)
     {
+        var_dump($this->getParam('test', 'aaa'));
         $user = $this->userDAO->filter(['id'=>$id])->find();
         return $this->correct($user);
     }

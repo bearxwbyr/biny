@@ -1,4 +1,2 @@
 <?php
-echo '<pre>';
-var_dump($_SERVER);
-echo 1,2,3;
+var_dump(json_decode('["dfd","aa"]', true));

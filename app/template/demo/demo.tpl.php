@@ -542,7 +542,7 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 <note>// sum(`id`)</note>
 <prm>$sum</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>sum</func>(<str>'id'</str>);
 </pre>
-        <p>这里运算都为简单运算，需要用到复合运算或者多表运算时，建议使用<code>addtion</code>方法</p>
+        <p>这里运算都为简单运算，需要用到复合运算或者多表运算时，建议使用<code>addition</code>方法</p>
 
 
         <h2 id="dao-update">删改数据</h2>
@@ -692,6 +692,11 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 <prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(
     <str>'>='</str>=><sys>array</sys>(<str>'id'</str>=>10, <str>'time'</str>=>1461584562),
     <str>'is not'</str>=><sys>array</sys>(<str>'type'</str>=><sys>NULL</sys>),
+));
+
+<note>// WHERE `user`.`id` != 3 AND `user`.`id` != 4 AND `user`.`id` != 5</note>
+<prm>$filter</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(
+    <str>'!='</str>=><sys>array</sys>(<str>'id'</str>=><sys>array</sys>(3, 4, 5))
 ));</pre>
 
         <p>另外，<code>like语句</code>也是支持的，可匹配正则符的开始结尾符，具体写法如下：</p>
@@ -729,16 +734,34 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
         <h2 id="dao-group">其他条件</h2>
         <p>在<code>DAO</code>或者<code>选择器</code>里都可以调用条件方法，方法可传递式调用，相同方法内的条件会自动合并</p>
         <p>其中包括<code>group</code>，<code>addition</code>，<code>order</code>，<code>limit</code>，<code>having</code></p>
-        <pre class="code"><note>// SELECT avg(`user`.`cash`) AS 'a_c' FROM `TABLE` `user` WHERE ...
-                GROUP BY `user`.`id`,`user`.`type` HAVING `a_c` >= 1000 ORDER BY `a_c` DESC, `id` ASC LIMIT 0,10;</note>
+        <pre class="code"><note>// SELECT `user`.`id`, avg(`user`.`cash`) AS 'a_c' FROM `TABLE` `user` WHERE ...
+        GROUP BY `user`.`id`,`user`.`type` HAVING `a_c` >= 1000 ORDER BY `a_c` DESC, `id` ASC LIMIT 20,10;</note>
 <prm>$this</prm>-><prm>userDAO</prm> <note>//->filter(...)</note>
     -><func>addition</func>(<sys>array</sys>(<str>'avg'</str>=><sys>array</sys>(<str>'cash'</str>=><str>'a_c'</str>))
     -><func>group</func>(<sys>array</sys>(<str>'id'</str>, <str>'type'</str>))
     -><func>having</func>(<sys>array</sys>(<str>'>='</str>=><sys>array</sys>(<str>'a_c'</str>, 1000)))
     -><func>order</func>(<sys>array</sys>(<str>'a_c'</str>=><str>'DESC'</str>, <str>'id'</str>=><str>'ASC'</str>))
     <note>// limit 第一个参数为取的条数，第二个参数为起始位置（默认为0）</note>
-    -><func>limit</func>(10)
-    -><func>query</func>();</pre>
+    -><func>limit</func>(10, 20)
+    -><func>query</func>(<sys>array</sys>(<str>'id'</str>));</pre>
+
+        <p><code>addition</code>是对数据做计算处理的方法，提供了<code>max</code>，<code>count</code>，<code>sum</code>，<code>min</code>，<code>avg</code>等计算方法</p>
+        <p>多联表时同样需要用到<code>二维数组</code></p>
+        <pre class="code"><note>// SELECT avg(`user`.`cash`) AS 'a_c', avg(`user`.`time`) AS 'time',
+        sum(`user`.`cash`) AS 'total', min(`test`.`testid`) AS 'testid'
+        FROM `TABLE1` `user` join `TABLE2` `test` ON `user`.`id` = `test`.`user_id` WHERE ...
+        GROUP BY `user`.`id`,`user`.`type` HAVING `a_c` >= 1000 ORDER BY `a_c` DESC, `id` ASC LIMIT 0,10;</note>
+<prm>$DAO</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>join</func>(<prm>$this</prm>-><prm>testDAO</prm>, <sys>array</sys>(<str>'id'</str>=><str>'user_id'</str>))
+<prm>$DAO</prm> <note>//->filter(...)</note>
+    -><func>addition</func>(<sys>array</sys>(
+        <sys>array</sys>(
+            <str>'avg'</str>=><sys>array</sys>(<str>'cash'</str>=><str>'a_c'</str>, <str>'time'</str>),
+            <str>'sum'</str>=><sys>array</sys>(<str>'cash'</str>=><str>'total'</str>),
+        ),
+        <sys>array</sys>(
+            <str>'min'</str>=><sys>array</sys>(<str>'testid'</str>),
+        ),
+    )-><func>query</func>();</pre>
 
         <p>每次添加条件后都是独立的，<code>不会影响</code>原DAO 或者 选择器，可以放心的使用</p>
 
@@ -960,7 +983,7 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
     <div class="bs-docs-section">
         <h1 id="event" class="page-header">事件</h1>
         <p>框架中提供了事件机制，可以方便全局调用。其中系统默认已提供的有<code>beforeAction</code>，<code>afterAction</code>，<code>onException</code>，<code>onError</code>，<code>onSql</code>这几个</p>
-        <p><code>beforeAction</code>为Action执行前执行的事件（比<code>init()</code>方法还要早被触发）</p>
+        <p><code>beforeAction</code>为Action执行前执行的事件（在<code>init()</code>方法之后被触发）</p>
         <p><code>afterAction</code>为Action执行后执行的事件（会在渲染页面之前触发）</p>
         <p><code>onException</code>系统抛出异常时被触发，会传递错误code，在<code>/config/exception.php</code>中定义code</p>
         <p><code>onError</code>程序调用<code>$this->error($data)</code>方法时被触发，传递<code>$data</code>参数</p>
@@ -978,11 +1001,9 @@ TXEvent::<func>off</func>(<const>onSql</const>);</pre>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//构造函数</note>
-    <sys>public function</sys> <act>__construct</act>()
+    <sys>public function</sys> <act>init</act>()
     {
-        <note>// 构造函数记得要调用一下父级的构造函数</note>
-        <sys>parent</sys>::<func>__construct</func>();
-        <note>// 要触发beforeAction事件，必须在init被调用前定义</note>
+        <note>// 要触发beforeAction事件，可在init里定义，会在init之后被触发</note>
         TXEvent::<func>on</func>(<const>beforeAction</const>, <sys>array</sys>(<prm>$this</prm>, <str>'test_event'</str>));
     }
 
@@ -1216,7 +1237,7 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
 
         <h2 id="shell-param">脚本参数</h2>
         <p>脚本执行可传复数的参数，同http请求可在方法中直接捕获，顺序跟参数顺序保持一致，可缺省</p>
-        <p>另外，可以用<code>getParam</code>方法获取对应位置的参数，用法与http模式保持一致</p>
+        <p>另外，可以用<code>getParam</code>方法获取对应位置的参数</p>
         <p>例如：终端执行<code>php shell.php test/demo 1 2 aaa</code>，结果如下：</p>
         <pre class="code"><note>// php shell.php test/demo 1 2 aaa</note>
 <sys>class</sys> testShell <sys>extends</sys> TXShell
@@ -1236,6 +1257,30 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
         <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(3, <str>'default'</str>);
     }
 }</pre>
+
+        <p>同时框架还提供了变量化的参数传递方式，用法与http模式保持一致</p>
+        <p>例如：终端执行<code>php shell.php test/demo --name="test" --id=23 demo</code>，结果如下：</p>
+        <pre class="code"><note>// php shell.php test/demo --name="test" --id=23 demo</note>
+<sys>class</sys> testShell <sys>extends</sys> TXShell
+{
+    <note>test/demo => testShell/action_demo</note>
+    <sys>public function</sys> <act>action_demo</act>(<prm>$id</prm>, <prm>$name</prm>=<str>'demo'</str>, <prm>$prm</prm>=<str>'default'</str>)
+    {
+        <note>//23, test, default</note>
+        <sys>echo</sys> <str>"<prm>$id</prm>, <prm>$name</prm>, <prm>$prm</prm></prm>"</str>;
+        <note>//23</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(<str>'id'</str>);
+        <note>//demo</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(<str>'name'</str>);
+        <note>//default</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(<str>'prm'</str>, <str>'default'</str>);
+
+        <note>// 不带参数话模式的变量 将顺序从第0位开始</note>
+        <note>// demo</note>
+        <sys>echo</sys> <prm>$this</prm>-><func>getParam</func>(0);
+    }
+}</pre>
+        <p><code>注意：</code>使用变量化传递后，方法中默认参数将不会捕获非变量化的参数，如上例的<code>demo</code>需要通过<code>getParam</code>方法获取</p>
 
         <h2 id="shell-log">脚本日志</h2>
         <p>脚本执行不再具有HTTP模式的其他功能，例如<code>表单验证</code>，<code>页面渲染</code>，<code>浏览器控制台调试</code>。

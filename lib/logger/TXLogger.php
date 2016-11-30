@@ -189,11 +189,16 @@ class TXLogger
      * @param $level
      */
     public static function addError($message, $level=ERROR){
+        $errorLevel = TXConfig::getConfig('errorLevel');
+        if ($errorLevel < $level){
+            return;
+        }
         if (is_array($message) || is_object($message)){
             $message = var_export($message, true);
         }
-        $header = sprintf("[%s]%s:%s [%s]", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'ERROR',
-            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), RUN_SHELL ? TXApp::$base->request->getBaseUrl() : TXApp::$base->request->getUserIp());
+        $header = sprintf("[%s]%s:%s[%s] %s\n", isset(self::$LEVELS[$level]) ? self::$LEVELS[$level] : 'ERROR',
+            date('Y-m-d H:i:s'), substr(microtime(), 2, 3), RUN_SHELL ? 'localhost' : TXApp::$base->request->getUserIp(),
+            TXApp::$base->request->getBaseUrl());
         $message = "$header $message\n";
         $filename = sprintf("%s/error_%s.log", TXApp::$log_root, date('Y-m-d'));
         file_put_contents($filename, $message, FILE_APPEND | LOCK_EX);

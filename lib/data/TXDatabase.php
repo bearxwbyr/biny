@@ -103,7 +103,13 @@ class TXDatabase {
      */
     public function sql($sql, $key=null, $mode = self::FETCH_TYPE_ALL)
     {
+        $start = microtime(true);
         $rs = mysqli_query($this->handler, $sql);
+        $time = (microtime(true)-$start)*1000;
+        if ($time > (TXConfig::getConfig('slowQuery') ?: 1000)){
+            TXLogger::addError(sprintf('Slow Query: %s [%sms]', $sql, $time), WARNING);
+            TXLogger::warn(sprintf('Slow Query: %s [%sms]', $sql, $time));
+        }
         if ($rs) {
             if ($mode == self::FETCH_TYPE_ALL) {
                 $result = array();
@@ -122,7 +128,7 @@ class TXDatabase {
             return $result;
         } else {
             TXLogger::addError(sprintf("sql Error: %s [%s]", mysqli_error($this->handler), $sql));
-            TXLogger::error($sql, 'sql Error:');
+            TXLogger::error(sprintf("%s [%s]", mysqli_error($this->handler), $sql), 'sql Error:');
             return [];
         }
     }

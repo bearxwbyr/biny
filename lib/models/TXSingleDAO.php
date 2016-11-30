@@ -161,6 +161,11 @@ class TXSingleDAO extends TXDAO
                         }elseif (is_string($arrv)){
                             $arrv = $this->real_escape_string($arrv);
                             $where[] = "`{$arrk}`{$key}'{$arrv}'";
+                        }  else if (is_array($arrv)){
+                            foreach ($arrv as $av){
+                                $arrv = $this->real_escape_string($av);
+                                $where[] = "`{$arrk}`{$key}'{$arrv}'";
+                            }
                         } else {
                             $where[] = "`{$arrk}`{$key}{$arrv}";
                         }
