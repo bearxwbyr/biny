@@ -26,6 +26,11 @@ class privilegeService extends TXService
         return true;
     }
 
+    public function my_required($action, $key)
+    {
+        return true;
+    }
+
     /**
      * 验证用户登录
      * @return bool

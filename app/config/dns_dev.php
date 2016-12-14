@@ -7,6 +7,7 @@ return array(
         'password' => 'root',
         'encode' => 'utf8',
         'port' => 3306,
+        'keep-alive' => true,
     ),
     'slaveDb' => array(
         'host'     => '127.0.0.1',
@@ -16,12 +17,22 @@ return array(
         'encode' => 'utf8',
         'port' => 3306,
     ),
+    'testDb' => array(
+        'host'     => '127.0.0.1',
+        'database' => 'test',
+        'user'     => 'root',
+        'password' => 'root',
+        'encode' => 'utf8',
+        'port' => 3306,
+    ),
     'memcache' => array(
-        'host' => 'localhost',
-        'port' => 12121
+        'host' => '127.0.0.1',
+        'port' => 12121,
+        'keep-alive' => true,
     ),
     'redis' => array(
-        'host' => 'localhost',
-        'port' => 6379
+        'host' => '127.0.0.1',
+        'port' => 6379,
+        'keep-alive' => true,
     ),
 );

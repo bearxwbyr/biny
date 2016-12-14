@@ -13,15 +13,6 @@ if (SYS_DEBUG){
 error_reporting(E_ALL ^ E_NOTICE);
 
 include __DIR__.'/../lib/TXApp.php';
-// include __DIR__.'/../lib/vendor/Logger.sdk.php';
-
-//include __DIR__.'/../lib/logger/XHProf.php';
-//XHProf::start();
 
 TXApp::registry(__DIR__. '/../app');
 TXApp::run();
-
-//$data = XHProf::end();
-//XHProf::display($data);
-//
-//XHProf::consoles($data);

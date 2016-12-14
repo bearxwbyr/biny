@@ -15,9 +15,11 @@ class testAction extends baseAction
     protected function privilege()
     {
         return array(
-            'login_required' => array(
-                'actions' => '*', //绑定action
-                'params' => [],   //传参
+            'my_required' => array(
+                'requires' => [
+                    ['actions'=>['index'], 'params'=>[123]],
+                    ['actions'=>['form','index'], 'params'=>[234]],
+                ],
                 'callBack' => [], //验证失败回调函数
             ),
         );
@@ -60,7 +62,7 @@ class testAction extends baseAction
         TXLogger::info($form->values());
         TXLogger::info($form->check());
         TXLogger::info($form->getError());
-        return $this->correct();
+        return $this->error();
     }
 
     public function action_logger()

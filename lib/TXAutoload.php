@@ -89,7 +89,7 @@ class TXAutoload
                 throw new TXException(1003, array($class));
             }
         } else if (substr($class, -6) == 'Action') {
-            throw new TXException(1003, array($class));
+            throw new TXException(1003, array($class), 404);
         }
     }
 }

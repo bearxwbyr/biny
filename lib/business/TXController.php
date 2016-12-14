@@ -76,7 +76,7 @@ class TXController {
             TXEvent::trigger(afterAction, array($request));
             return $result;
         } else {
-            throw new TXException(2001, $request->getModule());
+            throw new TXException(2001, $request->getModule(), 404);
         }
     }
 
@@ -92,11 +92,11 @@ class TXController {
         $params = TXRouter::$ARGS;
         $args = [];
         if (!method_exists($obj, $method)){
-            throw new TXException(2002, array($method, $obj));
+            throw new TXException(2002, array($method, $obj), 404);
         }
         $action = new ReflectionMethod($obj, $method);
         if ($action->getName() !== $method){
-            throw new TXException(2002, array($method, $obj));
+            throw new TXException(2002, array($method, $obj), 404);
         }
         foreach ($action->getParameters() as $param) {
             $name = $param->getName();

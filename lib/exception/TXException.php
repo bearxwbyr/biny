@@ -4,6 +4,12 @@
  */
 class TXException extends ErrorException
 {
+    private $messages = [
+        500 => '网站有一个异常，请稍候再试',
+        404 => '您访问的页面不存在',
+        403 => '权限不足，无法访问'
+    ];
+
     /**
      * 构造函数
      * @param string $code
@@ -35,11 +41,11 @@ class TXException extends ErrorException
             } else {
                 if (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax()){
                     $params = [
-                        'webRoot' => TXConfig::getAppConfig('webRoot', 'dns')
+                        'CDN_ROOT' => TXConfig::getAppConfig('CDN_ROOT')
                     ];
-                    echo new TXResponse("error/$html", array(), $params);
+                    echo new TXResponse("error/exception", array('msg'=>$this->messages[$html] ?: "系统数据异常：$html"), $params);
                 } else {
-                    $data = array("flag" => false, "error" => "系统数据异常：$html");
+                    $data = array("flag" => false, "error" => $this->messages[$html] ?: "系统数据异常：$html");
                     echo new TXJSONResponse($data);
                 }
             }

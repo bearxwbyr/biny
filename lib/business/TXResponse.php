@@ -67,7 +67,7 @@ class TXResponse {
         ob_start();
         //include template
         $lang = TXLanguage::getLanguage();
-        $file = sprintf('%s/template/%s%s.tpl.php', TXApp::$app_root, $this->view, $lang ?: '.'.$lang);
+        $file = sprintf('%s/template/%s%s.tpl.php', TXApp::$app_root, $this->view, $lang ?'.'.$lang : "");
         if (!is_readable($file)){
             $file = sprintf('%s/template/%s.tpl.php', TXApp::$app_root, $this->view);
         }

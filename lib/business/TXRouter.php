@@ -48,7 +48,7 @@ class TXRouter {
             $pathRoot = substr($pathRoot, $len);
         }
 
-        $path = $this->reRouter($pathRoot);
+        $path = $this->reRouter(rtrim($pathRoot, '/'));
         if ($path !== NULL){
             $pathRoot = $path;
         }
@@ -71,6 +71,7 @@ class TXRouter {
         $path = NULL;
         $rules = TXConfig::getConfig('routeRule');
         foreach ($rules as $key => $value){
+            $key = trim($key, '/');
             if (preg_match_all("/<([\w_]+):([^>]+)>/", $key, $matchs)){
                 foreach ($matchs[2] as &$val){
                     $val = '('.$val.')';

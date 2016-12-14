@@ -318,6 +318,36 @@
 
         <p><code>callBack</code>参数为校验失败时调用的方法，默认不填会抛出错误异常，程序不会再继续执行。</p>
 
+        <p>如果需要不同路由都使用同一个验证方法，而分别传入不同参数验证，可以使用<code>requires</code>参数，用法参考下例：</p>
+<pre class="code"><sys>class</sys> testAction <sys>extends</sys> baseAction
+{
+    <sys>protected function</sys> <act>privilege</act>()
+    {
+        <sys>return array</sys>(
+            <str>'privilege_required'</str> => <sys>array</sys>(
+                <note>// 根据不同路由传入相应操作权限</note>
+                <str>'requires'</str> => [
+                    [<str>'actions'</str>=>[<str>'index'</str>, <str>'view'</str>], <str>'params'</str>=>[TXPrivilege::<prm>user</prm>]],
+                    [<str>'actions'</str>=>[<str>'edit'</str>, <str>'delete'</str>], <str>'params'</str>=>[TXPrivilege::<prm>admin</prm>]],
+                ],
+                <str>'callBack'</str> => [<prm>$this</prm>, <str>'test'</str>], <note>// 验证失败后调用$this->test()</note>
+            ),
+        );
+    }
+
+<note>// privilegeService</note>
+<sys>public function</sys> <act>privilege_required</act>(<prm>$action</prm>, <prm>$privilege</prm>)
+{
+    <sys>if</sys>(TXApp::<prm>$base</prm>-><prm>person</prm>-><func>hasPrivilege</func>(<prm>$privilege</prm>)){
+        <note>// 该用户有相应权限</note>
+        <sys>return</sys> <prm>$this</prm>-><func>correct</func>();
+    } <sys>else</sys> {
+        <note>// 校验失败，错误信息可通过$this->privilegeService->getError()获取</note>
+        <sys>return</sys> <prm>$this</prm>-><func>error</func>(<str>'forbidden'</str>);
+    }
+}</pre>
+
+<p><code>注意：</code>使用<code>requires</code>参数时，<code>actions</code>和<code>params</code>参数将被覆盖</p>
 
     </div>
 
@@ -1302,7 +1332,7 @@ TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
 
         <h2 id="other-request">Request</h2>
         <p>在进入<code>Controller</code>层后，<code>Request</code>就可以被调用了，以下是几个常用操作</p>
-        <pre class="code"><note>// 以请求 /test/demo/ 为例</note>
+        <pre class="code"><note>// 以请求 /test/demo/?id=10 为例</note>
 
 <note>// 获取Action名 返回test</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getModule</func>();
@@ -1321,6 +1351,9 @@ TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>();
 
 <note>// 返回完整路径  http://biny.oa.com/test/demo/</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>(<sys>true</sys>);
+
+<note>// 返回带参数URL  /test/demo/?id=10</note>
+TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getUrl</func>();
 
 <note>// 获取来源网址 （上一个页面地址）</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getReferrer</func>();

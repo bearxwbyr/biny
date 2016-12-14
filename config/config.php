@@ -12,7 +12,7 @@ return array(
 
     'routeRule' => array(
         '<method:\w+>/test/<id:\d+>.html' => 'test/<method>',
-        'test/<id:[\w_%]+>.html' => 'test/view',
+        'test/<id:[\w_%]+>' => 'test/view',
     ),
     'autoPath' => 'config/autoload.php',
     'pkCache' => 'tb:%s',

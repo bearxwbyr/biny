@@ -16,6 +16,7 @@
 <div class="messageInfo"><?=$PRM['msg']?></div>
 <div class="messageUrl">
     现在您可以：
+    <a href="javascript:window.history.go(-1);" class='mlink'>[后退]</a>
     <a href="/" class='mlink'>[返回首页]</a>
 </div>
 

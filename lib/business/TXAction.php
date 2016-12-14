@@ -36,6 +36,12 @@ class TXAction
     protected $csrfValidate = true;
 
     /**
+     * false时只返回json
+     * @var bool
+     */
+    protected $showTpl = true;
+
+    /**
      * 构造函数
      */
     public function __construct()
@@ -80,15 +86,20 @@ class TXAction
             $request = TXApp::$base->request;
             foreach ($privileges as $method => $privilege){
                 if (is_callable([$this->privilegeService, $method])){
-                    $actions = $privilege['actions'];
-                    if ($actions === '*' || (is_array($actions) && in_array($request->getMethod(true), $actions))){
-                        $params = isset($privilege['params']) ? $privilege['params'] : [];
-                        array_unshift($params, $this);
-                        if (!call_user_func_array([$this->privilegeService, $method], $params)){
-                            if (isset($privilege['callBack']) && is_callable($privilege['callBack'])){
-                                call_user_func_array($privilege['callBack'], [$this]);
+                    if (!isset($privilege['requires']) || empty($privilege['requires'])){
+                        $privilege['requires'] = [['actions'=>$privilege['actions'] ?: [], 'params'=>$privilege['params'] ?: []]];
+                    }
+                    foreach ($privilege['requires'] as $require){
+                        $actions = $require['actions'];
+                        if ($actions === '*' || (is_array($actions) && in_array($request->getMethod(true), $actions))){
+                            $params = isset($require['params']) ? $require['params'] : [];
+                            array_unshift($params, $this);
+                            if (!call_user_func_array([$this->privilegeService, $method], $params)){
+                                if (isset($privilege['callBack']) && is_callable($privilege['callBack'])){
+                                    call_user_func_array($privilege['callBack'], [$this, $this->privilegeService->getError()]);
+                                }
+                                throw new TXException(6001, [$method, $this->privilegeService->getError()], 403);
                             }
-                            throw new TXException(6001, $method, $this->privilegeService->getError());
                         }
                     }
                 }
@@ -190,6 +201,7 @@ class TXAction
      */
     public function json($data, $encode=true)
     {
+        TXApp::$base->request->setContentType('application/json');
         return new TXJSONResponse($data, $encode);
     }
 
@@ -207,13 +219,13 @@ class TXAction
     /**
      * @param string $msg
      * @param bool $encode
-     * @return string|TXJSONResponse
+     * @return TXJSONResponse|TXResponse
      */
     public function error($msg="数据异常", $encode=true)
     {
         TXEvent::trigger(onError, array($msg));
-        if (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax()){
-            return $this->display('error/msg', ['message'=> $msg]);
+        if ($this->showTpl && (TXApp::$base->request->isShowTpl() || !TXApp::$base->request->isAjax())){
+            return $this->display('error/msg', ['msg'=> $msg]);
         } else {
             $data = array("flag" => false, "error" => $msg);
             return $this->json($data, $encode);
