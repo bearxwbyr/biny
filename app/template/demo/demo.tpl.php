@@ -37,7 +37,6 @@
         <p>支持事件触发机制</p>
         <p>具有sql防注入，html防xss等特性</p>
         <p>高性能，框架响应时间在1ms以内，tps轻松上3000</p>
-        <p>公共组件地址：<a href="http://pub.code.oa.com/project/home?comeFrom=104&projectName=Biny">http://pub.code.oa.com/project/home?comeFrom=104&projectName=Biny</a></p>
         <p>GitHub 地址：<a href="https://github.com/billge1205/biny">https://github.com/billge1205/biny</a></p>
 
         <h2 id="overview-files">目录结构</h2>
@@ -151,7 +150,7 @@
         <h2 id="router-rule">默认路由</h2>
         <p>在<code>/app/controller</code>目录下，文件可以放在任意子目录或孙目录中。但必须确保文件名与类名一致，且不重复</p>
         <p>示例：/app/controller/Main/testAction.php</p>
-        <pre class="code"><note>// http://biny.oa.com/test/</note>
+        <pre class="code"><note>// http://www.billge.cc/test/</note>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//默认路由index</note>
@@ -163,14 +162,14 @@
 }</pre>
         <p>同时也能在同一文件内配置多个子路由</p>
         <pre class="code"><note>//子路由查找action_{$router}</note>
-<note>// http://biny.oa.com/test/demo1</note>
+<note>// http://www.billge.cc/test/demo1</note>
 <sys>public function</sys> <act>action_demo1</act>()
 {
     <note>//返回 test/demo1.tpl.php</note>
     <sys>return</sys> <prm>$this</prm>-><func>display</func>(<str>'test/demo1'</str>);
 }
 
-<note>// http://biny.oa.com/test/demo2</note>
+<note>// http://www.billge.cc/test/demo2</note>
 <sys>public function</sys> <act>action_demo2</act>()
 {
     <note>//返回 test/demo2.tpl.php</note>
@@ -206,7 +205,7 @@
         <h2 id="router-ajax">异步请求</h2>
         <p>异步请求包含POST，ajax等多种请求方式，系统会自动进行<code>异步验证（csrf）</code>及处理</p>
         <p>程序中响应方法和同步请求保持一致，返回<code>$this->error()</code>会自动和同步请求作区分，返回<code>json数据</code></p>
-        <pre class="code"><note>// http://biny.oa.com/test/demo3</note>
+        <pre class="code"><note>// http://www.billge.cc/test/demo3</note>
 <sys>public function</sys> <act>action_demo3</act>()
 {
     <prm>$ret</prm> = <sys>array</sys>(<str>'result'</str>=>1);
@@ -217,7 +216,7 @@
     <sys>return</sys> <prm>$this</prm>-><func>error</func>(<prm>$ret</prm>);
 }</pre>
         <p>框架提供了一整套<code>csrf验证</code>机制，默认<code>开启</code>，可通过在Action中将<code>$csrfValidate = false</code>关闭。</p>
-        <pre class="code"><note>// http://biny.oa.com/test/</note>
+        <pre class="code"><note>// http://www.billge.cc/test/</note>
 <sys>class</sys> testAction <sys>extends</sys> baseAction
 {
     <note>//关闭csrf验证</note>
@@ -241,7 +240,7 @@
 
         <h2 id="router-param">参数传递</h2>
         <p>方法可以直接接收 GET 参数，并可以赋默认值，空则返回null</p>
-        <pre class="code"><note>// http://biny.oa.com/test/demo4/?id=33</note>
+        <pre class="code"><note>// http://www.billge.cc/test/demo4/?id=33</note>
 <sys>public function</sys> <act>action_demo4</act>(<prm>$id</prm>=10, <prm>$type</prm>, <prm>$name</prm>=<str>'biny'</str>)
 {
     <note>// 33</note>
@@ -257,7 +256,7 @@
         <p><code>getGet($key, $default)</code> 获取GET参数{$key}, 默认值为{$default}</p>
         <p><code>getPost($key, $default)</code> 获取POST参数{$key}, 默认值为{$default}</p>
         <p><code>getJson($key, $default)</code> 如果传递过来的参数为完整json流可使用该方法获取</p>
-        <pre class="code"><note>// http://biny.oa.com/test/demo5/?id=33</note>
+        <pre class="code"><note>// http://www.billge.cc/test/demo5/?id=33</note>
 <sys>public function</sys> <act>action_demo5</act>()
 {
     <note>// NULL</note>
@@ -810,13 +809,20 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
         于是这里提供了一种SQL模版的使用方式，支持用户自定义SQL语句，但<code>并不推荐用户使用</code>，如果一定要使用的话，请务必自己做好<code>防SQL注入</code></p>
 
         <p>这里提供了两种方式，<code>select</code>（查询，返回数据），以及<code>command</code>（执行，返回bool）</p>
-        <p>方法会自动替换<code>:where</code>和<code>:table</code>字段</p>
+        <p>方法会自动替换<code>:where</code>,<code>:table</code>,<code>:order</code>,<code>:group</code>,<code>:addition</code>字段</p>
         <pre class="code"><note>// select * from `DATABASE`.`TABLE` WHERE ...</note>
 <prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select * from :table WHERE ...;'</str>);
 
 <note>// update `DATABASE`.`TABLE` `user` set name = 'test' WHERE `user`.`id` = 10 AND type = 2</note>
 <prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'id'</str>=>10))
-    -><func>command</func>(<str>'update :table set name = 'test' WHERE :where AND type = 2;'</str>)</pre>
+    -><func>command</func>(<str>'update :table set name = 'test' WHERE :where AND type = 2;'</str>)
+
+<note>// select id,sum(`cash`) as 'cash' from `DATABASE`.`TABLE` WHERE `id`>10
+    GROUP BY `type` HAVING `cash`>=100 ORDER BY `id` desc;</note>
+<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'>'</str>=><sys>array</sys>(<str>'id'</str>=>10)))
+    -><func>group</func>(<sys>array</sys>(<str>'type'</str>))-><func>having</func>(<sys>array</sys>(<str>'>='</str>=><sys>array</sys>(<str>'cash'</str>=>100)))-><func>order</func>(<sys>array</sys>(<str>'id'</str>=><str>'desc'</str>))
+    -><func>addition</func>(<sys>array</sys>(<str>'sum'</str>=><sys>array</sys>(<str>'cash'</str>=><str>'cash'</str>)))
+    -><func>select</func>(<str>'select id,:addition from :table WHERE :where :group :order;'</str>);</pre>
 
         <p>另外还可以添加一些自定义变量，这些变量会自动进行<code>sql转义</code>，防止<code>sql注入</code></p>
         <p>其中键值的替换符为<code>;</code>，例如<code>;key</code>，值的替换符为<code>:</code>，例如<code>:value</code></p>
@@ -825,10 +831,29 @@ TXConfig::<func>getConfig</func>(<str>'path'</str>, <str>'config'</str>, <sys>fa
 
         <p>同时替换内容也可以是数组，系统会自动替换为以<code>,</code>连接的字符串</p>
         <pre class="code"><note>// select `id`,`name` from `DATABASE`.`TABLE` WHERE `name` in (1,2,3,'test')</note>
-<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select ;fields from :table WHERE ;key in :value;'</str>,
+<prm>$result</prm> = <prm>$this</prm>-><prm>userDAO</prm>-><func>select</func>(<str>'select ;fields from :table WHERE ;key in (:value);'</str>,
     <sys>array</sys>(<str>'key'</str>=><str>'name'</str>, <str>'value'</str>=><sys>array</sys>(1,2,3,<str>'test'</str>), <str>'fields'</str>=><sys>array</sys>(<str>'id'</str>, <str>'name'</str>)));</pre>
 
         <p>以上替换方式都会进行<code>SQL转义</code>，建议用户使用模版替换，而不要自己将变量放入SQL语句中，防止<code>SQL注入</code></p>
+
+        <h2 id="dao-cursor">游标数据</h2>
+        <p>如果DB中取出的数据非常大，而PHP中却无法承受这么大量的内存可以用来处理，这时候就需要用到<code>cursor</code>游标了</p>
+        <p>游标可以将复合条件的数据逐一取出，在程序中进行分批处理，从而降低大数据所带来的内存瓶颈</p>
+        <pre class="code"><note>// 选择器，条件类模式完全一样，在获取数据时使用cursor方法</note>
+<prm>$rs</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'type'</str>=>1))-><func>cursor</func>(<sys>array</sys>(<str>'id'</str>, <str>'name'</str>));
+<note>// 通过 TXDatabase::step 逐个取出data数据，e.g: ['id'=>2, 'name'=>'test']</note>
+<sys>while</sys> (<prm>$data</prm>=TXDatabase::<func>step</func>(<prm>$rs</prm>)){
+    <note>do something...</note>
+}</pre>
+
+        <p>如果使用SQL模版的话，也可以通过传递第三个参数<code>TXDatabase::FETCH_TYPE_CURSOR</code>来实现游标的使用</p>
+        <pre class="code"><note>// 使用方法跟上诉方式一样</note>
+<prm>$rs</prm> = <prm>$this</prm>-><prm>testDAO</prm>-><func>filter</func>(<sys>array</sys>(<str>'type'</str>=>1))
+  -><func>select</func>(<str>'SELECT * FROM :table WHERE :where AND status=:status'</str>, <sys>array</sys>(<str>'status'</str>=>2), TXDatabase::<prm>FETCH_TYPE_CURSOR</prm>);
+<note>// 通过 TXDatabase::step 逐个取出data数据，e.g: ['id'=>2, 'name'=>'test', 'type'=>1, 'status'=>2]</note>
+<sys>while</sys> (<prm>$data</prm>=TXDatabase::<func>step</func>(<prm>$rs</prm>)){
+    <note>do something...</note>
+}</pre>
 
         <h2 id="dao-transaction">事务处理</h2>
         <p>框架为DAO提供了一套简单的事务处理机制，默认是关闭的，可以通过<code>TXDatebase::start()</code>方法开启</p>
@@ -1192,7 +1217,7 @@ TXLogger::<func>error</func>(<str>'this is a error'</str>);
 TXLogger::<func>info</func>(<sys>array</sys>(1,2,3,4,5));
 TXLogger::<func>warn</func>(<str>"ss"</str>, <str>"warnKey"</str>);</pre>
 
-        <p><img src="http://km.oa.com/files/photos/captures/201505/1432003538_35_w219_h87.png"></p>
+        <p><img src="//f.wetest.qq.com/gqop/10000/20000/GuideImage_c5f68a0251b7f55efbbe0c47df9e757c.png"></p>
 
         <p>另外<code>TXLogger</code>调试类中还支持time，memory的输出，可以使用其对代码性能做优化。</p>
         <pre class="code"><note>// 开始结尾处加上时间 和 memory 就可以获取中间程序消耗的性能了</note>
@@ -1203,8 +1228,6 @@ TXLogger::<func>time</func>(<str>'end-time'</str>);
 TXLogger::<func>memory</func>(<str>'end-memory'</str>);</pre>
 
         <p><img src="http://shp.qpic.cn/gqop/20000/LabImage_2ee327c680046dc1d14d7dce5c7bcb45.png/0"></p>
-
-        <p>这块调试的内容在KM中也有<a href="http://km.oa.com/group/1746/articles/show/226484" target="_blank">相关的文章</a>。文章中作为demo的框架代码已经比较老了，仅作参考。</p>
 
         <h2 id="debug-log">日志调试</h2>
 
@@ -1349,7 +1372,7 @@ TXApp::<prm>$base</prm>-><prm>request</prm>-><func>isAjax</func>();
 <note>// 返回当前路径  /test/demo/</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>();
 
-<note>// 返回完整路径  http://biny.oa.com/test/demo/</note>
+<note>// 返回完整路径  http://www.billge.cc/test/demo/</note>
 TXApp::<prm>$base</prm>-><prm>request</prm>-><func>getBaseUrl</func>(<sys>true</sys>);
 
 <note>// 返回带参数URL  /test/demo/?id=10</note>
@@ -1454,6 +1477,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
                     <li><a href="#dao-extracts">复杂选择</a></li>
                     <li><a href="#dao-group">其他条件</a></li>
                     <li><a href="#dao-command">SQL模版</a></li>
+                    <li><a href="#dao-cursor">游标数据</a></li>
                     <li><a href="#dao-transaction">事务处理</a></li>
                     <li><a href="#dao-cache">数据缓存</a></li>
                     <li><a href="#dao-log">语句调试</a></li>

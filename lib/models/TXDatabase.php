@@ -23,6 +23,7 @@ class TXDatabase {
 
     const FETCH_TYPE_ALL = 0;
     const FETCH_TYPE_ONE = 1;
+    const FETCH_TYPE_CURSOR = 2;
 
 
     /**
@@ -43,6 +44,7 @@ class TXDatabase {
             throw new TXException(3001, array($config['host']));
         }
         $this->handler->autocommit(self::$autocommit);
+        $this->handler->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
 
         mysqli_query($this->handler, "set NAMES {$config['encode']}");
     }
@@ -95,6 +97,16 @@ class TXDatabase {
     }
 
     /**
+     * 游标更新
+     * @param $rs
+     * @return array|null
+     */
+    public static function step($rs)
+    {
+        return mysqli_fetch_assoc($rs);
+    }
+
+    /**
      * sql query data
      * @param string $sql
      * @param $key
@@ -122,6 +134,8 @@ class TXDatabase {
 
                 }
                 return $result;
+            } else if ($mode == self::FETCH_TYPE_CURSOR){
+                return $rs;
             } else {
                 $result = mysqli_fetch_assoc($rs) ?: [];
             }

@@ -8,9 +8,6 @@
  */
 class TXDAO
 {
-    const FETCH_TYPE_ALL = 0;
-    const FETCH_TYPE_ONE = 1;
-
     protected $extracts = ['=', '>', '>=', '<', '<=', '!=', '<>', 'is', 'is not'];
     protected $calcs = ['max', 'min', 'sum', 'avg', 'count', 'distinct'];
     protected $methods = ['group', 'limit', 'order', 'addition', 'having'];
@@ -123,7 +120,7 @@ class TXDAO
      * @param int $mode
      * @return array
      */
-    private function sql($sql, $key=null, $mode=self::FETCH_TYPE_ALL) {
+    private function sql($sql, $key=null, $mode=TXDatabase::FETCH_TYPE_ALL) {
         $dns = is_array($this->dbConfig) ? $this->dbConfig[1] : $this->dbConfig;
         return TXDatabase::instance($dns)->sql($sql, $key, $mode);
     }
@@ -131,10 +128,11 @@ class TXDAO
     /**
      * 语句执行
      * @param $sql
-     * @param $querys
+     * @param array $querys
+     * @param int $mode
      * @return array
      */
-    public function select($sql, $querys=array())
+    public function select($sql, $querys=array(), $mode=TXDatabase::FETCH_TYPE_ALL)
     {
         $params = func_get_args();
         $cond = isset($params[2]) ? $params[2] : null;
@@ -142,7 +140,7 @@ class TXDAO
         List($keys, $values) = $this->buildQuery($querys, $cond);
         $sql = str_replace($keys, $values, $sql);
         TXEvent::trigger(onSql, [$sql]);
-        return $this->sql($sql);
+        return $this->sql($sql, null, $mode);
     }
 
     /**
@@ -203,6 +201,19 @@ class TXDAO
             $keys[] = ":table";
             $values[] = $this->getTable();
         }
+        if (!in_array(":order", $keys) && $cond){
+            $keys[] = ":order";
+            $values[] = $this->buildOrderBy($cond->get('orderby'));
+        }
+        if (!in_array(":group", $keys) && $cond){
+            $keys[] = ":group";
+            $values[] = $this->buildGroupBy($cond->get('groupby'), $cond->get('having'));
+        }
+        if (!in_array(":addition", $keys) && $cond){
+            $keys[] = ":addition";
+            $values[] = $this->buildFields('', $cond->get('additions'));
+        }
+
         return array($keys, $values);
     }
 
@@ -238,7 +249,7 @@ class TXDAO
         $fields = $this->buildFields($fields, isset($params[1]) ? $params[1]->get('additions') : array());
         $sql = sprintf("SELECT %s FROM %s%s", $fields, $this->getTable(), $where);
         TXEvent::trigger(onSql, [$sql]);
-        $result = $this->sql($sql, null, self::FETCH_TYPE_ONE);
+        $result = $this->sql($sql, null, TXDatabase::FETCH_TYPE_ONE);
         return $result;
     }
 
@@ -260,6 +271,25 @@ class TXDAO
         TXEvent::trigger(onSql, [$sql]);
 
         return $this->sql($sql, $key);
+    }
+
+    /**
+     * 返回数据游标
+     * @param string $fields
+     * @return array
+     */
+    public function cursor($fields='')
+    {
+        $params = func_get_args();
+        $where = isset($params[1]) && $params[1]->get('where') ? " WHERE ".$params[1]->get('where') : "";
+        $limit = $this->buildLimit(isset($params[1]) ? $params[1]->get('limit') : []);
+        $orderBy = $this->buildOrderBy(isset($params[1]) ? $params[1]->get('orderby') : []);
+        $fields = $this->buildFields($fields, isset($params[1]) ? $params[1]->get('additions') : []);
+        $groupBy = $this->buildGroupBy(isset($params[1]) ? $params[1]->get('groupby') : [], isset($params[1]) ? $params[1]->get('having') : []);
+        $sql = sprintf("SELECT %s FROM %s%s%s%s%s", $fields, $this->getTable(), $where, $groupBy, $orderBy, $limit);
+        TXEvent::trigger(onSql, [$sql]);
+
+        return $this->sql($sql, null, TXDatabase::FETCH_TYPE_CURSOR);
     }
 
     /**
@@ -350,7 +380,7 @@ class TXDAO
             $sql = sprintf("SELECT %s(`%s`) as `%s` FROM %s%s", $method, $args[0], $method, $this->getTable(), $where);
             TXEvent::trigger(onSql, [$sql]);
 
-            $ret = $this->sql($sql, null, self::FETCH_TYPE_ONE);
+            $ret = $this->sql($sql, null, TXDatabase::FETCH_TYPE_ONE);
             return $ret[$method] ?: 0;
         } else {
             throw new TXException(3009, array($method, get_called_class()));

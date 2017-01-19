@@ -85,6 +85,16 @@ class TXCond
     }
 
     /**
+     * cursor
+     * @param string $field
+     * @return array
+     */
+    public function cursor($field='')
+    {
+        return $this->DAO->cursor($field, $this);
+    }
+
+    /**
      * select
      * @param $sql
      * @param $querys

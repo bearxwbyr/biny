@@ -9,8 +9,6 @@
  */
 class TXSingleDAO extends TXDAO
 {
-    const FETCH_TYPE_ALL = 0;
-    const FETCH_TYPE_ONE = 1;
     /**
      * 表格名称
      * @var string

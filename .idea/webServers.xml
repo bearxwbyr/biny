@@ -2,8 +2,12 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="8b9de443-54f7-4435-8e5d-8cb93bac3a6b" name="biny" url="http://localhost">
-        <fileTransfer mountedRoot="C:\xampp\biny" accessType="MOUNT" />
+      <webServer id="e6cd9fa0-8ea6-4d4c-827b-fec2cdbca98d" name="binyPHP" url="http://182.254.152.20/">
+        <fileTransfer host="182.254.152.20" port="21" rootFolder="/home/user00" password="dfdddfcfdfdadfdfdfc8dfeadffedfcfdfd9dfde" username="user00">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" />
+          </advancedOptions>
+        </fileTransfer>
       </webServer>
     </option>
   </component>

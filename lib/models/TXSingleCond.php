@@ -29,7 +29,7 @@ class TXSingleCond extends TXCond
      */
     public function limit($len, $start=0)
     {
-        $this->limit = array(intval($start), intval($len));
+        $this->limit = is_array($len) ? $len : array(intval($start), intval($len));
         return $this;
     }
 
