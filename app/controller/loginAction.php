@@ -8,15 +8,18 @@
  */
 class loginAction extends baseAction
 {
-    public $login_url='/auth/oa/';
-    public $oa_wsdl_url='http://login.oa.com/Services/passportService.asmx?WSDL';
-
     /**
      * 登录
      */
     public function action_index()
     {
+        if (TXApp::$base->person->exist()){
+            TXApp::$base->request->redirect('/');
+        }
         $username = $this->getPost('username');
+        if (!$username){
+            return $this->display('main/login');
+        }
         if ($user = $this->userDAO->filter(['name'=>$username])->find()){
             Person::get($user['id'])->login();
         } else {
@@ -31,30 +34,4 @@ class loginAction extends baseAction
         }
     }
 
-    /**
-     * oa登录
-     * @param $ticket
-     */
-    public function action_oa($ticket)
-    {
-        if(TXApp::$base->person->exist())
-            TXApp::$base->request->redirect('/');
-        if ($ticket) {
-            $client = new \SoapClient($this->oa_wsdl_url);
-            $res=$client->DecryptTicket(['encryptedTicket'=>$ticket]);
-            $rtx=$res->DecryptTicketResult->LoginName;
-
-            if ($user = $this->userDAO->filter(['name'=>$rtx])->find()){
-                Person::get($user['id'])->login();
-            } else {
-                $id = $this->userDAO->add(['name'=>$rtx, 'registerTime'=>time()]);
-                Person::get($id)->login();
-            }
-            TXApp::$base->request->redirect('/');
-        }
-        else{
-            $url=TXApp::$base->request->getBaseUrl(true).'/login/oa';
-            TXApp::$base->request->redirect("http://login.oa.com/modules/passport/signin.ashx?url={$url}");
-        }
-    }
 }

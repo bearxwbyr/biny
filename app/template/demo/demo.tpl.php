@@ -25,10 +25,10 @@
 <div class="container bs-docs-container">
 
 <div class="row">
-<div class="col-md-9" role="main">
+<div <?if (TXApp::$base->request->isMobile()){?>class="col-md-12"<?} else {?> class="col-md-9" <?}?> role="main">
     <div class="bs-docs-section">
-        <h1 id="overview" class="page-header"><?=_L('概览')?></h1>
-        <p><?=_L('Biny是一个轻量级易用性强的web Server框架')?></p>
+        <h1 id="overview" class="page-header">概览</h1>
+        <p>Biny是一个轻量级易用性强的web Server框架</p>
 
         <h2 id="overview-introduce">介绍</h2>
         <p>支持跨库连表，条件复合筛选，PK缓存查询等</p>
@@ -1432,7 +1432,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
     </div>
 
 </div>
-
+<?if (!TXApp::$base->request->isMobile()){?>
 <div class="col-md-3" role="complementary">
     <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm">
         <ul class="nav bs-docs-sidenav">
@@ -1537,6 +1537,7 @@ TXApp::<prm>$base</prm>-><prm>session</prm>-><func>clear</func>();</pre>
 
     </nav>
 </div>
+<?}?>
 
 </div>
 </div>

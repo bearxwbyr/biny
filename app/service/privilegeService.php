@@ -19,7 +19,7 @@ class privilegeService extends TXService
         if (!$this->checkUser()){
 //            return $this->error();
             TXApp::$base->session->lastUrl = $_SERVER['REQUEST_URI'];
-            TXApp::$base->request->redirect('/login/oa');
+            TXApp::$base->request->redirect('/login/');
 //            echo $action->display('main/login');
 //            exit;
         }
