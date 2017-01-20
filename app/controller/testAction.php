@@ -28,22 +28,16 @@ class testAction extends baseAction
     public function action_index()
     {
         TXEvent::on(onSql);
+//        $result = $this->userDAO->filter(array('>'=>array('id'=>10)))
+//            ->group(array('type'))->having(array('>='=>array('cash'=>100)))->order(array('id'=>'desc'))
+//            ->addition(array('sum'=>array('cash'=>'cash')))
+//            ->select('select id,:addition from :table WHERE :where :group :order;');
 
-        $ids = array_keys($this->projectDAO
-            ->rightJoin($this->testDAO, ['type'=>'type'])
-            ->filter([['name'=>'test'], ['>='=>['time'=>time()]]])
-            ->query([['id'=>'projectId']], 'projectId'));
-        $this->userDAO->filter(['projectId'=>[2,3,4]])->query();
+        $rs = $this->userDAO->join($this->testDAO, ['id'=>'id'])->filter([['<'=>['id'=>50]]])->order([['id'=>'desc']])->cursor();
+        while ($data = TXDatabase::step($rs)){
+            TXLogger::info($data);
+        }
 
-
-        $this->userDAO
-            ->leftJoin($this->projectDAO, ['projectId'=>'id'])
-            ->rightJoin($this->testDAO, [[], ['type'=>'type']])
-            ->filter([[], ['name'=>'test'], ['>='=>['time'=>time()]]])
-            ->query(['*']);
-
-        $result = $this->userDAO->filter(['>='=>['id'=>20], 'count'=>2])->limit(2)->query();
-        TXLogger::info($result);
         $data = $this->getParam('test');
         $params = array(
             'test'=>$data
@@ -67,7 +61,6 @@ class testAction extends baseAction
 
     public function action_logger()
     {
-        \Biny\Logger::info(['test'=>2]);
         return $this->display('main/logger');
     }
 

@@ -219,12 +219,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the schema and host part of the current request URL.
-     * The returned URL does not have an ending slash.
-     * By default this is determined based on the user request information.
-     * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
-     * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`)
-     * @see setHostInfo()
+     * @return null|string
      */
     public function getHostInfo()
     {
@@ -246,11 +241,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the port to use for insecure requests.
-     * Defaults to 80, or the port specified by the server if the current
-     * request is insecure.
-     * @return integer port number for insecure requests.
-     * @see setPort()
+     * @return int|null
      */
     public function getPort()
     {
@@ -262,11 +253,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the port to use for secure requests.
-     * Defaults to 443, or the port specified by the server if the current
-     * request is secure.
-     * @return integer port number for secure requests.
-     * @see setSecurePort()
+     * @return int|null
      */
     public function getSecurePort()
     {
@@ -278,8 +265,7 @@ class TXRequest {
     }
 
     /**
-     * Return if the request is sent via secure channel (https).
-     * @return boolean if the request is sent via secure channel (https)
+     * @return bool|null
      */
     public function getIsSecureConnection()
     {
@@ -291,8 +277,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the server name.
-     * @return string server name
+     * @return mixed
      */
     public function getServerName()
     {
@@ -300,8 +285,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the server port number.
-     * @return integer server port number
+     * @return int
      */
     public function getServerPort()
     {
@@ -309,8 +293,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the URL referrer, null if not present
-     * @return string URL referrer, null if not present
+     * @return null
      */
     public function getReferrer()
     {
@@ -318,8 +301,7 @@ class TXRequest {
     }
 
     /**
-     * Returns the user agent, null if not present.
-     * @return string user agent, null if not present
+     * @return null
      */
     public function getUserAgent()
     {

@@ -1,10 +1,10 @@
 <?php
-defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 # 基本加载
 include __DIR__.'/TXAutoload.php';
 include __DIR__.'/config/TXConfig.php';
-include __DIR__.'/config/TXDefine.php';
+include __DIR__.'/business/TXEvent.php';
+include __DIR__.'/logger/TXLogger.php';
 include __DIR__.'/exception/TXException.php';
 
 /**
@@ -66,7 +66,7 @@ class TXApp
      */
     public static function registry($apppath)
     {
-        TXDefine::init();
+        self::define();
         self::$base = new self();
         self::$base_root = dirname(__DIR__);
         self::$plugins_root = self::$base_root.DS."plugins";
@@ -86,6 +86,37 @@ class TXApp
         }
 
         self::init();
+    }
+
+    /**
+     * 初始化定义
+     */
+    private static function define()
+    {
+        defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+        //定义保护
+        defined('RUN_SHELL') or define('RUN_SHELL', false);
+        defined('SYS_DEBUG') or define('SYS_DEBUG', false);
+        defined('SYS_CONSOLE') or define('SYS_CONSOLE', false);
+        defined('isMaintenance') or define('isMaintenance', false);
+
+        defined('ENV_DEV') or define('ENV_DEV', SYS_ENV === 'dev');
+        defined('ENV_PRE') or define('ENV_PRE', SYS_ENV === 'pre');
+        defined('ENV_PUB') or define('ENV_PUB', SYS_ENV === 'pub');
+
+        defined('ERROR') or define('ERROR', 1);
+        defined('WARNING') or define('WARNING', 2);
+        defined('NOTICE') or define('NOTICE', 8);
+        defined('DEBUG') or define('DEBUG', 9);
+        defined('INFO') or define('INFO', 10);
+
+        //TXEvent 默认事件
+        defined('beforeAction') or define('beforeAction', 1);
+        defined('afterAction') or define('afterAction', 2);
+        defined('onException') or define('onException', 3);
+        defined('onError') or define('onError', 4);
+        defined('onRequest') or define('onRequest', 5);
+        defined('onSql') or define('onSql', 'onSql');
     }
 
     /**
@@ -114,6 +145,7 @@ class TXApp
     {
         TXAutoload::init();
         set_error_handler(['TXApp', 'handleError']);
+        TXDefine::init();
         TXEvent::init();
         self::$controller = TXFactory::create('TXController');
     }

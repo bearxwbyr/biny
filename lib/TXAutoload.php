@@ -31,9 +31,9 @@ class TXAutoload
      */
     private static function loading()
     {
-        $lastTime = filemtime(self::$autoPath);
+        $lastTime = is_readable(self::$autoPath) ? filemtime(self::$autoPath) : false;
         // 5秒缓存不更新
-        if (!$lastTime || time()-$lastTime > TXConfig::getConfig('autoSkipLoad')){
+        if (!self::$loaders || !$lastTime || time()-$lastTime > TXConfig::getConfig('autoSkipLoad')){
             self::$loaders = array();
             self::getLoads(__DIR__);
             self::getLoads(TXApp::$app_root. DS . "controller");
@@ -45,7 +45,7 @@ class TXAutoload
             self::getLoads(TXApp::$app_root. DS . "model");
             //写入文件
             if (is_writeable(self::$autoPath)) {
-                file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';');
+                file_put_contents(self::$autoPath, "<?php\nreturn " . var_export(self::$loaders, true) . ';', LOCK_EX);
             } else {
                 throw new TXException(1005, array(self::$autoPath));
             }
@@ -59,11 +59,11 @@ class TXAutoload
      */
     private static function getLoads($path)
     {
-        foreach (glob($path . '/*') as $file) {
+        foreach (glob($path . DS.'*') as $file) {
             if (is_dir($file)) {
                 self::getLoads($file);
             } else {
-                $name = explode('/', $file);
+                $name = explode(DS, $file);
                 $class = str_replace('.php', '', end($name));
                 self::$loaders[$class] = $file;
             }
@@ -90,6 +90,8 @@ class TXAutoload
             }
         } else if (substr($class, -6) == 'Action') {
             throw new TXException(1003, array($class), 404);
+        } else {
+            throw new TXException(1003, array($class));
         }
     }
 }

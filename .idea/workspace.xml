@@ -3,10 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/loginAction.php" afterPath="$PROJECT_DIR$/app/controller/loginAction.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/service/privilegeService.php" afterPath="$PROJECT_DIR$/app/service/privilegeService.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" afterPath="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controller/testAction.php" afterPath="$PROJECT_DIR$/app/controller/testAction.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXApp.php" afterPath="$PROJECT_DIR$/lib/TXApp.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/TXAutoload.php" afterPath="$PROJECT_DIR$/lib/TXAutoload.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/business/TXRequest.php" afterPath="$PROJECT_DIR$/lib/business/TXRequest.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/config/TXConst.php" afterPath="$PROJECT_DIR$/lib/config/TXConst.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/config/TXDefine.php" afterPath="$PROJECT_DIR$/lib/config/TXDefine.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/data/TXString.php" afterPath="$PROJECT_DIR$/lib/data/TXString.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/exception/TXException.php" afterPath="$PROJECT_DIR$/lib/exception/TXException.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/js/main.js" afterPath="$PROJECT_DIR$/web/static/js/main.js" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -76,8 +81,11 @@
         <entry file="file://$PROJECT_DIR$/lib/business/TXRequest.php">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-14.035714">
-              <caret line="354" column="55" selection-start-line="354" selection-start-column="55" selection-end-line="354" selection-end-column="55" />
-              <folding />
+              <caret line="336" column="55" selection-start-line="336" selection-start-column="55" selection-end-line="336" selection-end-column="55" />
+              <folding>
+                <marker date="1484880933000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
+                <marker date="1484880933000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -95,10 +103,10 @@
       <file leaf-file-name="testAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.857142">
-              <caret line="22" column="44" selection-start-line="22" selection-start-column="44" selection-end-line="22" selection-end-column="44" />
+            <state vertical-scroll-proportion="-6.785714">
+              <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
               <folding>
-                <marker date="1480648946000" expanded="true" signature="318:332" placeholder="..." />
+                <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -626,7 +634,13 @@
       <option name="project" value="LOCAL" />
       <updated>1484829999741</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="demo页手机适配">
+      <created>1484880545110</created>
+      <option name="number" value="00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1484880545110</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -656,6 +670,7 @@
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992035" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -666,7 +681,6 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -705,7 +719,8 @@
     <MESSAGE value="优化报错信息" />
     <MESSAGE value="sql添加游标数据" />
     <MESSAGE value="readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="readme" />
+    <MESSAGE value="demo页手机适配" />
+    <option name="LAST_COMMIT_MESSAGE" value="demo页手机适配" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -725,7 +740,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
           <folding>
-            <marker date="1480648946000" expanded="true" signature="318:332" placeholder="..." />
+            <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1061,10 +1076,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.857142">
-          <caret line="22" column="44" selection-start-line="22" selection-start-column="44" selection-end-line="22" selection-end-column="44" />
+        <state vertical-scroll-proportion="-6.785714">
+          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
           <folding>
-            <marker date="1480648946000" expanded="true" signature="318:332" placeholder="..." />
+            <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1080,8 +1095,11 @@
     <entry file="file://$PROJECT_DIR$/lib/business/TXRequest.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-14.035714">
-          <caret line="354" column="55" selection-start-line="354" selection-start-column="55" selection-end-line="354" selection-end-column="55" />
-          <folding />
+          <caret line="336" column="55" selection-start-line="336" selection-start-column="55" selection-end-line="336" selection-end-column="55" />
+          <folding>
+            <marker date="1484880933000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
+            <marker date="1484880933000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
+          </folding>
         </state>
       </provider>
     </entry>

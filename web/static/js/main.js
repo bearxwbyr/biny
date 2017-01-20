@@ -181,7 +181,7 @@ function getCheckBoxByName(name, isInt){
 
 function htmlEncode(str){
     if (typeof str == "string"){
-        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, "&#039;").replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\/g, '\\\\');
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, "&#039;").replace(/</g, '&lt;').replace(/>/g, '&gt;');
     } else {
         return str;
     }
@@ -189,7 +189,7 @@ function htmlEncode(str){
 
 function htmlDecode(str){
     if (typeof str == "string"){
-        return str.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\\\\/g, '\\');;
+        return str.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
     } else {
         return str;
     }
