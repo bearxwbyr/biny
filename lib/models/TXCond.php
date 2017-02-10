@@ -97,12 +97,13 @@ class TXCond
     /**
      * select
      * @param $sql
-     * @param $querys
+     * @param array $querys
+     * @param int $mode
      * @return array
      */
-    public function select($sql, $querys=array())
+    public function select($sql, $querys=array(), $mode=TXDatabase::FETCH_TYPE_ALL)
     {
-        return $this->DAO->select($sql, $querys, $this);
+        return $this->DAO->select($sql, $querys, $mode, $this);
     }
 
     /**

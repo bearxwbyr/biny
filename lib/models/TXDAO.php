@@ -135,7 +135,7 @@ class TXDAO
     public function select($sql, $querys=array(), $mode=TXDatabase::FETCH_TYPE_ALL)
     {
         $params = func_get_args();
-        $cond = isset($params[2]) ? $params[2] : null;
+        $cond = isset($params[3]) ? $params[3] : null;
 
         List($keys, $values) = $this->buildQuery($querys, $cond);
         $sql = str_replace($keys, $values, $sql);

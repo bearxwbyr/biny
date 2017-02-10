@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="">
+    <list default="true" id="9c593bd8-1e7d-47a0-9748-0654331bdf98" name="Default" comment="demo页手机适配">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/css/demo.css" afterPath="$PROJECT_DIR$/web/static/css/demo.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXCond.php" afterPath="$PROJECT_DIR$/lib/models/TXCond.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/models/TXDAO.php" afterPath="$PROJECT_DIR$/lib/models/TXDAO.php" />
     </list>
     <list id="1ac1d051-dd72-4469-af30-2538d5add6eb" name="Failed commit: Default" comment="readme" />
     <ignored path="Biny.iws" />
@@ -26,21 +27,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="demo.tpl.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="demo.tpl.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/template/demo/demo.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.892858">
-              <caret line="1322" column="82" selection-start-line="1322" selection-start-column="82" selection-end-line="1322" selection-end-column="82" />
+            <state vertical-scroll-proportion="1.0899082">
+              <caret line="1538" column="6" selection-start-line="1538" selection-start-column="6" selection-end-line="1538" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="demo.css" pinned="false" current-in-tab="true">
+      <file leaf-file-name="demo.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/web/static/css/demo.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5533981">
-              <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="16" column="26" selection-start-line="15" selection-start-column="23" selection-end-line="16" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -49,7 +50,7 @@
       <file leaf-file-name="ReadMe.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ReadMe.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.9">
+            <state vertical-scroll-proportion="0.0">
               <caret line="29" column="23" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
               <folding />
             </state>
@@ -62,7 +63,7 @@
       <file leaf-file-name="TXApp.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/TXApp.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.821429">
+            <state vertical-scroll-proportion="0.0">
               <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
               <folding />
             </state>
@@ -72,7 +73,7 @@
       <file leaf-file-name="loginAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/loginAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.892858">
+            <state vertical-scroll-proportion="0.0">
               <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
               <folding />
             </state>
@@ -82,11 +83,11 @@
       <file leaf-file-name="TXRequest.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/business/TXRequest.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.035714">
+            <state vertical-scroll-proportion="0.0">
               <caret line="336" column="55" selection-start-line="336" selection-start-column="55" selection-end-line="336" selection-end-column="55" />
               <folding>
-                <marker date="1484880933000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
-                <marker date="1484880933000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
+                <marker date="1486729682000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
+                <marker date="1486729682000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
               </folding>
             </state>
           </provider>
@@ -95,7 +96,7 @@
       <file leaf-file-name="login.tpl.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/template/main/login.tpl.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.6785714">
+            <state vertical-scroll-proportion="0.0">
               <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
               <folding />
             </state>
@@ -105,10 +106,10 @@
       <file leaf-file-name="testAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.785714">
+            <state vertical-scroll-proportion="0.0">
               <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
               <folding>
-                <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
+                <marker date="1484046950000" expanded="true" signature="318:332" placeholder="..." />
               </folding>
             </state>
           </provider>
@@ -117,7 +118,7 @@
       <file leaf-file-name="demoAction.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controller/demoAction.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.464286">
+            <state vertical-scroll-proportion="0.0">
               <caret line="11" column="29" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="29" />
               <folding />
             </state>
@@ -127,7 +128,7 @@
       <file leaf-file-name="privilegeService.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/service/privilegeService.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.071429">
+            <state vertical-scroll-proportion="0.0">
               <caret line="21" column="52" selection-start-line="21" selection-start-column="52" selection-end-line="21" selection-end-column="52" />
               <folding />
             </state>
@@ -170,8 +171,8 @@
         <option value="$PROJECT_DIR$/app/service/privilegeService.php" />
         <option value="$PROJECT_DIR$/lib/business/TXRequest.php" />
         <option value="$PROJECT_DIR$/app/controller/loginAction.php" />
-        <option value="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
         <option value="$PROJECT_DIR$/web/static/css/demo.css" />
+        <option value="$PROJECT_DIR$/app/template/demo/demo.tpl.php" />
       </list>
     </option>
   </component>
@@ -246,6 +247,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -280,7 +282,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -645,7 +646,13 @@
       <option name="project" value="LOCAL" />
       <updated>1484881402434</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="demo页手机适配">
+      <created>1484882991928</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1484882991928</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -670,27 +677,27 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1932" height="1034" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18058455" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32992035" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -737,7 +744,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
           <folding>
-            <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
+            <marker date="1484046950000" expanded="true" signature="318:332" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -746,7 +753,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -777,7 +783,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -995,15 +1000,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding>
-            <marker date="1484047127000" expanded="true" signature="2628:2720" placeholder="select table... TABLES" />
-            <marker date="1484047127000" expanded="true" signature="7313:7332" placeholder="SELECT %s FR... " />
-            <marker date="1484047127000" expanded="true" signature="8263:8288" placeholder="SELECT %s FR... " />
-            <marker date="1484047127000" expanded="true" signature="9161:9186" placeholder="SELECT %s FR... " />
-            <marker date="1484047127000" expanded="true" signature="10092:10126" placeholder="SELECT DISTI... " />
-            <marker date="1484047127000" expanded="true" signature="10631:10666" placeholder="SELECT COUNT... " />
-            <marker date="1484047127000" expanded="true" signature="12437:12470" placeholder="SELECT %s(`%... " />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1011,7 +1007,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="27" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="27" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1019,7 +1014,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="6" column="3" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1027,7 +1021,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1035,13 +1028,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="97" column="9" selection-start-line="97" selection-start-column="9" selection-end-line="97" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controller/demoAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.464286">
+        <state vertical-scroll-proportion="0.0">
           <caret line="11" column="29" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="29" />
           <folding />
         </state>
@@ -1049,7 +1041,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/service/privilegeService.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.071429">
+        <state vertical-scroll-proportion="0.0">
           <caret line="21" column="52" selection-start-line="21" selection-start-column="52" selection-end-line="21" selection-end-column="52" />
           <folding />
         </state>
@@ -1057,7 +1049,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/template/main/login.tpl.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.6785714">
+        <state vertical-scroll-proportion="0.0">
           <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
           <folding />
         </state>
@@ -1065,17 +1057,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controller/testAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.785714">
+        <state vertical-scroll-proportion="0.0">
           <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
           <folding>
-            <marker date="1484880996000" expanded="true" signature="318:332" placeholder="..." />
+            <marker date="1484046950000" expanded="true" signature="318:332" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/TXApp.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.821429">
+        <state vertical-scroll-proportion="0.0">
           <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
           <folding />
         </state>
@@ -1083,18 +1075,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/business/TXRequest.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.035714">
+        <state vertical-scroll-proportion="0.0">
           <caret line="336" column="55" selection-start-line="336" selection-start-column="55" selection-end-line="336" selection-end-column="55" />
           <folding>
-            <marker date="1484880933000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
-            <marker date="1484880933000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
+            <marker date="1486729682000" expanded="true" signature="5728:5736" placeholder=" Returns the schema and host part of the current request URL. ..." />
+            <marker date="1486729682000" expanded="true" signature="7950:7956" placeholder=" Returns the user agent, null if not present. ..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ReadMe.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.9">
+        <state vertical-scroll-proportion="0.0">
           <caret line="29" column="23" selection-start-line="29" selection-start-column="23" selection-end-line="29" selection-end-column="23" />
           <folding />
         </state>
@@ -1105,24 +1097,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controller/loginAction.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.892858">
+        <state vertical-scroll-proportion="0.0">
           <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/template/demo/demo.tpl.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.892858">
-          <caret line="1322" column="82" selection-start-line="1322" selection-start-column="82" selection-end-line="1322" selection-end-column="82" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/static/css/demo.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5533981">
-          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="26" selection-start-line="15" selection-start-column="23" selection-end-line="16" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/template/demo/demo.tpl.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.0899082">
+          <caret line="1538" column="6" selection-start-line="1538" selection-start-column="6" selection-end-line="1538" selection-end-column="6" />
           <folding />
         </state>
       </provider>
